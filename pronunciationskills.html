@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pronunciation Skills Review - British Hills</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0f4f8;
+            touch-action: manipulation;
+        }
+        .word-display { font-family: 'Fredoka', sans-serif; }
+        
+        /* Pulse Animations */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.33); opacity: 1; }
+            80%, 100% { opacity: 0; }
+        }
+        .listening-ring {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: rgba(239, 68, 68, 0.4);
+            animation: pulse-ring 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+            z-index: -1;
+        }
+        .animate-shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden text-slate-800">
+
+    <!-- === MAIN MENU SCREEN === -->
+    <div id="main-menu" class="flex-1 flex flex-col items-center justify-center p-6 w-full max-w-md mx-auto">
+        <div class="mb-10 text-center">
+            <div class="bg-blue-900 text-white w-16 h-16 rounded-full flex items-center justify-center font-bold font-serif text-3xl mx-auto mb-4 shadow-lg">B</div>
+            <h1 class="text-3xl font-bold text-blue-900">British Hills<br><span class="text-xl font-normal text-slate-600">Pronunciation Skills</span></h1>
+        </div>
+
+        <div class="w-full space-y-4">
+            <button onclick="startGame('pairs')" class="w-full p-6 bg-white rounded-xl shadow-md border-2 border-slate-100 hover:border-blue-500 hover:shadow-lg transition-all text-left flex items-center group">
+                <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xl mr-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <i class="fa-solid fa-headphones"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg text-slate-800">Sound Pairs</h3>
+                    <p class="text-sm text-slate-500">Practice L/R, B/V sounds</p>
+                </div>
+            </button>
+
+            <button onclick="startGame('twisters')" class="w-full p-6 bg-white rounded-xl shadow-md border-2 border-slate-100 hover:border-purple-500 hover:shadow-lg transition-all text-left flex items-center group">
+                <div class="w-12 h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-xl mr-4 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                    <i class="fa-solid fa-wind"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg text-slate-800">Tongue Twisters</h3>
+                    <p class="text-sm text-slate-500">Challenge your fluency</p>
+                </div>
+            </button>
+        </div>
+        
+        <p class="mt-8 text-xs text-slate-400 text-center">Tap a mode to begin</p>
+    </div>
+
+    <!-- === GAME SCREEN (Initially Hidden) === -->
+    <div id="game-screen" class="hidden h-full flex flex-col">
+        <!-- Header -->
+        <header class="w-full p-4 bg-white shadow-sm flex justify-between items-center z-10">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="returnToMenu()">
+                <div class="bg-blue-900 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold font-serif">B</div>
+                <h1 id="game-title" class="font-bold text-lg text-blue-900">Sound Pairs</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="returnToMenu()" class="text-slate-400 hover:text-blue-500 text-sm"><i class="fa-solid fa-house"></i></button>
+                <div class="text-sm font-semibold text-slate-500">
+                    <span id="progress-display">1 / 20</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Game Area -->
+        <main class="flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto p-6 relative">
+            
+            <!-- Persistent Instructions (New) -->
+            <h2 id="instruction-text" class="w-full text-center text-xl md:text-2xl font-bold text-slate-800 mb-6 px-4 transition-all duration-300">
+                Tap mic and say the word three times
+            </h2>
+
+            <!-- The Target Word -->
+            <div class="text-center mb-4 relative z-10 w-full">
+                <div id="target-word" class="word-display text-4xl md:text-5xl font-semibold text-slate-800 mb-2 transition-all duration-300 leading-tight">
+                    Loading...
+                </div>
+                <!-- Phonetic Hint -->
+                <div id="pair-hint" class="text-sm text-blue-400 font-bold uppercase tracking-widest mt-2">
+                    L vs R
+                </div>
+            </div>
+
+            <!-- Dynamic Status Message (Listening/Correct/Try Again) -->
+            <div id="status-message" class="h-8 w-full text-center text-lg font-bold text-slate-400 transition-all duration-300 mb-6">
+                &nbsp;
+            </div>
+
+            <!-- Feedback Area (What was heard) -->
+            <div id="feedback-container" class="min-h-[40px] flex flex-col items-center justify-center mb-8 w-full">
+                <p id="heard-label" class="text-xs text-slate-400 uppercase tracking-wide hidden">I heard:</p>
+                <p id="heard-text" class="text-xl text-slate-500 font-medium text-center italic transition-colors duration-200 min-h-[32px]">
+                    <!-- Spoken text appears here -->
+                </p>
+            </div>
+
+            <!-- Controls -->
+            <div class="relative flex flex-col items-center justify-center gap-6">
+                
+                <div id="listening-ring" class="listening-ring hidden"></div>
+
+                <!-- Mic Button -->
+                <button id="mic-button" class="w-24 h-24 rounded-full bg-white shadow-xl border-4 border-slate-100 flex items-center justify-center text-3xl text-slate-400 transition-all duration-200 active:scale-95 focus:outline-none hover:border-blue-100 hover:text-blue-500">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+
+                <!-- Next Button -->
+                <button id="next-button" class="hidden px-8 py-3 bg-green-500 text-white rounded-full font-bold shadow-lg hover:bg-green-600 active:scale-95 transition-all animate-bounce">
+                    Next <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+                
+                <!-- Skip -->
+                <button id="skip-button" class="text-slate-400 text-sm mt-4 hover:text-slate-600 underline">
+                    Skip
+                </button>
+
+            </div>
+
+        </main>
+
+        <!-- Footer for Settings -->
+        <footer class="w-full p-4 text-center text-slate-300 text-xs bg-white">
+            <button id="settings-toggle" class="hover:text-blue-500 p-2">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+        </footer>
+    </div>
+
+    <!-- Hidden Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+            <h2 class="text-xl font-bold mb-4 text-slate-800">Edit Custom List</h2>
+            <p class="text-xs text-slate-400 mb-2">Separate items with commas. Use this to override the Sound Pairs list.</p>
+            <textarea id="word-input" class="w-full h-40 p-3 border border-slate-200 rounded-lg mb-4 text-slate-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+            <div class="flex justify-end gap-3">
+                <button id="close-settings" class="px-4 py-2 text-slate-500 hover:bg-slate-100 rounded-lg">Cancel</button>
+                <button id="save-settings" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. CONFIGURATION & DATA ---
+        
+        // Sound Pairs Data
+        const soundPairs = [
+            { word: "Lip", pair: "L vs R" }, { word: "Rip", pair: "L vs R" },
+            { word: "Ban", pair: "B vs V" }, { word: "Van", pair: "B vs V" },
+            { word: "These", pair: "Th vs T" }, { word: "Teas", pair: "Th vs T" },
+            { word: "She's", pair: "Sh vs S" }, { word: "Sees", pair: "Sh vs S" },
+            { word: "Light", pair: "L vs R" }, { word: "Right", pair: "L vs R" },
+            { word: "Best", pair: "B vs V" }, { word: "Vest", pair: "B vs V" },
+            { word: "Three", pair: "Th vs T" }, { word: "Tree", pair: "Th vs T" },
+            { word: "Ship", pair: "Sh vs S" }, { word: "Sip", pair: "Sh vs S" },
+            { word: "Boat", pair: "B vs V" }, { word: "Vote", pair: "B vs V" },
+            { word: "Thank", pair: "Th vs T" }, { word: "Tank", pair: "Th vs T" }
+        ];
+
+        // Tongue Twisters Data (EFL Friendly)
+        const tongueTwisters = [
+            { word: "She sells sea shells by the sea shore", pair: "S vs Sh" },
+            { word: "Red lorry, yellow lorry", pair: "L vs R" },
+            { word: "Peter Piper picked a peck of pickled peppers", pair: "P Sounds" },
+            { word: "A proper copper coffee pot", pair: "O vs P" },
+            { word: "I scream, you scream, we all scream for ice cream", pair: "Scr vs Ice" },
+            { word: "Fresh fried fish", pair: "F vs Sh" },
+            { word: "Fuzzy Wuzzy was a bear", pair: "W vs Z" },
+            { word: "How much wood would a woodchuck chuck", pair: "W vs Ch" }
+        ];
+
+        let words = [];
+        let currentMode = 'pairs'; // 'pairs' or 'twisters'
+        let currentIndex = 0;
+        let recognition;
+        let isListening = false;
+        const STORAGE_KEY = 'britishHills_v3';
+
+        // --- 2. DOM ELEMENTS ---
+        const mainMenu = document.getElementById('main-menu');
+        const gameScreen = document.getElementById('game-screen');
+        const gameTitle = document.getElementById('game-title');
+        
+        const instructionTextEl = document.getElementById('instruction-text');
+        const targetWordEl = document.getElementById('target-word');
+        const pairHintEl = document.getElementById('pair-hint');
+        const heardTextEl = document.getElementById('heard-text');
+        const heardLabelEl = document.getElementById('heard-label');
+        const micButton = document.getElementById('mic-button');
+        const nextButton = document.getElementById('next-button');
+        const skipButton = document.getElementById('skip-button');
+        const statusMessage = document.getElementById('status-message');
+        const listeningRing = document.getElementById('listening-ring');
+        const progressDisplay = document.getElementById('progress-display');
+        
+        const settingsToggle = document.getElementById('settings-toggle');
+        const settingsModal = document.getElementById('settings-modal');
+        const wordInput = document.getElementById('word-input');
+        const saveSettingsBtn = document.getElementById('save-settings');
+        const closeSettingsBtn = document.getElementById('close-settings');
+
+        // --- 3. MENU & GAME INIT ---
+        
+        function startGame(mode) {
+            currentMode = mode;
+            mainMenu.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+
+            if (mode === 'pairs') {
+                gameTitle.textContent = "Sound Pairs";
+                // Check for custom words first
+                const savedRaw = localStorage.getItem(STORAGE_KEY);
+                if (savedRaw) {
+                    const list = savedRaw.split(',').map(w => w.trim()).filter(w => w.length > 0);
+                    words = list.map(w => ({ word: w, pair: "Custom" }));
+                } else {
+                    words = [...soundPairs];
+                }
+            } else {
+                gameTitle.textContent = "Tongue Twisters";
+                words = [...tongueTwisters];
+            }
+
+            currentIndex = 0;
+            checkBrowserSupport();
+            loadWord();
+        }
+
+        function returnToMenu() {
+            stopListening();
+            gameScreen.classList.add('hidden');
+            mainMenu.classList.remove('hidden');
+        }
+
+        function checkBrowserSupport() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert("This browser does not support Speech Recognition. Please use Safari (iOS) or Chrome.");
+            }
+        }
+
+        function updateInstructions() {
+            if (currentMode === 'pairs') {
+                instructionTextEl.textContent = "Tap mic and say the word three times";
+            } else if (currentMode === 'twisters') {
+                instructionTextEl.textContent = "Tap mic and say the phrase twice";
+            } else {
+                instructionTextEl.textContent = "Tap microphone to speak";
+            }
+        }
+
+        function loadWord() {
+            if (currentIndex >= words.length) {
+                gameComplete();
+                return;
+            }
+
+            const currentItem = words[currentIndex];
+            
+            targetWordEl.textContent = currentItem.word;
+            
+            // Adjust font size for long tongue twisters
+            if (currentMode === 'twisters') {
+                targetWordEl.className = "word-display text-2xl md:text-3xl font-semibold text-slate-800 mb-2 transition-all duration-300 leading-snug px-4";
+            } else {
+                targetWordEl.className = "word-display text-4xl md:text-5xl font-semibold text-slate-800 mb-2 transition-all duration-300 leading-tight";
+            }
+            
+            pairHintEl.textContent = currentItem.pair;
+            
+            heardTextEl.textContent = "";
+            heardLabelEl.classList.add('hidden');
+            
+            nextButton.classList.add('hidden');
+            micButton.classList.remove('hidden');
+            skipButton.classList.remove('hidden');
+            
+            progressDisplay.textContent = `${currentIndex + 1} / ${words.length}`;
+            
+            updateInstructions();
+            
+            // Reset status message
+            statusMessage.innerHTML = "&nbsp;";
+            statusMessage.className = "h-8 w-full text-center text-lg font-bold text-slate-400 transition-all duration-300 mb-6";
+        }
+
+        // --- 4. SPEECH RECOGNITION ENGINE ---
+        function startListening() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            
+            recognition.lang = 'en-GB';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+            recognition.continuous = false; // We process per utterance
+
+            recognition.onstart = function() {
+                isListening = true;
+                updateListeningUI(true);
+            };
+
+            recognition.onend = function() {
+                isListening = false;
+                updateListeningUI(false);
+            };
+
+            recognition.onresult = function(event) {
+                if (event.results.length > 0) {
+                    const result = event.results[0][0];
+                    const transcript = result.transcript;
+                    checkPronunciation(transcript);
+                }
+            };
+
+            recognition.onerror = function(event) {
+                isListening = false;
+                updateListeningUI(false);
+                
+                if (event.error === 'not-allowed') {
+                    alert("Microphone access was denied. Please check your iPad Settings > Safari > Camera & Mic.");
+                    statusMessage.textContent = "Microphone blocked";
+                } else if (event.error === 'no-speech') {
+                    statusMessage.textContent = "Didn't hear anything. Try closer?";
+                } else {
+                    statusMessage.textContent = "Try again";
+                }
+            };
+
+            try {
+                recognition.start();
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function stopListening() {
+            if (recognition) {
+                recognition.stop();
+            }
+        }
+
+        function updateListeningUI(listening) {
+            if (listening) {
+                micButton.classList.add('border-red-400', 'text-red-500', 'mic-active');
+                micButton.classList.remove('border-slate-100', 'text-slate-400');
+                listeningRing.classList.remove('hidden');
+                statusMessage.textContent = "Listening...";
+                statusMessage.classList.add('text-red-400');
+                // We do NOT change instructionTextEl here
+            } else {
+                micButton.classList.remove('border-red-400', 'text-red-500', 'mic-active');
+                micButton.classList.add('border-slate-100', 'text-slate-400');
+                listeningRing.classList.add('hidden');
+                
+                // Clear status only if it says "Listening..."
+                if (statusMessage.textContent === "Listening...") {
+                     statusMessage.innerHTML = "&nbsp;";
+                     statusMessage.classList.remove('text-red-400');
+                }
+            }
+        }
+
+        function toggleListening() {
+            if (isListening) {
+                stopListening();
+            } else {
+                heardTextEl.textContent = "...";
+                heardLabelEl.classList.remove('hidden');
+                startListening();
+            }
+        }
+
+        // --- 5. GAME LOGIC ---
+        function checkPronunciation(spokenWord) {
+            const rawTarget = words[currentIndex].word;
+            
+            // Helper: Lowercase + remove punctuation (but keep spaces for first check)
+            const clean = (str) => str.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+
+            const target = clean(rawTarget);
+            const spoken = clean(spokenWord);
+            
+            // For feedback display, show what was heard (raw input)
+            heardTextEl.textContent = `"${spokenWord}"`;
+
+            // Match Level 1: Standard inclusion (sensitive to spaces)
+            let isMatch = spoken.includes(target) || target.includes(spoken);
+
+            // Match Level 2: Space-insensitive (Fixes "sea shells" vs "seashells")
+            if (!isMatch) {
+                const targetNoSpace = target.replace(/\s/g, '');
+                const spokenNoSpace = spoken.replace(/\s/g, '');
+                isMatch = spokenNoSpace.includes(targetNoSpace) || targetNoSpace.includes(spokenNoSpace);
+            }
+
+            if (isMatch) {
+                handleSuccess();
+            } else {
+                handleFailure(spoken);
+            }
+        }
+
+        function handleSuccess() {
+            targetWordEl.classList.remove('text-slate-800');
+            targetWordEl.classList.add('text-green-500');
+            
+            statusMessage.textContent = "Correct!";
+            statusMessage.className = "h-8 w-full text-center text-lg font-bold text-green-600 mb-6";
+            
+            heardTextEl.classList.add('text-green-600');
+
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#2563EB', '#EF4444', '#FFFFFF']
+            });
+
+            micButton.classList.add('hidden');
+            skipButton.classList.add('hidden');
+            nextButton.classList.remove('hidden');
+        }
+
+        function handleFailure(spoken) {
+            targetWordEl.classList.add('animate-shake');
+            setTimeout(() => targetWordEl.classList.remove('animate-shake'), 500);
+            
+            statusMessage.textContent = "Try again!";
+            statusMessage.className = "h-8 w-full text-center text-lg font-bold text-red-500 mb-6";
+            
+            heardTextEl.classList.add('text-red-400');
+            setTimeout(() => heardTextEl.classList.remove('text-red-400'), 1000);
+        }
+
+        function gameComplete() {
+            targetWordEl.textContent = "Well Done!";
+            targetWordEl.className = "text-5xl font-bold text-blue-900 mb-4";
+            pairHintEl.textContent = "Section completed";
+            instructionTextEl.textContent = "Activity Complete";
+            statusMessage.innerHTML = "&nbsp;";
+            heardTextEl.textContent = "";
+            heardLabelEl.classList.add('hidden');
+            
+            micButton.classList.add('hidden');
+            skipButton.classList.add('hidden');
+            nextButton.classList.remove('hidden');
+            nextButton.innerHTML = `<i class="fa-solid fa-rotate-right mr-2"></i> Menu`;
+            nextButton.onclick = function() {
+                // Reset to menu logic
+                nextButton.onclick = nextWord;
+                nextButton.innerHTML = `Next <i class="fa-solid fa-arrow-right ml-2"></i>`;
+                returnToMenu();
+            };
+        }
+
+        function nextWord() {
+            currentIndex++;
+            loadWord();
+        }
+
+        // --- 6. EVENT LISTENERS ---
+        micButton.addEventListener('click', toggleListening);
+        nextButton.addEventListener('click', nextWord);
+        skipButton.addEventListener('click', nextWord);
+
+        // Settings
+        settingsToggle.addEventListener('click', () => {
+            const currentList = words.map(w => w.word).join(', ');
+            wordInput.value = currentList;
+            settingsModal.classList.remove('hidden');
+        });
+
+        closeSettingsBtn.addEventListener('click', () => {
+            settingsModal.classList.add('hidden');
+        });
+
+        saveSettingsBtn.addEventListener('click', () => {
+            const rawText = wordInput.value;
+            if (rawText.trim().length > 0) {
+                localStorage.setItem(STORAGE_KEY, rawText);
+                
+                // Reload current list locally
+                const list = rawText.split(',').map(w => w.trim()).filter(w => w.length > 0);
+                words = list.map(w => ({ word: w, pair: "Custom" }));
+                
+                currentIndex = 0;
+                loadWord();
+                settingsModal.classList.add('hidden');
+            } else {
+                alert("Please enter at least one word.");
+            }
+        });
+
+    </script>
+</body>
+</html>
