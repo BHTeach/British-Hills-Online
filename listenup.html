@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listen Up!</title>
     
-    <!-- Tailwind CSS for styling -->
+    <!-- Tailwind CSS (No build step required) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Lucide Icons -->
@@ -49,6 +49,11 @@
 
     <!-- APP LOGIC -->
     <script>
+        // --- CONFIGURATION ---
+        // This is where the Home button takes you when you leave the Listen Up app.
+        // If this file is in a subfolder (e.g. /activities/listening.html), change this to '../index.html'
+        const EXIT_URL = 'index.html'; 
+
         // --- DATA ---
         const DATA = {
             pairs: [
@@ -109,8 +114,7 @@
         // --- NAVIGATION ---
         function handleHeaderClick() {
             if (gameState.mode === 'home') {
-                // Returns to the main GitHub index page (parent folder)
-                window.location.href = '../index.html';
+                window.location.href = EXIT_URL;
             } else {
                 goHome();
             }
@@ -259,11 +263,12 @@
                 </button>`;
             }).join('');
 
+            // FIXED: Inner quotes changed to single quotes: playAudio('${q.audio}')
             container.innerHTML = `
                 <div class="flex flex-col h-full fade-in">
                     ${renderProgress(gameState.qIndex, DATA.pairs.length, 'bg-orange-400')}
                     <div class="flex-1 flex flex-col items-center justify-center gap-6">
-                        ${renderAudioBtn(`playAudio("${q.audio}")`, 'orange')}
+                        ${renderAudioBtn(`playAudio('${q.audio}')`, 'orange')}
                         <div class="flex flex-col gap-3 w-full max-w-sm">${optionsHtml}</div>
                     </div>
                     ${renderFeedback(status, q.explanation)}
@@ -367,11 +372,12 @@
                 return `<button onclick="checkMissing('${opt}')" ${status !== 'listening' ? 'disabled' : ''} class="py-4 rounded-2xl font-bold text-lg transition-all btn-bounce ${style}">${opt}</button>`;
             }).join('');
 
+            // FIXED: Inner quotes changed to single quotes: playAudio('${q.audio}')
             container.innerHTML = `
                 <div class="flex flex-col h-full fade-in p-2">
                     ${renderProgress(gameState.qIndex, DATA.missing.length, 'bg-green-400')}
                     <div class="flex-1 flex flex-col items-center pt-4">
-                        ${renderAudioBtn(`playAudio("${q.audio}")`, 'green')}
+                        ${renderAudioBtn(`playAudio('${q.audio}')`, 'green')}
                         <div class="bg-white p-6 rounded-3xl shadow-sm border-2 border-green-100 w-full text-center mb-8 mt-6">
                             <p class="text-xl text-slate-700 font-medium leading-relaxed">
                                 ${q.parts[0]} 
