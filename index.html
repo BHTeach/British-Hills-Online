@@ -219,9 +219,9 @@
                     <!-- Background Pattern -->
                     <div class="absolute inset-0 opacity-10" style="background-image: repeating-linear-gradient(45deg, #fff 0, #fff 10px, transparent 10px, transparent 20px);"></div>
                     
-                    <div class="relative z-10 flex flex-col md:flex-row items-center md:justify-between text-center md:text-left">
-                        <div class="flex items-center space-x-4 mb-4 md:mb-0">
-                            <div class="bg-white/20 p-4 rounded-full border-2 border-white/50 backdrop-blur-sm">
+                    <div class="relative z-10">
+                        <div class="flex items-center space-x-4 mb-6">
+                            <div class="bg-white/20 p-3 rounded-full border-2 border-white/50 backdrop-blur-sm">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg>
                             </div>
                             <div>
@@ -229,9 +229,17 @@
                                 <p class="text-blue-200 font-sans">Challenge your classmates</p>
                             </div>
                         </div>
-                        <button class="bg-[#F1C40F] text-[#5D4037] font-black px-8 py-3 rounded-full border-b-4 border-[#C29D0B] active:border-b-0 active:translate-y-1 transition-all">
-                            START GAME
-                        </button>
+
+                        <!-- Game List: Trivia Wheel -->
+                        <div class="space-y-4">
+                            <a href="triviawheel.html" class="game-btn block p-4 group bg-white border-2 border-blue-900 shadow-[4px_4px_0px_rgba(0,0,0,0.3)]">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-bold text-[#012169] text-lg group-hover:text-[#C8102E]">Trivia Wheel</span>
+                                    <span class="text-[#C8102E] font-black group-hover:scale-110 transition-transform">PLAY!</span>
+                                </div>
+                                <p class="text-xs text-gray-500 font-sans">Test your knowledge against an opponent</p>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
