@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Class Quiz</title>
+    <title>Trivia Wheel</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -250,7 +250,14 @@
 
             return (
                 <div className="flex flex-col items-center justify-center min-h-screen p-4 max-w-md mx-auto">
-                    <h1 className="text-5xl mb-8 text-yellow-400 title-font text-center drop-shadow-md">Complete The Line</h1>
+                    <a 
+                        href="index.html" 
+                        className="fixed top-4 left-4 text-gray-400 hover:text-white transition font-bold flex items-center gap-2 bg-gray-800/80 px-4 py-2 rounded-full hover:bg-gray-700 z-50 backdrop-blur-sm border border-gray-600"
+                    >
+                        <span>←</span> Back Home
+                    </a>
+
+                    <h1 className="text-5xl mb-8 text-yellow-400 title-font text-center drop-shadow-md">Trivia Wheel</h1>
                     
                     <div className="bg-gray-800 p-6 rounded-xl w-full shadow-2xl border border-gray-700">
                         <h2 className="text-xl mb-4 text-center font-bold text-gray-300">Enter Contestants</h2>
@@ -464,7 +471,7 @@
                                     </span>
                                 </div>
                                 
-                                <h2 className="text-2xl font-bold mb-2 text-gray-800">Complete the Line:</h2>
+                                <h2 className="text-2xl font-bold mb-2 text-gray-800">Trivia Wheel:</h2>
                                 <div className="text-xl md:text-2xl text-gray-600 italic mb-8 bg-gray-100 p-6 rounded-lg">
                                     {currentCategory.id === 'japan' 
                                         ? currentQuestion.line
