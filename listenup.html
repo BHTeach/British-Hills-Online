@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listen Up!</title>
+    
+    <!-- Tailwind CSS (No build step required) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Nunito', sans-serif; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Bounce animation for buttons */
+        .btn-bounce:active { transform: scale(0.95); }
+    </style>
+</head>
+<body class="bg-sky-100 text-slate-800 min-h-screen flex flex-col items-center">
+
+    <!-- Mobile Container -->
+    <div class="w-full max-w-md h-[100dvh] bg-sky-50 flex flex-col shadow-2xl relative overflow-hidden sm:border-x sm:border-slate-200">
+        
+        <!-- Header -->
+        <header class="bg-sky-500 text-white p-4 shadow-lg flex justify-between items-center z-10 rounded-b-3xl">
+            <button onclick="goHome()" class="flex items-center gap-2 hover:scale-105 transition-transform btn-bounce">
+                <div class="bg-white/20 p-2 rounded-full">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                </div>
+                <h1 class="text-xl font-extrabold tracking-tight">Listen Up!</h1>
+            </button>
+            <div id="score-display" class="hidden flex items-center gap-1 bg-yellow-400 text-yellow-900 px-4 py-1.5 rounded-full shadow-sm border-2 border-yellow-500">
+                <i data-lucide="trophy" class="w-4 h-4"></i>
+                <span id="score-val" class="font-bold">0</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main id="app-content" class="flex-1 overflow-y-auto p-4 relative">
+            <!-- Content injected via JavaScript -->
+        </main>
+
+    </div>
+
+    <!-- APP LOGIC -->
+    <script>
+        // --- DATA ---
+        const DATA = {
+            pairs: [
+                { id: 1, text: "I want three of them.", correct: "I want three of them.", options: ["I want free of them.", "I want three of them."], explanation: "Th = Tongue between teeth. F = Lip to teeth." },
+                { id: 2, text: "Look at that ship.", correct: "Look at that ship.", options: ["Look at that ship.", "Look at that sheep."], explanation: "Ship is short. Sheep is long." }
+            ],
+            scramble: [
+                { id: 1, text: "The cat sat on the mat.", words: ["The", "cat", "sat", "on", "the", "mat."] },
+                { id: 2, text: "Where is the nearest station?", words: ["Where", "is", "the", "nearest", "station?"] }
+            ],
+            missing: [
+                { id: 1, text: "Can I have a glass of water?", parts: ["Can I have a", "of water?"], correct: "glass", options: ["grass", "glass", "class", "gas"] },
+                { id: 2, text: "She walked to the library.", parts: ["She", "to the library."], correct: "walked", options: ["work", "walked", "woke", "walking"] }
+            ],
+            numbers: [
+                { id: 1, text: "The number is five, two, one.", answer: "521", hint: "Type the digits." },
+                { id: 2, text: "It costs twelve dollars and fifty cents.", answer: "12.50", hint: "Type the price." }
+            ]
+        };
+
+        // --- STATE ---
+        let gameState = {
+            score: 0,
+            mode: 'home',
+            qIndex: 0,
+            currentData: null,
+            tempState: {} // Holds game-specific temp data (like scrambled words)
+        };
+
+        // --- AUDIO ENGINE ---
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = 'en-US';
+                u.rate = 0.85;
+                // Try to find a better voice
+                const voices = window.speechSynthesis.getVoices();
+                const preferred = voices.find(v => v.name.includes("Google US English")) || voices[0];
+                if (preferred) u.voice = preferred;
+                window.speechSynthesis.speak(u);
+            }
+        }
+
+        function unlockAudio() {
+            // Play silent sound to unlock mobile audio
+            if ('speechSynthesis' in window) {
+                const u = new SpeechSynthesisUtterance('');
+                u.volume = 0;
+                window.speechSynthesis.speak(u);
+            }
+        }
+
+        // --- NAVIGATION ---
+        function goHome() {
+            gameState.mode = 'home';
+            gameState.score = 0;
+            updateUI();
+        }
+
+        function startGame(mode) {
+            unlockAudio();
+            gameState.mode = mode;
+            gameState.qIndex = 0;
+            gameState.tempState = {}; // Reset temp state
+            
+            // Set current data source
+            if (mode === 'pairs') gameState.currentData = DATA.pairs;
+            else if (mode === 'scramble') gameState.currentData = DATA.scramble;
+            else if (mode === 'missing') gameState.currentData = DATA.missing;
+            else if (mode === 'numbers') gameState.currentData = DATA.numbers;
+
+            // Init specific game logic
+            if (mode === 'scramble') initScrambleQuestion();
+            if (mode === 'numbers') gameState.tempState = { input: "" };
+            
+            // Auto-play audio after short delay
+            setTimeout(() => {
+                const q = getCurrentQuestion();
+                if(q) speak(q.text || q.audioText); // Handle data structure diffs
+            }, 600);
+
+            updateUI();
+        }
+
+        function getCurrentQuestion() {
+            return gameState.currentData[gameState.qIndex];
+        }
+
+        function nextQuestion() {
+            gameState.qIndex++;
+            gameState.tempState = {}; // Clear temp state
+            
+            const q = getCurrentQuestion();
+            if (q) {
+                if (gameState.mode === 'scramble') initScrambleQuestion();
+                if (gameState.mode === 'numbers') gameState.tempState = { input: "" };
+                setTimeout(() => speak(q.text || q.audioText), 600);
+            }
+            updateUI();
+        }
+
+        function updateScore(points) {
+            gameState.score += points;
+            updateUI();
+        }
+
+        // --- RENDERERS ---
+
+        function updateUI() {
+            const app = document.getElementById('app-content');
+            const scoreDisplay = document.getElementById('score-display');
+            const scoreVal = document.getElementById('score-val');
+
+            // Update Header Score
+            scoreVal.innerText = gameState.score;
+            if (gameState.mode === 'home') scoreDisplay.classList.add('hidden');
+            else scoreDisplay.classList.remove('hidden');
+
+            // Render Body
+            app.innerHTML = ''; // Clear current
+            
+            if (gameState.mode === 'home') renderHome(app);
+            else {
+                const q = getCurrentQuestion();
+                if (!q) renderGameOver(app);
+                else {
+                    if (gameState.mode === 'pairs') renderPairs(app, q);
+                    else if (gameState.mode === 'scramble') renderScramble(app, q);
+                    else if (gameState.mode === 'missing') renderMissing(app, q);
+                    else if (gameState.mode === 'numbers') renderNumbers(app, q);
+                }
+            }
+            
+            // Re-scan for icons
+            lucide.createIcons();
+        }
+
+        function renderHome(container) {
+            container.innerHTML = `
+                <div class="flex flex-col gap-4 pt-4 fade-in pb-10">
+                    <div class="text-center py-4">
+                        <h2 class="text-2xl font-black text-sky-600 mb-1">Let's Play!</h2>
+                        <p class="text-sky-800/60 font-medium">Choose a game to start.</p>
+                    </div>
+
+                    ${createCard('pairs', 'Sound Check', 'Which word did you hear?', 'orange', 'volume-2')}
+                    ${createCard('scramble', 'Word Order', 'Build the sentence correctly.', 'purple', 'puzzle')}
+                    ${createCard('missing', 'Missing Link', 'Fill in the blank space.', 'green', 'check-circle')}
+                    ${createCard('numbers', 'Number Cruncher', 'Type the numbers you hear.', 'rose', 'hash')}
+
+                    <div class="mt-6 bg-white/50 border border-white p-4 rounded-xl flex gap-3 text-sm text-sky-700">
+                        <i data-lucide="smartphone" class="w-5 h-5 shrink-0"></i>
+                        <div>
+                            <p class="font-bold text-xs uppercase tracking-wider">Note for iPhone</p>
+                            <p class="text-xs opacity-80 leading-snug">Turn off Silent Mode (switch on the side) to hear the audio.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createCard(mode, title, desc, color, icon) {
+            return `
+            <button onclick="startGame('${mode}')" 
+                class="group relative w-full bg-white p-5 rounded-3xl shadow-[0_4px_0_0_rgba(0,0,0,0.1)] border-2 border-transparent hover:border-${color}-400 active:translate-y-1 active:shadow-none transition-all text-left flex items-center justify-between overflow-hidden btn-bounce">
+                <div class="absolute top-0 left-0 w-2 h-full bg-${color}-400"></div>
+                <div class="flex items-center gap-4 pl-4">
+                    <div class="p-3 rounded-2xl bg-${color}-100 text-${color}-600">
+                        <i data-lucide="${icon}" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-700 leading-tight">${title}</h3>
+                        <p class="text-xs font-medium text-slate-400 mt-1">${desc}</p>
+                    </div>
+                </div>
+                <i data-lucide="chevron-right" class="w-6 h-6 text-slate-300 group-hover:text-slate-500"></i>
+            </button>`;
+        }
+
+        // --- GAME 1: PAIRS ---
+        function renderPairs(container, q) {
+            const status = gameState.tempState.status || 'listening';
+            const selected = gameState.tempState.selected;
+
+            let optionsHtml = q.options.map(opt => {
+                let style = "bg-white border-b-4 border-slate-200 text-slate-600";
+                if (status === 'correct' && opt === q.correct) style = "bg-green-100 border-green-400 text-green-700";
+                else if (status === 'wrong' && opt === selected) style = "bg-red-100 border-red-400 text-red-700";
+                
+                return `<button onclick="checkPairs('${opt.replace(/'/g, "\\'")}')" ${status !== 'listening' ? 'disabled' : ''} 
+                    class="p-4 rounded-2xl font-bold text-lg text-left transition-all btn-bounce ${style} w-full">
+                    ${opt}
+                </button>`;
+            }).join('');
+
+            container.innerHTML = `
+                <div class="flex flex-col h-full fade-in">
+                    ${renderProgress(gameState.qIndex, DATA.pairs.length, 'bg-orange-400')}
+                    <div class="flex-1 flex flex-col items-center justify-center gap-6">
+                        ${renderAudioBtn(`speak("${q.text}")`, 'orange')}
+                        <div class="flex flex-col gap-3 w-full max-w-sm">${optionsHtml}</div>
+                    </div>
+                    ${renderFeedback(status, q.explanation)}
+                </div>
+            `;
+        }
+
+        function checkPairs(choice) {
+            const q = getCurrentQuestion();
+            gameState.tempState.selected = choice;
+            if (choice === q.correct) {
+                gameState.tempState.status = 'correct';
+                speak("Great job!");
+                updateScore(10);
+            } else {
+                gameState.tempState.status = 'wrong';
+                speak("Oops, try again.");
+            }
+            updateUI();
+        }
+
+        // --- GAME 2: SCRAMBLE ---
+        function initScrambleQuestion() {
+            const q = getCurrentQuestion();
+            // Shuffle words
+            let shuffled = [...q.words].map((w, i) => ({val: w, id: i})).sort(() => Math.random() - 0.5);
+            gameState.tempState = { bank: shuffled, answer: [], status: 'playing' };
+        }
+
+        function renderScramble(container, q) {
+            const { bank, answer, status } = gameState.tempState;
+            
+            const bankHtml = bank.map(w => 
+                `<button onclick="moveWord(${w.id}, 'toAnswer')" class="bg-white border-2 border-slate-200 border-b-4 text-slate-700 px-3 py-2 rounded-xl text-lg font-bold btn-bounce">${w.val}</button>`
+            ).join('');
+
+            const answerHtml = answer.map(w => 
+                `<button onclick="moveWord(${w.id}, 'toBank')" class="bg-purple-500 text-white px-3 py-2 rounded-xl shadow-sm border-b-4 border-purple-700 text-lg font-bold btn-bounce">${w.val}</button>`
+            ).join('');
+
+            const btnAction = status === 'success' 
+                ? `<button onclick="nextQuestion()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black shadow-[0_4px_0_0_#15803d] btn-bounce">Next Sentence</button>`
+                : `<button onclick="checkScramble()" ${bank.length > 0 ? 'disabled' : ''} class="w-full bg-slate-800 disabled:bg-slate-300 text-white py-4 rounded-2xl font-black shadow-[0_4px_0_0_#0f172a] btn-bounce">Check Answer</button>`;
+
+            container.innerHTML = `
+                <div class="flex flex-col h-full fade-in p-2">
+                    ${renderProgress(gameState.qIndex, DATA.scramble.length, 'bg-purple-400')}
+                    <div class="flex justify-center my-4">
+                        <button onclick="speak('${q.text}')" class="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-full font-bold text-sm btn-bounce">
+                            <i data-lucide="volume-2" class="w-4 h-4"></i> Replay Audio
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white rounded-3xl p-4 min-h-[140px] shadow-inner border-2 border-purple-100 mb-6 flex flex-wrap gap-2 content-start">
+                        ${answer.length === 0 ? '<span class="text-slate-300 italic w-full text-center mt-8">Tap words below...</span>' : answerHtml}
+                    </div>
+
+                    <div class="flex flex-wrap justify-center gap-2 mb-4">${bankHtml}</div>
+                    <div class="mt-auto">${btnAction}</div>
+                </div>
+            `;
+        }
+
+        function moveWord(id, dir) {
+            if(gameState.tempState.status === 'success') return;
+            const { bank, answer } = gameState.tempState;
+            if (dir === 'toAnswer') {
+                const item = bank.find(w => w.id === id);
+                gameState.tempState.bank = bank.filter(w => w.id !== id);
+                gameState.tempState.answer = [...answer, item];
+            } else {
+                const item = answer.find(w => w.id === id);
+                gameState.tempState.answer = answer.filter(w => w.id !== id);
+                gameState.tempState.bank = [...bank, item];
+            }
+            updateUI();
+        }
+
+        function checkScramble() {
+            const q = getCurrentQuestion();
+            const currentSentence = gameState.tempState.answer.map(w => w.val).join(' ');
+            if (currentSentence === q.words.join(' ')) {
+                gameState.tempState.status = 'success';
+                speak("Perfect!");
+                updateScore(20);
+            } else {
+                speak("Not quite.");
+            }
+            updateUI();
+        }
+
+        // --- GAME 3: MISSING ---
+        function renderMissing(container, q) {
+            const status = gameState.tempState.status || 'listening';
+            const selected = gameState.tempState.selected;
+
+            const optionsHtml = q.options.map(opt => {
+                let style = "bg-white border-b-4 border-slate-200 text-slate-600";
+                if (status === 'correct' && opt === q.correct) style = "bg-green-500 border-green-700 text-white";
+                else if (status === 'wrong' && opt === selected) style = "bg-red-500 border-red-700 text-white";
+
+                return `<button onclick="checkMissing('${opt}')" ${status !== 'listening' ? 'disabled' : ''} class="py-4 rounded-2xl font-bold text-lg transition-all btn-bounce ${style}">${opt}</button>`;
+            }).join('');
+
+            container.innerHTML = `
+                <div class="flex flex-col h-full fade-in p-2">
+                    ${renderProgress(gameState.qIndex, DATA.missing.length, 'bg-green-400')}
+                    <div class="flex-1 flex flex-col items-center pt-4">
+                        ${renderAudioBtn(`speak("${q.text}")`, 'green')}
+                        <div class="bg-white p-6 rounded-3xl shadow-sm border-2 border-green-100 w-full text-center mb-8 mt-6">
+                            <p class="text-xl text-slate-700 font-medium leading-relaxed">
+                                ${q.parts[0]} 
+                                <span class="inline-block mx-2 px-3 py-1 rounded-lg border-b-2 font-bold ${status === 'correct' ? 'bg-green-100 text-green-700 border-green-300' : 'bg-slate-100 text-slate-400 border-slate-300'}">
+                                    ${status === 'correct' ? q.correct : "____"}
+                                </span> 
+                                ${q.parts[1]}
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 w-full">${optionsHtml}</div>
+                    </div>
+                    ${renderFeedback(status, '')}
+                </div>
+            `;
+        }
+
+        function checkMissing(word) {
+            const q = getCurrentQuestion();
+            gameState.tempState.selected = word;
+            if (word === q.correct) {
+                gameState.tempState.status = 'correct';
+                speak("That's right!");
+                updateScore(15);
+            } else {
+                gameState.tempState.status = 'wrong';
+                speak("Try again.");
+            }
+            updateUI();
+        }
+
+        // --- GAME 4: NUMBERS ---
+        function renderNumbers(container, q) {
+            const status = gameState.tempState.status || 'playing';
+            const input = gameState.tempState.input || "";
+
+            const keypad = [1,2,3,4,5,6,7,8,9,'.',0].map(n => 
+                `<button onclick="numType('${n}')" class="bg-white text-slate-700 text-2xl font-bold py-3 rounded-xl shadow-[0_3px_0_0_rgba(0,0,0,0.1)] btn-bounce border border-slate-200">${n}</button>`
+            ).join('');
+
+            const btnAction = (status === 'playing' || status === 'wrong')
+                ? `<button onclick="checkNumber()" class="w-full py-4 rounded-2xl font-black text-white shadow-[0_4px_0_0_rgba(0,0,0,0.2)] btn-bounce mt-auto ${status === 'wrong' ? 'bg-red-500' : 'bg-rose-500'}">${status === 'wrong' ? 'Try Again' : 'Check'}</button>`
+                : `<button onclick="nextQuestion()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black shadow-[0_4px_0_0_#15803d] btn-bounce mt-auto">Next</button>`;
+
+            container.innerHTML = `
+                <div class="flex flex-col h-full fade-in p-2">
+                    ${renderProgress(gameState.qIndex, DATA.numbers.length, 'bg-rose-400')}
+                    <div class="flex justify-center mt-4 mb-2">
+                        <button onclick="speak('${q.text}')" class="w-16 h-16 bg-white border-4 border-rose-100 rounded-full flex items-center justify-center text-rose-500 hover:scale-110 active:scale-90 transition-all shadow-sm">
+                             <i data-lucide="play" class="w-6 h-6 fill-current ml-1"></i>
+                        </button>
+                    </div>
+                    <div class="w-full bg-slate-900 rounded-2xl p-6 mb-4 flex flex-col items-end justify-center min-h-[100px] border-4 ${status === 'correct' ? 'border-green-400' : 'border-slate-700'}">
+                        <span class="text-white text-4xl font-mono tracking-widest">${input || "_"}</span>
+                    </div>
+                    <p class="text-center text-slate-400 text-sm mb-4 font-medium">${q.hint}</p>
+                    <div class="grid grid-cols-3 gap-3 w-full max-w-xs mx-auto mb-4">
+                        ${keypad}
+                        <button onclick="numDelete()" class="bg-rose-100 text-rose-600 rounded-xl shadow-[0_3px_0_0_rgba(0,0,0,0.1)] btn-bounce flex items-center justify-center"><i data-lucide="delete" class="w-6 h-6"></i></button>
+                    </div>
+                    ${btnAction}
+                </div>
+            `;
+        }
+
+        function numType(val) {
+            if (gameState.tempState.status === 'correct') return;
+            if ((gameState.tempState.input || "").length < 10) {
+                gameState.tempState.input = (gameState.tempState.input || "") + val;
+                updateUI();
+            }
+        }
+
+        function numDelete() {
+            if (gameState.tempState.status === 'correct') return;
+            let s = gameState.tempState.input || "";
+            gameState.tempState.input = s.slice(0, -1);
+            updateUI();
+        }
+
+        function checkNumber() {
+            const q = getCurrentQuestion();
+            const input = gameState.tempState.input || "";
+            if (input === q.answer) {
+                gameState.tempState.status = 'correct';
+                speak("Correct!");
+                updateScore(15);
+            } else {
+                gameState.tempState.status = 'wrong';
+                speak("Listen again.");
+            }
+            updateUI();
+        }
+
+        // --- COMMON COMPONENTS ---
+        function renderProgress(idx, total, colorClass) {
+            const pct = ((idx + 1) / total) * 100;
+            return `
+            <div class="w-full bg-white h-3 rounded-full mb-6 border border-slate-200 overflow-hidden">
+                <div class="${colorClass} h-full rounded-full transition-all duration-500 ease-out" style="width: ${pct}%"></div>
+            </div>`;
+        }
+
+        function renderAudioBtn(onclick, color) {
+            return `
+            <button onclick="${onclick}" class="w-24 h-24 bg-white border-4 border-${color}-100 rounded-full flex items-center justify-center text-${color}-500 hover:scale-110 active:scale-90 transition-all shadow-sm">
+                <i data-lucide="play" class="w-10 h-10 ml-1 fill-current"></i>
+            </button>`;
+        }
+
+        function renderFeedback(status, explanation) {
+            if (status === 'listening' || !status) return '<div class="h-20"></div>'; // Spacer
+            
+            const isCorrect = status === 'correct';
+            const icon = isCorrect ? 'check-circle' : 'x-circle';
+            const color = isCorrect ? 'text-green-500' : 'text-red-500';
+            
+            return `
+            <div class="mt-auto w-full p-4 rounded-2xl flex items-center gap-3 transition-all duration-300 bg-white shadow-[0_4px_0_0_rgba(0,0,0,0.05)] border-2 border-slate-100 fade-in">
+                <i data-lucide="${icon}" class="${color} w-8 h-8 shrink-0"></i>
+                <div class="flex-1">
+                    <p class="font-bold text-slate-800">${isCorrect ? 'Correct!' : 'Incorrect'}</p>
+                    <p class="text-xs text-slate-500">${explanation || ''}</p>
+                </div>
+                <button onclick="nextQuestion()" class="px-4 py-2 bg-slate-800 text-white text-sm rounded-xl font-bold hover:bg-slate-700 shadow-[0_2px_0_0_#0f172a] btn-bounce">Next</button>
+            </div>`;
+        }
+
+        function renderGameOver(container) {
+            container.innerHTML = `
+            <div class="h-full flex flex-col items-center justify-center p-8 text-center fade-in">
+                <div class="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center mb-6 text-yellow-500 shadow-sm border-4 border-yellow-200">
+                    <i data-lucide="trophy" class="w-12 h-12 fill-current"></i>
+                </div>
+                <h2 class="text-3xl font-black text-slate-800 mb-2">Awesome!</h2>
+                <p class="text-slate-500 mb-10 font-medium text-lg">Score: ${gameState.score}</p>
+                <button onclick="goHome()" class="px-8 py-4 bg-indigo-500 text-white rounded-2xl font-bold shadow-[0_4px_0_0_rgba(0,0,0,0.2)] btn-bounce flex items-center gap-2">
+                    <i data-lucide="refresh-cw" class="w-5 h-5"></i> Play Again
+                </button>
+            </div>`;
+        }
+
+        // Init
+        window.speechSynthesis.getVoices(); // Pre-load voices
+        lucide.createIcons();
+    </script>
+</body>
+</html>
