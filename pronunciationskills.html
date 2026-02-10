@@ -193,8 +193,13 @@
         ];
 
         // Tongue Twisters Data (EFL Friendly)
+        // UPDATED: Added 'alternates' field for spelling variations
         const tongueTwisters = [
-            { word: "She sells sea shells by the sea shore", pair: "S vs Sh" },
+            { 
+                word: "She sells sea shells by the sea shore", 
+                pair: "S vs Sh",
+                alternates: ["She sells seashells by the seashore", "She sells sea shells by the seashore", "She sells seashells by the sea shore"] 
+            },
             { word: "Red lorry, yellow lorry", pair: "L vs R" },
             { word: "Peter Piper picked a peck of pickled peppers", pair: "P Sounds" },
             { word: "A proper copper coffee pot", pair: "O vs P" },
@@ -440,12 +445,14 @@
 
         // --- 5. GAME LOGIC ---
         function checkPronunciation(spokenWord) {
-            const rawTarget = words[currentIndex].word;
+            const currentItem = words[currentIndex];
+            const rawTarget = currentItem.word;
+            // Get alternates if they exist
+            const alternates = currentItem.alternates || [];
             
             // Helper: Lowercase + remove punctuation (but keep spaces for first check)
             const clean = (str) => str.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
 
-            const target = clean(rawTarget);
             const spoken = clean(spokenWord);
             
             // Format for display
@@ -453,14 +460,27 @@
             heardTextEl.classList.add('text-slate-500');
             heardTextEl.textContent = `"${spokenWord}"`;
 
-            // Match Level 1: Standard inclusion (sensitive to spaces)
-            let isMatch = spoken.includes(target) || target.includes(spoken);
+            // Build array of all valid targets (Original + Alternates)
+            const validTargets = [rawTarget, ...alternates].map(t => clean(t));
 
-            // Match Level 2: Space-insensitive (Fixes "sea shells" vs "seashells")
-            if (!isMatch) {
+            let isMatch = false;
+
+            // Check input against ALL valid targets
+            for (const target of validTargets) {
+                // Match Level 1: Standard inclusion (sensitive to spaces)
+                if (spoken.includes(target) || target.includes(spoken)) {
+                    isMatch = true;
+                    break;
+                }
+
+                // Match Level 2: Space-insensitive (Fixes "sea shells" vs "seashells")
                 const targetNoSpace = target.replace(/\s/g, '');
                 const spokenNoSpace = spoken.replace(/\s/g, '');
-                isMatch = spokenNoSpace.includes(targetNoSpace) || targetNoSpace.includes(spokenNoSpace);
+                
+                if (spokenNoSpace.includes(targetNoSpace) || targetNoSpace.includes(spokenNoSpace)) {
+                    isMatch = true;
+                    break;
+                }
             }
 
             if (isMatch) {
