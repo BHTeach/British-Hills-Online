@@ -209,6 +209,7 @@
         let currentIndex = 0;
         let recognition;
         let isListening = false;
+        let isBusy = false; // Prevents double-tap crashes
         const STORAGE_KEY = 'britishHills_v3';
 
         // --- 2. DOM ELEMENTS ---
@@ -320,34 +321,57 @@
 
         // --- 4. SPEECH RECOGNITION ENGINE ---
         function startListening() {
+            if (isBusy) return; // Prevent double-tap
+            isBusy = true;
+
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
             
             recognition.lang = 'en-GB';
-            recognition.interimResults = false;
+            // CRITICAL FIX: Set interimResults to true so user sees immediate feedback
+            recognition.interimResults = true; 
             recognition.maxAlternatives = 1;
-            recognition.continuous = false; // We process per utterance
+            recognition.continuous = false; 
 
             recognition.onstart = function() {
                 isListening = true;
+                isBusy = false;
                 updateListeningUI(true);
             };
 
             recognition.onend = function() {
                 isListening = false;
+                isBusy = false;
                 updateListeningUI(false);
             };
 
             recognition.onresult = function(event) {
-                if (event.results.length > 0) {
-                    const result = event.results[0][0];
-                    const transcript = result.transcript;
-                    checkPronunciation(transcript);
+                let interimTranscript = '';
+                let finalTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+
+                if (finalTranscript) {
+                    heardTextEl.textContent = `"${finalTranscript}"`;
+                    checkPronunciation(finalTranscript);
+                } else if (interimTranscript) {
+                    // Show interim results in grey
+                    heardLabelEl.classList.remove('hidden');
+                    heardTextEl.textContent = interimTranscript + "...";
+                    heardTextEl.classList.remove('text-slate-500', 'text-red-400', 'text-green-600');
+                    heardTextEl.classList.add('text-slate-300');
                 }
             };
 
             recognition.onerror = function(event) {
                 isListening = false;
+                isBusy = false;
                 updateListeningUI(false);
                 
                 if (event.error === 'not-allowed') {
@@ -356,6 +380,7 @@
                 } else if (event.error === 'no-speech') {
                     statusMessage.textContent = "Didn't hear anything. Try closer?";
                 } else {
+                    console.log("Mic Error: ", event.error);
                     statusMessage.textContent = "Try again";
                 }
             };
@@ -364,12 +389,15 @@
                 recognition.start();
             } catch (e) {
                 console.error(e);
+                isBusy = false;
             }
         }
 
         function stopListening() {
             if (recognition) {
-                recognition.stop();
+                try {
+                    recognition.stop();
+                } catch(e) {}
             }
         }
 
@@ -380,7 +408,13 @@
                 listeningRing.classList.remove('hidden');
                 statusMessage.textContent = "Listening...";
                 statusMessage.classList.add('text-red-400');
-                // We do NOT change instructionTextEl here
+                
+                // Show label immediately
+                heardLabelEl.classList.remove('hidden');
+                heardTextEl.textContent = "...";
+                heardTextEl.classList.remove('text-slate-300', 'text-red-400', 'text-green-600');
+                heardTextEl.classList.add('text-slate-500');
+
             } else {
                 micButton.classList.remove('border-red-400', 'text-red-500', 'mic-active');
                 micButton.classList.add('border-slate-100', 'text-slate-400');
@@ -395,11 +429,11 @@
         }
 
         function toggleListening() {
+            if (isBusy) return;
+
             if (isListening) {
                 stopListening();
             } else {
-                heardTextEl.textContent = "...";
-                heardLabelEl.classList.remove('hidden');
                 startListening();
             }
         }
@@ -414,7 +448,9 @@
             const target = clean(rawTarget);
             const spoken = clean(spokenWord);
             
-            // For feedback display, show what was heard (raw input)
+            // Format for display
+            heardTextEl.classList.remove('text-slate-300');
+            heardTextEl.classList.add('text-slate-500');
             heardTextEl.textContent = `"${spokenWord}"`;
 
             // Match Level 1: Standard inclusion (sensitive to spaces)
@@ -441,6 +477,7 @@
             statusMessage.textContent = "Correct!";
             statusMessage.className = "h-8 w-full text-center text-lg font-bold text-green-600 mb-6";
             
+            heardTextEl.classList.remove('text-slate-500');
             heardTextEl.classList.add('text-green-600');
 
             confetti({
@@ -462,8 +499,12 @@
             statusMessage.textContent = "Try again!";
             statusMessage.className = "h-8 w-full text-center text-lg font-bold text-red-500 mb-6";
             
+            heardTextEl.classList.remove('text-slate-500');
             heardTextEl.classList.add('text-red-400');
-            setTimeout(() => heardTextEl.classList.remove('text-red-400'), 1000);
+            setTimeout(() => {
+                heardTextEl.classList.remove('text-red-400');
+                heardTextEl.classList.add('text-slate-500');
+            }, 1500);
         }
 
         function gameComplete() {
