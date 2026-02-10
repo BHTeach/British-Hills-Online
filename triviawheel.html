@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Class Quiz</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&family=Bangers&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #1a1a2e;
+            color: white;
+            overflow-x: hidden;
+        }
+        .title-font {
+            font-family: 'Bangers', cursive;
+            letter-spacing: 2px;
+        }
+        .wheel-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 8px solid white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            position: relative;
+            overflow: hidden;
+        }
+        .pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0; 
+            height: 0; 
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid white;
+            z-index: 10;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+        .segment {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 50%;
+            transform-origin: 0% 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2d2d44; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff0055; 
+            border-radius: 4px;
+        }
+        .pop-in {
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useMemo } = React;
+
+        // --- SOUND ENGINE (Web Audio API) ---
+        const SoundEngine = {
+            ctx: null,
+            init: function() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            },
+            playTick: function() {
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.1);
+            },
+            playWin: function() {
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                [440, 554, 659, 880].forEach((freq, i) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0, now + i * 0.1);
+                    gain.gain.linearRampToValueAtTime(0.2, now + i * 0.1 + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.5);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + i * 0.1);
+                    osc.stop(now + i * 0.1 + 0.5);
+                });
+            },
+            playCorrect: function() {
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(500, now);
+                osc.frequency.linearRampToValueAtTime(1000, now + 0.2);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.3);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(now + 0.3);
+            },
+            playWrong: function() {
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, now);
+                osc.frequency.linearRampToValueAtTime(100, now + 0.3);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.4);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(now + 0.4);
+            }
+        };
+
+        // --- UPDATED DATA FOR STUDENTS ---
+        const CATEGORIES = [
+            { id: 'proverbs', name: 'Proverbs', color: '#8E44AD', textColor: 'white' }, // Purple
+            { id: 'pairs', name: 'Word Pairs', color: '#2980B9', textColor: 'white' }, // Blue
+            { id: 'idioms', name: 'Idioms', color: '#F39C12', textColor: 'black' }, // Orange
+            { id: 'geography', name: 'Geography', color: '#27AE60', textColor: 'white' }, // Green
+            { id: 'japan', name: 'Japan', color: '#E74C3C', textColor: 'white' }, // Red
+        ];
+
+        const QUESTION_DB = {
+            proverbs: [
+                { line: "An apple a day...", answer: "keeps the doctor away.", source: "Health Proverb" },
+                { line: "Better late...", answer: "than never.", source: "Time Proverb" },
+                { line: "Practice makes...", answer: "perfect.", source: "Skill Proverb" },
+                { line: "When in Rome...", answer: "do as the Romans do.", source: "Travel Proverb" },
+                { line: "Time is...", answer: "money.", source: "Business Proverb" },
+                { line: "Kill two birds...", answer: "with one stone.", source: "Efficiency Proverb" },
+                { line: "Actions speak louder...", answer: "than words.", source: "Behavior Proverb" },
+                { line: "Honesty is the best...", answer: "policy.", source: "Moral Proverb" },
+                { line: "Don't judge a book...", answer: "by its cover.", source: "Appearance Proverb" },
+                { line: "The early bird...", answer: "catches the worm.", source: "Morning Proverb" }
+            ],
+            pairs: [
+                { line: "Fish and...", answer: "Chips.", source: "Food Pair" },
+                { line: "Black and...", answer: "White.", source: "Color Pair" },
+                { line: "Ladies and...", answer: "Gentlemen.", source: "Greeting Pair" },
+                { line: "Rock and...", answer: "Roll.", source: "Music Pair" },
+                { line: "Salt and...", answer: "Pepper.", source: "Food Pair" },
+                { line: "Knife and...", answer: "Fork.", source: "Cutlery Pair" },
+                { line: "Peace and...", answer: "Quiet.", source: "Lifestyle Pair" },
+                { line: "Bread and...", answer: "Butter.", source: "Food Pair" },
+                { line: "Shoes and...", answer: "Socks.", source: "Clothing Pair" },
+                { line: "Thunder and...", answer: "Lightning.", source: "Weather Pair" }
+            ],
+            idioms: [
+                { line: "It's a piece of...", answer: "cake.", source: "Meaning: Very Easy" },
+                { line: "Break a...", answer: "leg!", source: "Meaning: Good Luck" },
+                { line: "Under the...", answer: "weather.", source: "Meaning: Sick" },
+                { line: "Once in a blue...", answer: "moon.", source: "Meaning: Very Rarely" },
+                { line: "Let the cat out of the...", answer: "bag.", source: "Meaning: Tell a Secret" },
+                { line: "Costs an arm and a...", answer: "leg.", source: "Meaning: Expensive" },
+                { line: "Spill the...", answer: "beans.", source: "Meaning: Tell the Truth" },
+                { line: "It's raining cats and...", answer: "dogs.", source: "Meaning: Raining Hard" },
+                { line: "Hit the...", answer: "hay / sack.", source: "Meaning: Go to Sleep" },
+                { line: "See eye to...", answer: "eye.", source: "Meaning: Agree" }
+            ],
+            geography: [
+                { line: "The capital of France is...", answer: "Paris.", source: "European Capitals" },
+                { line: "The biggest ocean is the...", answer: "Pacific Ocean.", source: "Oceans" },
+                { line: "Mount Everest is the highest...", answer: "mountain.", source: "Mountains" },
+                { line: "The Great Wall is in...", answer: "China.", source: "World Landmarks" },
+                { line: "London is in the...", answer: "United Kingdom / UK.", source: "European Cities" },
+                { line: "There are seven...", answer: "continents.", source: "World Geography" },
+                { line: "The Statue of Liberty is in...", answer: "New York / USA.", source: "World Landmarks" },
+                { line: "The Amazon is a famous...", answer: "river / rainforest.", source: "South America" },
+                { line: "The Pyramids are in...", answer: "Egypt.", source: "Africa" },
+                { line: "Canberra is the capital of...", answer: "Australia.", source: "Oceania" }
+            ],
+            japan: [
+                { line: "In English, 'Arigato' (ありがとう) is...", answer: "Thank you.", source: "Greetings" },
+                { line: "In English, 'Konnichiwa' (こんにちは) is...", answer: "Hello / Good afternoon.", source: "Greetings" },
+                { line: "In English, 'Sayonara' (さようなら) is...", answer: "Goodbye.", source: "Greetings" },
+                { line: "In English, 'Oishii' (おいしい) is...", answer: "Delicious / Yummy.", source: "Food" },
+                { line: "In English, 'Kawaii' (かわいい) is...", answer: "Cute.", source: "Adjectives" },
+                { line: "In English, 'Sensei' (せんせい) is...", answer: "Teacher.", source: "People" },
+                { line: "In English, 'Neko' (ねこ) is...", answer: "Cat.", source: "Animals" },
+                { line: "In English, 'Inu' (いぬ) is...", answer: "Dog.", source: "Animals" },
+                { line: "In English, 'Ganbatte' (がんばって) is...", answer: "Good luck / Do your best.", source: "Phrases" },
+                { line: "In English, 'Sumimasen' (すみません) is...", answer: "Excuse me / I'm sorry.", source: "Phrases" }
+            ]
+        };
+
+        // --- COMPONENTS ---
+
+        function SetupScreen({ onStart }) {
+            const [names, setNames] = useState(['Player 1', 'Player 2']);
+            
+            const addPlayer = () => setNames([...names, `Player ${names.length + 1}`]);
+            const removePlayer = (idx) => setNames(names.filter((_, i) => i !== idx));
+            const updateName = (idx, val) => {
+                const newNames = [...names];
+                newNames[idx] = val;
+                setNames(newNames);
+            };
+
+            const handleStart = () => {
+                SoundEngine.init();
+                SoundEngine.playWin(); // Startup sound
+                onStart(names.filter(n => n.trim() !== ''));
+            };
+
+            return (
+                <div className="flex flex-col items-center justify-center min-h-screen p-4 max-w-md mx-auto">
+                    <h1 className="text-5xl mb-8 text-yellow-400 title-font text-center drop-shadow-md">Complete The Line</h1>
+                    
+                    <div className="bg-gray-800 p-6 rounded-xl w-full shadow-2xl border border-gray-700">
+                        <h2 className="text-xl mb-4 text-center font-bold text-gray-300">Enter Contestants</h2>
+                        <div className="space-y-3 mb-6 max-h-60 overflow-y-auto">
+                            {names.map((name, idx) => (
+                                <div key={idx} className="flex gap-2">
+                                    <input 
+                                        type="text" 
+                                        value={name}
+                                        onChange={(e) => updateName(idx, e.target.value)}
+                                        className="bg-gray-700 text-white px-4 py-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                        placeholder={`Player ${idx + 1}`}
+                                    />
+                                    {names.length > 1 && (
+                                        <button 
+                                            onClick={() => removePlayer(idx)}
+                                            className="bg-red-500 text-white px-3 rounded-lg hover:bg-red-600 transition"
+                                        >✕</button>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                        <div className="flex gap-3">
+                            <button 
+                                onClick={addPlayer}
+                                className="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg font-bold transition"
+                            >
+                                + Add Player
+                            </button>
+                            <button 
+                                onClick={handleStart}
+                                className="flex-1 bg-green-500 hover:bg-green-400 text-white py-3 rounded-lg font-bold shadow-lg shadow-green-900/50 transition transform hover:-translate-y-1"
+                            >
+                                START GAME
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function Wheel({ spinning, rotation, onSpinEnd }) {
+            const wheelRef = useRef(null);
+
+            useEffect(() => {
+                if(spinning) {
+                    const timer = setTimeout(() => {
+                        onSpinEnd();
+                    }, 4000); 
+                    return () => clearTimeout(timer);
+                }
+            }, [spinning, rotation]);
+
+            const segmentAngle = 360 / CATEGORIES.length;
+            
+            return (
+                <div className="wheel-container mb-8">
+                    <div className="pointer"></div>
+                    <div 
+                        className="wheel" 
+                        style={{ 
+                            transform: `rotate(${rotation}deg)`,
+                        }}
+                    >
+                        {CATEGORIES.map((cat, i) => (
+                            <div 
+                                key={cat.id}
+                                className="segment"
+                                style={{
+                                    backgroundColor: cat.color,
+                                    transform: `rotate(${i * segmentAngle}deg) skewY(-${90 - segmentAngle}deg)`,
+                                }}
+                            >
+                                <span 
+                                    className="title-font"
+                                    style={{
+                                        position: 'absolute',
+                                        left: '50%',
+                                        bottom: '20px',
+                                        transform: `skewY(${90 - segmentAngle}deg) rotate(${segmentAngle / 2}deg) translate(-50%, 0)`,
+                                        color: cat.textColor,
+                                        fontSize: '18px',
+                                        textAlign: 'center',
+                                        width: '100px',
+                                        fontWeight: 'bold',
+                                        textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
+                                    }}
+                                >
+                                    {cat.name}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        function GameScreen({ contestants, onEndGame }) {
+            const [gameState, setGameState] = useState('spin'); // spin, spinning, question, result
+            const [currentContestantIdx, setCurrentContestantIdx] = useState(0);
+            const [scores, setScores] = useState(contestants.map(() => 0));
+            const [rotation, setRotation] = useState(0);
+            const [currentCategory, setCurrentCategory] = useState(null);
+            const [currentQuestion, setCurrentQuestion] = useState(null);
+            const [revealAnswer, setRevealAnswer] = useState(false);
+
+            const currentPlayer = contestants[currentContestantIdx];
+
+            const spinWheel = () => {
+                SoundEngine.init();
+                
+                // Pick random category
+                const randomIdx = Math.floor(Math.random() * CATEGORIES.length);
+                const selected = CATEGORIES[randomIdx];
+                
+                const segmentAngle = 360 / CATEGORIES.length;
+                const targetAngleInWheel = (randomIdx * segmentAngle) - (segmentAngle / 2);
+                const fuzz = (Math.random() * 20) - 10;
+                const targetRotation = 270 - targetAngleInWheel + fuzz; 
+                const totalRotation = rotation + (360 * 5) + (targetRotation - (rotation % 360));
+
+                setGameState('spinning');
+                setRotation(totalRotation);
+                setCurrentCategory(selected);
+                
+                let tickCount = 0;
+                const tickInterval = setInterval(() => {
+                    tickCount++;
+                    if (tickCount > 20) clearInterval(tickInterval); 
+                    SoundEngine.playTick();
+                }, 150);
+            };
+
+            const handleSpinEnd = () => {
+                SoundEngine.playWin();
+                
+                const questions = QUESTION_DB[currentCategory.id];
+                const q = questions[Math.floor(Math.random() * questions.length)];
+                setCurrentQuestion(q);
+                setRevealAnswer(false);
+                setGameState('question');
+            };
+
+            const handleScore = (correct) => {
+                if (correct) {
+                    SoundEngine.playCorrect();
+                    const newScores = [...scores];
+                    newScores[currentContestantIdx] += 1;
+                    setScores(newScores);
+                } else {
+                    SoundEngine.playWrong();
+                }
+                setGameState('result');
+            };
+
+            const nextTurn = () => {
+                setCurrentContestantIdx((prev) => (prev + 1) % contestants.length);
+                setGameState('spin');
+            };
+
+            return (
+                <div className="flex flex-col items-center min-h-screen p-4 max-w-2xl mx-auto w-full">
+                    {/* Header / Scoreboard */}
+                    <div className="w-full flex justify-between items-start mb-6 bg-gray-800 p-4 rounded-xl border-b-4 border-gray-600">
+                        <div>
+                            <span className="text-gray-400 text-sm uppercase font-bold">Current Turn</span>
+                            <div className="text-2xl font-bold text-yellow-400">{currentPlayer}</div>
+                        </div>
+                        <div className="flex flex-col items-end">
+                             <span className="text-gray-400 text-sm uppercase font-bold mb-1">Scores</span>
+                             <div className="flex gap-3 text-sm">
+                                {contestants.map((c, i) => (
+                                    <div key={i} className={`flex flex-col items-center ${i === currentContestantIdx ? 'text-white' : 'text-gray-500'}`}>
+                                        <span className="font-bold">{c.slice(0,3)}</span>
+                                        <span className={`px-2 rounded ${i === currentContestantIdx ? 'bg-pink-500' : 'bg-gray-700'}`}>{scores[i]}</span>
+                                    </div>
+                                ))}
+                             </div>
+                        </div>
+                    </div>
+
+                    {/* Main Game Area */}
+                    <div className="flex-1 w-full flex flex-col items-center justify-center">
+                        
+                        {(gameState === 'spin' || gameState === 'spinning') && (
+                            <div className="w-full flex flex-col items-center pop-in">
+                                <Wheel 
+                                    spinning={gameState === 'spinning'} 
+                                    rotation={rotation} 
+                                    onSpinEnd={handleSpinEnd} 
+                                />
+                                <button 
+                                    onClick={spinWheel}
+                                    disabled={gameState === 'spinning'}
+                                    className={`mt-6 px-12 py-4 rounded-full text-2xl font-black uppercase tracking-wider shadow-[0_0_20px_rgba(255,0,128,0.5)] transition-all
+                                        ${gameState === 'spinning' 
+                                            ? 'bg-gray-600 cursor-not-allowed opacity-50' 
+                                            : 'bg-gradient-to-r from-pink-500 to-purple-600 hover:scale-110 hover:rotate-1'
+                                        }`}
+                                >
+                                    {gameState === 'spinning' ? 'Spinning...' : 'SPIN!'}
+                                </button>
+                            </div>
+                        )}
+
+                        {gameState === 'question' && currentCategory && (
+                            <div className="w-full bg-white text-gray-900 rounded-2xl p-8 shadow-2xl pop-in text-center border-8" style={{borderColor: currentCategory.color}}>
+                                <div className="uppercase tracking-widest font-bold mb-6 flex items-center justify-center gap-2">
+                                    <span className="px-3 py-1 text-white text-xs rounded-full" style={{backgroundColor: currentCategory.color}}>
+                                        {currentCategory.name}
+                                    </span>
+                                </div>
+                                
+                                <h2 className="text-2xl font-bold mb-2 text-gray-800">Complete the Line:</h2>
+                                <div className="text-xl md:text-2xl text-gray-600 italic mb-8 bg-gray-100 p-6 rounded-lg">
+                                    {currentCategory.id === 'japan' 
+                                        ? currentQuestion.line
+                                        : `"${currentQuestion.line} ______"`
+                                    }
+                                </div>
+
+                                {!revealAnswer ? (
+                                    <button 
+                                        onClick={() => setRevealAnswer(true)}
+                                        className="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition"
+                                    >
+                                        Reveal Answer
+                                    </button>
+                                ) : (
+                                    <div className="pop-in">
+                                        <div className="text-3xl font-black text-green-600 mb-2 drop-shadow-sm">
+                                            "{currentQuestion.answer}"
+                                        </div>
+                                        <div className="text-xl text-gray-500 font-bold mb-8">
+                                            [{currentQuestion.source}]
+                                        </div>
+                                        <div className="flex gap-4 justify-center">
+                                            <button 
+                                                onClick={() => handleScore(false)}
+                                                className="bg-red-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-red-600 flex-1"
+                                            >
+                                                Wrong ✗
+                                            </button>
+                                            <button 
+                                                onClick={() => handleScore(true)}
+                                                className="bg-green-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-600 flex-1"
+                                            >
+                                                Correct ✓
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {gameState === 'result' && (
+                            <div className="text-center pop-in">
+                                <div className="text-6xl mb-4">
+                                    {scores[currentContestantIdx] > scores[currentContestantIdx] - (scores[currentContestantIdx] > 0 ? 0 : 0) ? '🎉' : '🤔'}
+                                </div>
+                                <h2 className="text-3xl font-bold mb-8">
+                                    Pass the device to {contestants[(currentContestantIdx + 1) % contestants.length]}!
+                                </h2>
+                                <button 
+                                    onClick={nextTurn}
+                                    className="bg-yellow-400 text-black px-12 py-4 rounded-full text-xl font-black uppercase hover:bg-yellow-300 shadow-lg transition transform hover:-translate-y-1"
+                                >
+                                    Next Turn
+                                </button>
+                            </div>
+                        )}
+
+                    </div>
+                    
+                    <button onClick={onEndGame} className="mt-8 text-gray-500 underline text-sm hover:text-white">
+                        Reset Game
+                    </button>
+                </div>
+            );
+        }
+
+        function App() {
+            const [mode, setMode] = useState('setup'); // setup, game
+            const [contestants, setContestants] = useState([]);
+
+            const startGame = (names) => {
+                setContestants(names);
+                setMode('game');
+            };
+
+            const resetGame = () => {
+                setMode('setup');
+                setContestants([]);
+            };
+
+            return (
+                <div className="min-h-screen">
+                    {mode === 'setup' && <SetupScreen onStart={startGame} />}
+                    {mode === 'game' && <GameScreen contestants={contestants} onEndGame={resetGame} />}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
