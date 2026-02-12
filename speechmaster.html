@@ -202,6 +202,23 @@
                         alternates: ["there are seventeen thousand five hundred people in my town", "there are 17,500 people in my town"]
                     }
                 ]
+            },
+            {
+                id: 'culture',
+                title: "Culture & Manners",
+                desc: "Practise describing the culture and manners of different countries.",
+                script: [
+                    { clean: "Baseball is a popular sport in Japan", display: "Baseball is a popular sport <span class='stress-mark'>in</span> Japan," },
+                    { clean: "but Judo is a popular sport from Japan", display: "but Judo is a popular sport <span class='stress-mark'>from</span> Japan." },
+                    { 
+                        clean: "A famous place in Italy is the Colosseum", 
+                        display: "A famous place <span class='stress-mark'>in</span> Italy is the Colosseum,",
+                        alternates: ["a famous place in italy is the coliseum"]
+                    },
+                    { clean: "and a famous food from Italy is pizza", display: "and a famous food <span class='stress-mark'>from</span> Italy is pizza." },
+                    { clean: "In Japan people usually wear masks if they have a cold", display: "In Japan, people <span class='stress-mark'>usually</span> wear masks if they have a cold," },
+                    { clean: "but in the UK people rarely wear a mask if they have a cold", display: "but in the UK, people <span class='stress-mark'>rarely</span> wear a mask if they have a cold." }
+                ]
             }
         ];
 
