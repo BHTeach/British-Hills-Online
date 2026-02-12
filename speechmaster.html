@@ -54,6 +54,18 @@
         .progress-bar {
             transition: width 0.5s ease-in-out;
         }
+        
+        /* Custom scrollbar for menu */
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 2px;
+        }
     </style>
 </head>
 <body>
@@ -99,43 +111,69 @@
                 <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
             </svg>
         );
+        
+        const IconHome = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+        );
 
 
-        // --- DATA: THE SCRIPT ---
-        const SCRIPT_DATA = [
+        // --- DATA: THE SPEECH LIBRARY ---
+        const SPEECH_LIBRARY = [
             {
-                id: 1,
-                clean: "Hello and welcome",
-                display: "Hello and <span class='stress-mark'>welcome</span>",
-                hint: "Big smile, eye contact."
+                id: 'japan',
+                title: "Introducing Japan",
+                desc: "Explain Japanese culture to visitors.",
+                script: [
+                    { clean: "Japan is a beautiful country with four distinct seasons", display: "Japan is a <span class='stress-mark'>beautiful</span> country with <span class='stress-mark'>four</span> distinct seasons." },
+                    { clean: "Each season has unique food and events", display: "Each season has <span class='stress-mark'>unique</span> food and events." },
+                    { clean: "Japan is famous for things like sushi and manga", display: "Japan is <span class='stress-mark'>famous</span> for things like sushi and manga," },
+                    { clean: "but there is much much more to experience", display: "but there is <span class='stress-mark'>much, much</span> more to experience!" },
+                    { clean: "Please enjoy your stay", display: "Please <span class='stress-mark'>enjoy</span> your stay!" }
+                ]
             },
             {
-                id: 2,
-                clean: "My name is John",
-                display: "My name is <span class='stress-mark'>John</span>",
-                hint: "Hand on chest."
+                id: 'self_intro',
+                title: "All About Me",
+                desc: "Introduce yourself: Name, age, and likes.",
+                script: [
+                    { clean: "Hello everyone I'm Yuki", display: "<span class='stress-mark'>Hello</span> everyone, I’m <span class='stress-mark'>Yuki.</span>" },
+                    { clean: "I'm from Fukushima and I am twelve years old", display: "I’m from Fukushima, and I am <span class='stress-mark'>twelve</span> years old." },
+                    { clean: "I like playing football but I love volleyball", display: "I <span class='stress-mark'>like</span> playing football but I <span class='stress-mark'>love</span> volleyball." },
+                    { clean: "My favourite music is rock but I like all kinds", display: "My <span class='stress-mark'>favourite</span> music is rock, <span class='stress-mark'>but</span> I like all kinds." },
+                    { clean: "Nice to meet you", display: "Nice to meet you." }
+                ]
             },
             {
-                id: 3,
-                clean: "it's great to meet you",
-                display: "it's <span class='stress-mark'>great</span> to meet you",
-                hint: "Nod politely."
+                id: 'dream',
+                title: "My Dream",
+                desc: "Talk about your future goals.",
+                script: [
+                    { clean: "I have a big dream", display: "I have a <span class='stress-mark'>big</span> dream." },
+                    { clean: "I want to be a doctor", display: "I want to be a <span class='stress-mark'>doctor.</span>" },
+                    { clean: "I want to help people", display: "I want to <span class='stress-mark'>help</span> people," },
+                    { clean: "so I will study very hard", display: "so I will study <span class='stress-mark'>very</span> hard." },
+                    { clean: "Thank you for listening", display: "<span class='stress-mark'>Thank you</span> for listening" }
+                ]
             },
             {
-                id: 4,
-                clean: "Please follow me",
-                display: "Please <span class='stress-mark'>follow</span> me",
-                hint: "Gesture with open hand."
-            },
-            {
-                id: 5,
-                clean: "this way",
-                display: "this <span class='stress-mark'>way</span>",
-                hint: "Start walking."
+                id: 'school',
+                title: "My School Life",
+                desc: "Describe your school and club.",
+                script: [
+                    { clean: "I go to junior high school", display: "I go to <span class='stress-mark'>junior</span> high school." },
+                    { clean: "My favourite subject is English It's a lot of fun", display: "My <span class='stress-mark'>favourite</span> subject is English. It’s a <span class='stress-mark'>lot</span> of fun!" },
+                    { clean: "I am a member of the tennis club", display: "I am a member of the <span class='stress-mark'>tennis</span> club," },
+                    { clean: "and I play every Monday and Friday", display: "and I play every Monday and Friday." },
+                    { clean: "I really enjoy my school life", display: "I <span class='stress-mark'>really</span> enjoy my school life." }
+                ]
             }
         ];
 
         const App = () => {
+            const [selectedSpeech, setSelectedSpeech] = useState(null); // Which speech object is chosen
             const [started, setStarted] = useState(false);
             const [currentIndex, setCurrentIndex] = useState(0);
             const [isListening, setIsListening] = useState(false);
@@ -148,27 +186,24 @@
             const currentIndexRef = useRef(0);
             const isListeningRef = useRef(false);
             const completedRef = useRef(false);
+            const selectedSpeechRef = useRef(null);
 
             // Sync state to refs
             useEffect(() => {
                 currentIndexRef.current = currentIndex;
                 isListeningRef.current = isListening;
                 completedRef.current = completed;
-            }, [currentIndex, isListening, completed]);
+                selectedSpeechRef.current = selectedSpeech;
+            }, [currentIndex, isListening, completed, selectedSpeech]);
 
             // --- SPEECH RECOGNITION SETUP (Run Once) ---
             useEffect(() => {
                 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
                     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                     recognitionRef.current = new SpeechRecognition();
-                    // On Mobile, continuous=false + restarting usually works better than true
                     recognitionRef.current.continuous = false; 
                     recognitionRef.current.interimResults = true; 
                     recognitionRef.current.lang = 'en-GB'; 
-
-                    recognitionRef.current.onstart = () => {
-                         // Optional: could set visual state here, but we control isListening via React state mainly
-                    };
 
                     recognitionRef.current.onresult = (event) => {
                         let interim = '';
@@ -185,26 +220,18 @@
                         const currentInput = (final || interim).toLowerCase();
                         setTranscript(currentInput);
                         
-                        // Check match using the REF (latest data)
                         checkMatch(currentInput);
                     };
 
                     recognitionRef.current.onend = () => {
-                        // If we are supposed to be listening, and we aren't finished, restart
                         if (isListeningRef.current && !completedRef.current) {
-                            try { 
-                                recognitionRef.current.start(); 
-                            } catch(e){
-                                // Ignore "already started" errors
-                            }
+                            try { recognitionRef.current.start(); } catch(e){}
                         } else {
-                            // actually stopped
                             setIsListening(false);
                         }
                     };
                     
                     recognitionRef.current.onerror = (event) => {
-                        // console.error("Mic Error:", event.error);
                         if (event.error === 'not-allowed') {
                             setFeedback("Mic blocked. Check settings.");
                             setIsListening(false);
@@ -214,14 +241,17 @@
                     setFeedback("Browser not supported. Use Chrome/Safari.");
                 }
 
-                // Cleanup
                 return () => {
                     if (recognitionRef.current) recognitionRef.current.abort();
                 };
-            }, []); // Empty dependency array: Only initializes ONCE.
+            }, []); 
 
 
             // --- LOGIC ---
+
+            const selectSpeech = (speech) => {
+                setSelectedSpeech(speech);
+            };
 
             const startSession = () => {
                 setStarted(true);
@@ -229,13 +259,22 @@
                 setCompleted(false);
             };
 
+            const goHome = () => {
+                setStarted(false);
+                setCompleted(false);
+                setSelectedSpeech(null);
+                setCurrentIndex(0);
+                setIsListening(false);
+                if (recognitionRef.current) recognitionRef.current.stop();
+            };
+
             const toggleMic = () => {
                 if (isListening) {
-                    setIsListening(false); // Ref syncs via useEffect
+                    setIsListening(false); 
                     recognitionRef.current.stop();
                     setFeedback("Paused");
                 } else {
-                    setIsListening(true); // Ref syncs via useEffect
+                    setIsListening(true); 
                     try {
                         recognitionRef.current.start();
                         setFeedback("Listening...");
@@ -246,14 +285,23 @@
             };
 
             const checkMatch = (spokenText) => {
-                // Use Ref for latest status to avoid closure staleness
-                if (completedRef.current) return;
+                if (completedRef.current || !selectedSpeechRef.current) return;
                 
                 const idx = currentIndexRef.current;
-                const currentPhrase = SCRIPT_DATA[idx];
-                const target = currentPhrase.clean.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+                const scriptLines = selectedSpeechRef.current.script;
+                const currentPhrase = scriptLines[idx];
                 
-                // Allow "fuzzy" matching
+                // Flexible matching logic (removes punctuation, including smart quotes)
+                let target = currentPhrase.clean.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()'"’]/g,"");
+                
+                // Exception for names in self-intro: allows them to pass if they say "I'm [Their Name]"
+                if (target.includes("hello everyone im yuki")) {
+                    if (spokenText.includes("hello everyone im") || spokenText.includes("hello everyone i am")) {
+                        handleSuccess();
+                        return;
+                    }
+                }
+
                 if (spokenText.includes(target)) {
                     handleSuccess();
                 }
@@ -263,7 +311,9 @@
                 setTranscript(""); 
                 
                 const currentIdx = currentIndexRef.current;
-                if (currentIdx < SCRIPT_DATA.length - 1) {
+                const scriptLines = selectedSpeechRef.current.script;
+
+                if (currentIdx < scriptLines.length - 1) {
                     setCurrentIndex(prev => prev + 1);
                 } else {
                     setCompleted(true);
@@ -272,21 +322,48 @@
                 }
             };
 
-            // --- RENDER HELPERS ---
-            const progressPercentage = ((currentIndex) / SCRIPT_DATA.length) * 100;
+            // --- RENDER ---
 
+            // 1. SELECTION SCREEN
+            if (!selectedSpeech) {
+                return (
+                    <div className="min-h-screen flex flex-col p-6 max-w-md mx-auto">
+                        <div className="text-center mb-8 pt-8">
+                            <h1 className="text-4xl font-serif font-bold mb-2 text-white">Speech Master</h1>
+                            <p className="text-gray-400">Choose a speech to practice</p>
+                        </div>
+
+                        <div className="space-y-4 flex-1 overflow-y-auto custom-scroll pb-10">
+                            {SPEECH_LIBRARY.map((s) => (
+                                <button
+                                    key={s.id}
+                                    onClick={() => selectSpeech(s)}
+                                    className="w-full text-left p-6 bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 hover:border-blue-500 transition-all group"
+                                >
+                                    <h3 className="text-xl font-bold text-white mb-1 group-hover:text-blue-400">{s.title}</h3>
+                                    <p className="text-gray-400 text-sm">{s.desc}</p>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                );
+            }
+
+            // 2. INTRO SCREEN (Start Button)
             if (!started) {
                 return (
-                    <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+                    <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center max-w-md mx-auto">
+                        <button onClick={goHome} className="absolute top-6 left-6 text-gray-500 hover:text-white">
+                            <IconHome className="w-6 h-6" />
+                        </button>
+
                         <div className="mb-8 p-6 bg-gray-800 rounded-full shadow-2xl border border-gray-700">
                             <IconVolume className="text-blue-400 w-16 h-16" />
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4 text-white">British Hills<br/>Speech Master</h1>
-                        <p className="text-gray-400 max-w-md text-lg mb-10 leading-relaxed">
-                            Practice your tour guide script. The app listens to your voice and scrolls only when you get the phrasing right.
-                        </p>
+                        <h2 className="text-gray-400 text-sm uppercase tracking-widest font-bold mb-2">Selected Topic</h2>
+                        <h1 className="text-4xl md:text-5xl font-serif font-bold mb-8 text-white">{selectedSpeech.title}</h1>
                         
-                        <div className="bg-gray-800 p-4 rounded-lg text-left max-w-sm w-full mb-8 border border-gray-700">
+                        <div className="bg-gray-800 p-4 rounded-lg text-left w-full mb-8 border border-gray-700">
                             <h3 className="text-gray-400 text-xs uppercase tracking-widest font-bold mb-3">Legend</h3>
                             <div className="space-y-2">
                                 <p className="text-gray-300"><span className="text-amber-400 font-bold">Bold Gold</span> = Add Stress</p>
@@ -296,7 +373,7 @@
 
                         <button 
                             onClick={startSession}
-                            className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-full font-bold text-xl transition-all hover:scale-105 shadow-lg flex items-center gap-3"
+                            className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-full font-bold text-xl transition-all hover:scale-105 shadow-lg flex items-center gap-3 w-full justify-center"
                         >
                             <IconPlay className="w-6 h-6" /> Start Practice
                         </button>
@@ -304,33 +381,53 @@
                 );
             }
 
+            // 3. COMPLETION SCREEN
             if (completed) {
                 return (
                     <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
                         <IconAward className="text-amber-400 w-20 h-20 mb-6 animate-bounce" />
                         <h1 className="text-4xl font-serif font-bold mb-2 text-white">Excellent Work!</h1>
-                        <p className="text-gray-400 mb-8">You've completed the full script run-through.</p>
-                        <button 
-                            onClick={startSession}
-                            className="bg-gray-800 hover:bg-gray-700 border border-gray-600 text-white px-8 py-3 rounded-full font-bold transition-all flex items-center gap-2"
-                        >
-                            <IconRotate className="w-5 h-5" /> Practice Again
-                        </button>
+                        <p className="text-gray-400 mb-8">You've completed the "{selectedSpeech.title}" speech.</p>
+                        <div className="space-y-4 w-full max-w-xs">
+                            <button 
+                                onClick={startSession}
+                                className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-600 text-white px-8 py-3 rounded-full font-bold transition-all flex items-center justify-center gap-2"
+                            >
+                                <IconRotate className="w-5 h-5" /> Practice Again
+                            </button>
+                            <button 
+                                onClick={goHome}
+                                className="w-full bg-transparent hover:bg-gray-900 text-gray-400 px-8 py-3 rounded-full font-bold transition-all"
+                            >
+                                Choose Different Speech
+                            </button>
+                        </div>
                     </div>
                 );
             }
 
-            const currentPhrase = SCRIPT_DATA[currentIndex];
-            const nextPhrase = SCRIPT_DATA[currentIndex + 1];
+            // 4. PRACTICE SCREEN
+            const scriptLines = selectedSpeech.script;
+            const currentPhrase = scriptLines[currentIndex];
+            const nextPhrase = scriptLines[currentIndex + 1];
+            const progressPercentage = ((currentIndex) / scriptLines.length) * 100;
 
             return (
                 <div className="min-h-screen flex flex-col max-w-2xl mx-auto">
                     
                     {/* Header / Progress */}
                     <div className="p-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <button onClick={goHome} className="text-gray-500 hover:text-white">
+                                <IconHome className="w-5 h-5" />
+                            </button>
+                            <span className="text-xs font-bold text-gray-500 uppercase tracking-widest truncate ml-4">
+                                {selectedSpeech.title}
+                            </span>
+                        </div>
                         <div className="flex justify-between items-end mb-2">
-                            <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Script Progress</span>
-                            <span className="text-xs font-mono text-gray-400">{currentIndex + 1} / {SCRIPT_DATA.length}</span>
+                            <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Progress</span>
+                            <span className="text-xs font-mono text-gray-400">{currentIndex + 1} / {scriptLines.length}</span>
                         </div>
                         <div className="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden">
                             <div className="bg-blue-500 h-full progress-bar" style={{ width: `${progressPercentage}%` }}></div>
@@ -342,13 +439,6 @@
                         
                         {/* Current Active Card */}
                         <div className="w-full text-center space-y-8">
-                            
-                            {/* The Hint */}
-                            <div className="h-8">
-                                <span className="text-blue-400 text-sm font-bold uppercase tracking-widest bg-blue-400/10 px-3 py-1 rounded-full animate-pulse">
-                                    {currentPhrase.hint}
-                                </span>
-                            </div>
 
                             {/* The Text */}
                             <div className="relative">
