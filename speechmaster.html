@@ -16,15 +16,14 @@
 
     <style>
         body {
-            background-color: #111827; /* Dark background for focus */
+            background-color: #111827;
             color: #f3f4f6;
             font-family: 'DM Sans', sans-serif;
-            overflow: hidden; /* Prevent scrolling, we control the flow */
+            overflow: hidden; 
         }
         
         .font-serif { font-family: 'Playfair Display', serif; }
 
-        /* Pulse for the mic */
         @keyframes pulse-ring {
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
@@ -34,9 +33,8 @@
             animation: pulse-ring 2s infinite;
         }
 
-        /* Highlight classes for the script */
         .stress-mark {
-            color: #fbbf24; /* Amber-400 */
+            color: #fbbf24;
             font-weight: 700;
             font-size: 1.1em;
             text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
@@ -44,18 +42,16 @@
         
         .pause-mark {
             display: inline-block;
-            color: #6b7280; /* Gray-500 */
+            color: #6b7280;
             font-weight: 300;
             margin-left: 0.5rem;
             font-size: 0.8em;
         }
 
-        /* Progress Bar Transition */
         .progress-bar {
             transition: width 0.5s ease-in-out;
         }
         
-        /* Custom scrollbar for menu */
         .custom-scroll::-webkit-scrollbar {
             width: 4px;
         }
@@ -169,11 +165,48 @@
                     { clean: "and I play every Monday and Friday", display: "and I play every Monday and Friday." },
                     { clean: "I really enjoy my school life", display: "I <span class='stress-mark'>really</span> enjoy my school life." }
                 ]
+            },
+            {
+                id: 'numbers',
+                title: "Fun with Numbers",
+                desc: "Practise saying large numbers.",
+                script: [
+                    { 
+                        clean: "There are 5 people in my family", 
+                        display: "There are <span class='stress-mark'>5</span> people in my family.",
+                        alternates: ["there are five people in my family"] 
+                    },
+                    { 
+                        clean: "There are 32 people in my class", 
+                        display: "There are <span class='stress-mark'>32</span> people in my class.",
+                        alternates: ["there are thirty two people in my class"]
+                    },
+                    { 
+                        clean: "There are 98 people in my year", 
+                        display: "There are <span class='stress-mark'>98</span> people in my year.",
+                        alternates: ["there are ninety eight people in my year"]
+                    },
+                    { 
+                        clean: "There are 232 people in my school", 
+                        display: "There are <span class='stress-mark'>232</span> people in my school.",
+                        alternates: ["there are two hundred thirty two people in my school", "there are two hundred and thirty two people in my school"]
+                    },
+                    { 
+                        clean: "There are 365 days in a year", 
+                        display: "There are <span class='stress-mark'>365</span> days in a year.",
+                        alternates: ["there are three hundred sixty five days in a year", "there are three hundred and sixty five days in a year"]
+                    },
+                    { 
+                        clean: "There are 17500 people in my town", 
+                        display: "There are <span class='stress-mark'>17,500</span> people in my town.",
+                        alternates: ["there are seventeen thousand five hundred people in my town", "there are 17,500 people in my town"]
+                    }
+                ]
             }
         ];
 
         const App = () => {
-            const [selectedSpeech, setSelectedSpeech] = useState(null); // Which speech object is chosen
+            const [selectedSpeech, setSelectedSpeech] = useState(null); 
             const [started, setStarted] = useState(false);
             const [currentIndex, setCurrentIndex] = useState(0);
             const [isListening, setIsListening] = useState(false);
@@ -181,7 +214,6 @@
             const [feedback, setFeedback] = useState("Tap mic to start");
             const [completed, setCompleted] = useState(false);
 
-            // Using Refs to track state inside the Mic callbacks without re-triggering effects
             const recognitionRef = useRef(null);
             const currentIndexRef = useRef(0);
             const isListeningRef = useRef(false);
@@ -196,7 +228,7 @@
                 selectedSpeechRef.current = selectedSpeech;
             }, [currentIndex, isListening, completed, selectedSpeech]);
 
-            // --- SPEECH RECOGNITION SETUP (Run Once) ---
+            // --- SPEECH RECOGNITION SETUP ---
             useEffect(() => {
                 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
                     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -246,7 +278,6 @@
                 };
             }, []); 
 
-
             // --- LOGIC ---
 
             const selectSpeech = (speech) => {
@@ -291,18 +322,33 @@
                 const scriptLines = selectedSpeechRef.current.script;
                 const currentPhrase = scriptLines[idx];
                 
-                // Flexible matching logic (removes punctuation, including smart quotes)
-                let target = currentPhrase.clean.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()'"’]/g,"");
-                
-                // Exception for names in self-intro: allows them to pass if they say "I'm [Their Name]"
-                if (target.includes("hello everyone im yuki")) {
-                    if (spokenText.includes("hello everyone im") || spokenText.includes("hello everyone i am")) {
-                        handleSuccess();
-                        return;
+                // Build an array of valid targets (the clean string + any alternates)
+                let validTargets = [currentPhrase.clean];
+                if (currentPhrase.alternates) {
+                    validTargets = validTargets.concat(currentPhrase.alternates);
+                }
+
+                let isMatch = false;
+
+                // Loop through all targets and check if they exist in the spoken text
+                for (let t of validTargets) {
+                    let target = t.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()'"’]/g,"");
+                    
+                    // Exception for names in self-intro: allows them to pass if they say "I'm [Their Name]"
+                    if (target.includes("hello everyone im yuki")) {
+                        if (spokenText.includes("hello everyone im") || spokenText.includes("hello everyone i am")) {
+                            isMatch = true;
+                            break;
+                        }
+                    }
+
+                    if (spokenText.includes(target)) {
+                        isMatch = true;
+                        break;
                     }
                 }
 
-                if (spokenText.includes(target)) {
+                if (isMatch) {
                     handleSuccess();
                 }
             };
@@ -324,7 +370,6 @@
 
             // --- RENDER ---
 
-            // 1. SELECTION SCREEN
             if (!selectedSpeech) {
                 return (
                     <div className="min-h-screen flex flex-col p-6 max-w-md mx-auto">
@@ -349,7 +394,6 @@
                 );
             }
 
-            // 2. INTRO SCREEN (Start Button)
             if (!started) {
                 return (
                     <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center max-w-md mx-auto">
@@ -381,7 +425,6 @@
                 );
             }
 
-            // 3. COMPLETION SCREEN
             if (completed) {
                 return (
                     <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
@@ -406,7 +449,6 @@
                 );
             }
 
-            // 4. PRACTICE SCREEN
             const scriptLines = selectedSpeech.script;
             const currentPhrase = scriptLines[currentIndex];
             const nextPhrase = scriptLines[currentIndex + 1];
@@ -414,8 +456,6 @@
 
             return (
                 <div className="min-h-screen flex flex-col max-w-2xl mx-auto">
-                    
-                    {/* Header / Progress */}
                     <div className="p-6">
                         <div className="flex justify-between items-center mb-4">
                             <button onClick={goHome} className="text-gray-500 hover:text-white">
@@ -434,21 +474,13 @@
                         </div>
                     </div>
 
-                    {/* Main Stage */}
                     <div className="flex-1 flex flex-col items-center justify-center p-6 relative">
-                        
-                        {/* Current Active Card */}
                         <div className="w-full text-center space-y-8">
-
-                            {/* The Text */}
                             <div className="relative">
-                                {/* Current Phrase */}
                                 <h2 
                                     className="text-4xl md:text-6xl font-serif leading-tight text-white transition-all duration-300"
                                     dangerouslySetInnerHTML={{ __html: currentPhrase.display + "<span class='pause-mark'>/</span>" }} 
                                 />
-                                
-                                {/* Upcoming Text Preview (faded below) */}
                                 {nextPhrase && (
                                     <div className="absolute top-full left-0 w-full mt-8 opacity-20 blur-[1px] transform scale-90 transition-all duration-500">
                                         <p 
@@ -458,22 +490,15 @@
                                     </div>
                                 )}
                             </div>
-
                         </div>
-
                     </div>
 
-                    {/* Controls & Feedback */}
                     <div className="p-8 pb-12 flex flex-col items-center bg-gradient-to-t from-gray-900 to-transparent">
-                        
-                        {/* Live Transcript Feedback */}
                         <div className="h-12 w-full flex items-center justify-center mb-6">
                             <p className="text-gray-500 italic text-lg truncate max-w-md">
                                 {transcript || "..."}
                             </p>
                         </div>
-
-                        {/* Mic Button */}
                         <button 
                             onClick={toggleMic}
                             className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl ${
@@ -484,11 +509,9 @@
                         >
                             <IconMic className="w-8 h-8" />
                         </button>
-                        
                         <p className={`mt-4 text-sm font-medium ${isListening ? "text-red-400" : "text-gray-500"}`}>
                             {feedback}
                         </p>
-
                     </div>
                 </div>
             );
