@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SpeechFlow: Tour Guide Practice</title>
+    
+    <!-- React & Tailwind -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #111827; /* Dark background for focus */
+            color: #f3f4f6;
+            font-family: 'DM Sans', sans-serif;
+            overflow: hidden; /* Prevent scrolling, we control the flow */
+        }
+        
+        .font-serif { font-family: 'Playfair Display', serif; }
+
+        /* Smooth slide animations */
+        .slide-enter {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease-out;
+        }
+        .slide-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slide-exit {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.5s ease-in;
+        }
+        .slide-exit-active {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        /* Pulse for the mic */
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .mic-active {
+            animation: pulse-ring 2s infinite;
+        }
+
+        /* Highlight classes for the script */
+        .stress-mark {
+            color: #fbbf24; /* Amber-400 */
+            font-weight: 700;
+            font-size: 1.1em;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+        }
+        
+        .pause-mark {
+            display: inline-block;
+            color: #6b7280; /* Gray-500 */
+            font-weight: 300;
+            margin-left: 0.5rem;
+            font-size: 0.8em;
+        }
+
+        /* Progress Bar Transition */
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const { Mic, Play, RotateCcw, Volume2, CheckCircle2, Award } = lucide;
+
+        // --- DATA: THE SCRIPT ---
+        // We break the speech into "Breath Groups".
+        // 'clean' is what the AI listens for.
+        // 'display' is HTML with visual cues for the student.
+        const SCRIPT_DATA = [
+            {
+                id: 1,
+                clean: "Welcome everyone",
+                display: "Welcome <span class='stress-mark'>everyone</span>",
+                hint: "Open your arms, big smile."
+            },
+            {
+                id: 2,
+                clean: "to British Hills",
+                display: "to British <span class='stress-mark'>Hills</span>",
+                hint: "Gesture to the surroundings."
+            },
+            {
+                id: 3,
+                clean: "My name is John",
+                display: "My name is <span class='stress-mark'>John</span>",
+                hint: "Hand on chest."
+            },
+            {
+                id: 4,
+                clean: "and I am your guide",
+                display: "and I am <span class='stress-mark'>your</span> guide",
+                hint: "Eye contact with the group."
+            },
+            {
+                id: 5,
+                clean: "Please mind your head",
+                display: "Please <span class='stress-mark'>mind</span> your head",
+                hint: "Point to the low doorway."
+            },
+            {
+                id: 6,
+                clean: "as you enter the Manor",
+                display: "as you enter the <span class='stress-mark'>Manor</span>",
+                hint: "Gesture towards the door."
+            },
+            {
+                id: 7,
+                clean: "Let's go",
+                display: "<span class='stress-mark'>Let's</span> go",
+                hint: "Start walking."
+            }
+        ];
+
+        const App = () => {
+            const [started, setStarted] = useState(false);
+            const [currentIndex, setCurrentIndex] = useState(0);
+            const [isListening, setIsListening] = useState(false);
+            const [transcript, setTranscript] = useState("");
+            const [feedback, setFeedback] = useState("Tap mic to start");
+            const [completed, setCompleted] = useState(false);
+
+            const recognitionRef = useRef(null);
+
+            // --- SPEECH RECOGNITION SETUP ---
+            useEffect(() => {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    recognitionRef.current = new SpeechRecognition();
+                    recognitionRef.current.continuous = true; // Keep listening
+                    recognitionRef.current.interimResults = true; // Show results as they speak
+                    recognitionRef.current.lang = 'en-GB'; // British English
+
+                    recognitionRef.current.onresult = (event) => {
+                        let interim = '';
+                        let final = '';
+
+                        for (let i = event.resultIndex; i < event.results.length; ++i) {
+                            if (event.results[i].isFinal) {
+                                final += event.results[i][0].transcript;
+                            } else {
+                                interim += event.results[i][0].transcript;
+                            }
+                        }
+
+                        // We only care about the latest chunk of speech
+                        const currentInput = (final || interim).toLowerCase();
+                        setTranscript(currentInput);
+                        checkMatch(currentInput);
+                    };
+
+                    recognitionRef.current.onend = () => {
+                        if (isListening && !completed) {
+                            // If it stopped but we didn't want it to, restart it
+                            try { recognitionRef.current.start(); } catch(e){}
+                        }
+                    };
+                    
+                    recognitionRef.current.onerror = (event) => {
+                        console.error("Mic Error:", event.error);
+                        if (event.error === 'not-allowed') {
+                            setFeedback("Mic blocked. Check settings.");
+                            setIsListening(false);
+                        }
+                    };
+                } else {
+                    setFeedback("Browser not supported. Use Chrome/Safari.");
+                }
+
+                return () => {
+                    if (recognitionRef.current) recognitionRef.current.abort();
+                };
+            }, [currentIndex, isListening, completed]);
+
+
+            // --- LOGIC ---
+
+            const startSession = () => {
+                setStarted(true);
+                setCurrentIndex(0);
+                setCompleted(false);
+            };
+
+            const toggleMic = () => {
+                if (isListening) {
+                    recognitionRef.current.stop();
+                    setIsListening(false);
+                    setFeedback("Paused");
+                } else {
+                    try {
+                        recognitionRef.current.start();
+                        setIsListening(true);
+                        setFeedback("Listening...");
+                    } catch(e) {
+                        setFeedback("Error starting mic");
+                    }
+                }
+            };
+
+            const checkMatch = (spokenText) => {
+                if (completed) return;
+
+                const currentPhrase = SCRIPT_DATA[currentIndex];
+                const target = currentPhrase.clean.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+                
+                // Allow "fuzzy" matching (if they said the core phrase)
+                if (spokenText.includes(target)) {
+                    handleSuccess();
+                }
+            };
+
+            const handleSuccess = () => {
+                // Visual success feedback could go here
+                setTranscript(""); // Clear transcript for next phrase
+                
+                // Small delay to let them see the success state if we added one
+                if (currentIndex < SCRIPT_DATA.length - 1) {
+                    setCurrentIndex(prev => prev + 1);
+                    // On mobile, sometimes clearing the transcript is tricky with continuous listening
+                    // The 'onresult' will overwrite it anyway.
+                } else {
+                    setCompleted(true);
+                    setIsListening(false);
+                    if (recognitionRef.current) recognitionRef.current.stop();
+                }
+            };
+
+            // --- RENDER HELPERS ---
+            const progressPercentage = ((currentIndex) / SCRIPT_DATA.length) * 100;
+
+            if (!started) {
+                return (
+                    <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+                        <div className="mb-8 p-6 bg-gray-800 rounded-full shadow-2xl border border-gray-700">
+                            <Volume2 size={64} className="text-blue-400" />
+                        </div>
+                        <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4 text-white">SpeechFlow</h1>
+                        <p className="text-gray-400 max-w-md text-lg mb-10 leading-relaxed">
+                            Practice your tour guide script. The app listens to your voice and scrolls only when you get the phrasing right.
+                        </p>
+                        
+                        <div className="bg-gray-800 p-4 rounded-lg text-left max-w-sm w-full mb-8 border border-gray-700">
+                            <h3 className="text-gray-400 text-xs uppercase tracking-widest font-bold mb-3">Legend</h3>
+                            <div className="space-y-2">
+                                <p className="text-gray-300"><span className="text-amber-400 font-bold">Bold Gold</span> = Add Stress</p>
+                                <p className="text-gray-300"><span className="text-gray-500">/</span> = Short Pause</p>
+                            </div>
+                        </div>
+
+                        <button 
+                            onClick={startSession}
+                            className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-full font-bold text-xl transition-all hover:scale-105 shadow-lg flex items-center gap-3"
+                        >
+                            <Play size={24} fill="currentColor" /> Start Practice
+                        </button>
+                    </div>
+                );
+            }
+
+            if (completed) {
+                return (
+                    <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+                        <Award size={80} className="text-amber-400 mb-6 animate-bounce" />
+                        <h1 className="text-4xl font-serif font-bold mb-2 text-white">Excellent Work!</h1>
+                        <p className="text-gray-400 mb-8">You've completed the full script run-through.</p>
+                        <button 
+                            onClick={startSession}
+                            className="bg-gray-800 hover:bg-gray-700 border border-gray-600 text-white px-8 py-3 rounded-full font-bold transition-all flex items-center gap-2"
+                        >
+                            <RotateCcw size={20} /> Practice Again
+                        </button>
+                    </div>
+                );
+            }
+
+            const currentPhrase = SCRIPT_DATA[currentIndex];
+            const nextPhrase = SCRIPT_DATA[currentIndex + 1];
+
+            return (
+                <div className="min-h-screen flex flex-col max-w-2xl mx-auto">
+                    
+                    {/* Header / Progress */}
+                    <div className="p-6">
+                        <div className="flex justify-between items-end mb-2">
+                            <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Script Progress</span>
+                            <span className="text-xs font-mono text-gray-400">{currentIndex + 1} / {SCRIPT_DATA.length}</span>
+                        </div>
+                        <div className="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden">
+                            <div className="bg-blue-500 h-full progress-bar" style={{ width: `${progressPercentage}%` }}></div>
+                        </div>
+                    </div>
+
+                    {/* Main Stage */}
+                    <div className="flex-1 flex flex-col items-center justify-center p-6 relative">
+                        
+                        {/* Current Active Card */}
+                        <div className="w-full text-center space-y-8">
+                            
+                            {/* The Hint */}
+                            <div className="h-8">
+                                <span className="text-blue-400 text-sm font-bold uppercase tracking-widest bg-blue-400/10 px-3 py-1 rounded-full animate-pulse">
+                                    {currentPhrase.hint}
+                                </span>
+                            </div>
+
+                            {/* The Text */}
+                            <div className="relative">
+                                {/* Current Phrase */}
+                                <h2 
+                                    className="text-4xl md:text-6xl font-serif leading-tight text-white transition-all duration-300"
+                                    dangerouslySetInnerHTML={{ __html: currentPhrase.display + "<span class='pause-mark'>/</span>" }} 
+                                />
+                                
+                                {/* Upcoming Text Preview (faded below) */}
+                                {nextPhrase && (
+                                    <div className="absolute top-full left-0 w-full mt-8 opacity-20 blur-[1px] transform scale-90 transition-all duration-500">
+                                        <p 
+                                            className="text-3xl font-serif text-gray-400"
+                                            dangerouslySetInnerHTML={{ __html: nextPhrase.display }} 
+                                        />
+                                    </div>
+                                )}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {/* Controls & Feedback */}
+                    <div className="p-8 pb-12 flex flex-col items-center bg-gradient-to-t from-gray-900 to-transparent">
+                        
+                        {/* Live Transcript Feedback */}
+                        <div className="h-12 w-full flex items-center justify-center mb-6">
+                            <p className="text-gray-500 italic text-lg truncate max-w-md">
+                                {transcript || "..."}
+                            </p>
+                        </div>
+
+                        {/* Mic Button */}
+                        <button 
+                            onClick={toggleMic}
+                            className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl ${
+                                isListening 
+                                ? "bg-red-500 text-white mic-active" 
+                                : "bg-gray-700 text-gray-400 hover:bg-gray-600 hover:text-white"
+                            }`}
+                        >
+                            {isListening ? <Mic size={32} /> : <Mic size={32} />}
+                        </button>
+                        
+                        <p className={`mt-4 text-sm font-medium ${isListening ? "text-red-400" : "text-gray-500"}`}>
+                            {feedback}
+                        </p>
+
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
