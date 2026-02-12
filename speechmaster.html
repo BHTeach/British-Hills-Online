@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SpeechFlow: Tour Guide Practice</title>
+    <title>British Hills Speech Master</title>
     
     <!-- React & Tailwind -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -11,9 +11,6 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 
@@ -26,27 +23,6 @@
         }
         
         .font-serif { font-family: 'Playfair Display', serif; }
-
-        /* Smooth slide animations */
-        .slide-enter {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease-out;
-        }
-        .slide-enter-active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .slide-exit {
-            opacity: 1;
-            transform: translateY(0);
-            transition: all 0.5s ease-in;
-        }
-        .slide-exit-active {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
 
         /* Pulse for the mic */
         @keyframes pulse-ring {
@@ -85,12 +61,47 @@
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
-        const { Mic, Play, RotateCcw, Volume2, CheckCircle2, Award } = lucide;
+
+        // --- ICONS (Inline to prevent loading errors) ---
+        const IconMic = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+        );
+
+        const IconPlay = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+        );
+
+        const IconRotate = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <path d="M3 3v5h5"></path>
+            </svg>
+        );
+
+        const IconVolume = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+        );
+
+        const IconAward = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <circle cx="12" cy="8" r="7"></circle>
+                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+            </svg>
+        );
+
 
         // --- DATA: THE SCRIPT ---
-        // We break the speech into "Breath Groups".
-        // 'clean' is what the AI listens for.
-        // 'display' is HTML with visual cues for the student.
         const SCRIPT_DATA = [
             {
                 id: 1,
@@ -151,9 +162,9 @@
                 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
                     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                     recognitionRef.current = new SpeechRecognition();
-                    recognitionRef.current.continuous = true; // Keep listening
-                    recognitionRef.current.interimResults = true; // Show results as they speak
-                    recognitionRef.current.lang = 'en-GB'; // British English
+                    recognitionRef.current.continuous = true; 
+                    recognitionRef.current.interimResults = true; 
+                    recognitionRef.current.lang = 'en-GB'; 
 
                     recognitionRef.current.onresult = (event) => {
                         let interim = '';
@@ -167,7 +178,6 @@
                             }
                         }
 
-                        // We only care about the latest chunk of speech
                         const currentInput = (final || interim).toLowerCase();
                         setTranscript(currentInput);
                         checkMatch(currentInput);
@@ -175,7 +185,6 @@
 
                     recognitionRef.current.onend = () => {
                         if (isListening && !completed) {
-                            // If it stopped but we didn't want it to, restart it
                             try { recognitionRef.current.start(); } catch(e){}
                         }
                     };
@@ -227,21 +236,17 @@
                 const currentPhrase = SCRIPT_DATA[currentIndex];
                 const target = currentPhrase.clean.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
                 
-                // Allow "fuzzy" matching (if they said the core phrase)
+                // Allow "fuzzy" matching
                 if (spokenText.includes(target)) {
                     handleSuccess();
                 }
             };
 
             const handleSuccess = () => {
-                // Visual success feedback could go here
-                setTranscript(""); // Clear transcript for next phrase
+                setTranscript(""); 
                 
-                // Small delay to let them see the success state if we added one
                 if (currentIndex < SCRIPT_DATA.length - 1) {
                     setCurrentIndex(prev => prev + 1);
-                    // On mobile, sometimes clearing the transcript is tricky with continuous listening
-                    // The 'onresult' will overwrite it anyway.
                 } else {
                     setCompleted(true);
                     setIsListening(false);
@@ -256,9 +261,9 @@
                 return (
                     <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
                         <div className="mb-8 p-6 bg-gray-800 rounded-full shadow-2xl border border-gray-700">
-                            <Volume2 size={64} className="text-blue-400" />
+                            <IconVolume className="text-blue-400 w-16 h-16" />
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4 text-white">SpeechFlow</h1>
+                        <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4 text-white">British Hills<br/>Speech Master</h1>
                         <p className="text-gray-400 max-w-md text-lg mb-10 leading-relaxed">
                             Practice your tour guide script. The app listens to your voice and scrolls only when you get the phrasing right.
                         </p>
@@ -275,7 +280,7 @@
                             onClick={startSession}
                             className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-full font-bold text-xl transition-all hover:scale-105 shadow-lg flex items-center gap-3"
                         >
-                            <Play size={24} fill="currentColor" /> Start Practice
+                            <IconPlay className="w-6 h-6" /> Start Practice
                         </button>
                     </div>
                 );
@@ -284,14 +289,14 @@
             if (completed) {
                 return (
                     <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
-                        <Award size={80} className="text-amber-400 mb-6 animate-bounce" />
+                        <IconAward className="text-amber-400 w-20 h-20 mb-6 animate-bounce" />
                         <h1 className="text-4xl font-serif font-bold mb-2 text-white">Excellent Work!</h1>
                         <p className="text-gray-400 mb-8">You've completed the full script run-through.</p>
                         <button 
                             onClick={startSession}
                             className="bg-gray-800 hover:bg-gray-700 border border-gray-600 text-white px-8 py-3 rounded-full font-bold transition-all flex items-center gap-2"
                         >
-                            <RotateCcw size={20} /> Practice Again
+                            <IconRotate className="w-5 h-5" /> Practice Again
                         </button>
                     </div>
                 );
@@ -369,7 +374,7 @@
                                 : "bg-gray-700 text-gray-400 hover:bg-gray-600 hover:text-white"
                             }`}
                         >
-                            {isListening ? <Mic size={32} /> : <Mic size={32} />}
+                            <IconMic className="w-8 h-8" />
                         </button>
                         
                         <p className={`mt-4 text-sm font-medium ${isListening ? "text-red-400" : "text-gray-500"}`}>
