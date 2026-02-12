@@ -62,7 +62,7 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // --- ICONS (Inline to prevent loading errors) ---
+        // --- ICONS ---
         const IconMic = ({ className }) => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
                 <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
@@ -105,44 +105,32 @@
         const SCRIPT_DATA = [
             {
                 id: 1,
-                clean: "Welcome everyone",
-                display: "Welcome <span class='stress-mark'>everyone</span>",
-                hint: "Open your arms, big smile."
+                clean: "Hello and welcome",
+                display: "Hello and <span class='stress-mark'>welcome</span>",
+                hint: "Big smile, eye contact."
             },
             {
                 id: 2,
-                clean: "to British Hills",
-                display: "to British <span class='stress-mark'>Hills</span>",
-                hint: "Gesture to the surroundings."
-            },
-            {
-                id: 3,
                 clean: "My name is John",
                 display: "My name is <span class='stress-mark'>John</span>",
                 hint: "Hand on chest."
             },
             {
+                id: 3,
+                clean: "it's great to meet you",
+                display: "it's <span class='stress-mark'>great</span> to meet you",
+                hint: "Nod politely."
+            },
+            {
                 id: 4,
-                clean: "and I am your guide",
-                display: "and I am <span class='stress-mark'>your</span> guide",
-                hint: "Eye contact with the group."
+                clean: "Please follow me",
+                display: "Please <span class='stress-mark'>follow</span> me",
+                hint: "Gesture with open hand."
             },
             {
                 id: 5,
-                clean: "Please mind your head",
-                display: "Please <span class='stress-mark'>mind</span> your head",
-                hint: "Point to the low doorway."
-            },
-            {
-                id: 6,
-                clean: "as you enter the Manor",
-                display: "as you enter the <span class='stress-mark'>Manor</span>",
-                hint: "Gesture towards the door."
-            },
-            {
-                id: 7,
-                clean: "Let's go",
-                display: "<span class='stress-mark'>Let's</span> go",
+                clean: "this way",
+                display: "this <span class='stress-mark'>way</span>",
                 hint: "Start walking."
             }
         ];
@@ -155,16 +143,32 @@
             const [feedback, setFeedback] = useState("Tap mic to start");
             const [completed, setCompleted] = useState(false);
 
+            // Using Refs to track state inside the Mic callbacks without re-triggering effects
             const recognitionRef = useRef(null);
+            const currentIndexRef = useRef(0);
+            const isListeningRef = useRef(false);
+            const completedRef = useRef(false);
 
-            // --- SPEECH RECOGNITION SETUP ---
+            // Sync state to refs
+            useEffect(() => {
+                currentIndexRef.current = currentIndex;
+                isListeningRef.current = isListening;
+                completedRef.current = completed;
+            }, [currentIndex, isListening, completed]);
+
+            // --- SPEECH RECOGNITION SETUP (Run Once) ---
             useEffect(() => {
                 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
                     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                     recognitionRef.current = new SpeechRecognition();
-                    recognitionRef.current.continuous = true; 
+                    // On Mobile, continuous=false + restarting usually works better than true
+                    recognitionRef.current.continuous = false; 
                     recognitionRef.current.interimResults = true; 
                     recognitionRef.current.lang = 'en-GB'; 
+
+                    recognitionRef.current.onstart = () => {
+                         // Optional: could set visual state here, but we control isListening via React state mainly
+                    };
 
                     recognitionRef.current.onresult = (event) => {
                         let interim = '';
@@ -180,17 +184,27 @@
 
                         const currentInput = (final || interim).toLowerCase();
                         setTranscript(currentInput);
+                        
+                        // Check match using the REF (latest data)
                         checkMatch(currentInput);
                     };
 
                     recognitionRef.current.onend = () => {
-                        if (isListening && !completed) {
-                            try { recognitionRef.current.start(); } catch(e){}
+                        // If we are supposed to be listening, and we aren't finished, restart
+                        if (isListeningRef.current && !completedRef.current) {
+                            try { 
+                                recognitionRef.current.start(); 
+                            } catch(e){
+                                // Ignore "already started" errors
+                            }
+                        } else {
+                            // actually stopped
+                            setIsListening(false);
                         }
                     };
                     
                     recognitionRef.current.onerror = (event) => {
-                        console.error("Mic Error:", event.error);
+                        // console.error("Mic Error:", event.error);
                         if (event.error === 'not-allowed') {
                             setFeedback("Mic blocked. Check settings.");
                             setIsListening(false);
@@ -200,10 +214,11 @@
                     setFeedback("Browser not supported. Use Chrome/Safari.");
                 }
 
+                // Cleanup
                 return () => {
                     if (recognitionRef.current) recognitionRef.current.abort();
                 };
-            }, [currentIndex, isListening, completed]);
+            }, []); // Empty dependency array: Only initializes ONCE.
 
 
             // --- LOGIC ---
@@ -216,24 +231,26 @@
 
             const toggleMic = () => {
                 if (isListening) {
+                    setIsListening(false); // Ref syncs via useEffect
                     recognitionRef.current.stop();
-                    setIsListening(false);
                     setFeedback("Paused");
                 } else {
+                    setIsListening(true); // Ref syncs via useEffect
                     try {
                         recognitionRef.current.start();
-                        setIsListening(true);
                         setFeedback("Listening...");
                     } catch(e) {
-                        setFeedback("Error starting mic");
+                        setFeedback("Re-connecting...");
                     }
                 }
             };
 
             const checkMatch = (spokenText) => {
-                if (completed) return;
-
-                const currentPhrase = SCRIPT_DATA[currentIndex];
+                // Use Ref for latest status to avoid closure staleness
+                if (completedRef.current) return;
+                
+                const idx = currentIndexRef.current;
+                const currentPhrase = SCRIPT_DATA[idx];
                 const target = currentPhrase.clean.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
                 
                 // Allow "fuzzy" matching
@@ -245,7 +262,8 @@
             const handleSuccess = () => {
                 setTranscript(""); 
                 
-                if (currentIndex < SCRIPT_DATA.length - 1) {
+                const currentIdx = currentIndexRef.current;
+                if (currentIdx < SCRIPT_DATA.length - 1) {
                     setCurrentIndex(prev => prev + 1);
                 } else {
                     setCompleted(true);
