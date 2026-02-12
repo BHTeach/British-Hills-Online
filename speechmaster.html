@@ -322,6 +322,9 @@
                 const scriptLines = selectedSpeechRef.current.script;
                 const currentPhrase = scriptLines[idx];
                 
+                // FIX: Strip punctuation (like commas in 17,500) from the spoken text too!
+                const normalizedSpoken = spokenText.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()'"’]/g,"");
+                
                 // Build an array of valid targets (the clean string + any alternates)
                 let validTargets = [currentPhrase.clean];
                 if (currentPhrase.alternates) {
@@ -336,13 +339,13 @@
                     
                     // Exception for names in self-intro: allows them to pass if they say "I'm [Their Name]"
                     if (target.includes("hello everyone im yuki")) {
-                        if (spokenText.includes("hello everyone im") || spokenText.includes("hello everyone i am")) {
+                        if (normalizedSpoken.includes("hello everyone im") || normalizedSpoken.includes("hello everyone i am")) {
                             isMatch = true;
                             break;
                         }
                     }
 
-                    if (spokenText.includes(target)) {
+                    if (normalizedSpoken.includes(target)) {
                         isMatch = true;
                         break;
                     }
