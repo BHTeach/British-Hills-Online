@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SDG Listening Challenge</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Rubik:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0fdf4; /* green-50 */
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .font-header {
+            font-family: 'Rubik', sans-serif;
+        }
+
+        /* Pulse Animation for Speaker */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+        
+        .speaker-active {
+            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        /* Card Transitions */
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col text-slate-800">
+
+    <!-- === START SCREEN === -->
+    <div id="start-screen" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-6 bg-gradient-to-b from-green-50 to-green-100">
+        <!-- Home Button -->
+        <a href="index.html" class="absolute top-6 left-6 text-slate-500 hover:text-green-700 transition-colors flex items-center gap-2 font-bold text-sm">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Home
+        </a>
+
+        <div class="text-center max-w-md w-full animate-fade-in-up">
+            <!-- SDG Wheel Icon (Simulated with colors) -->
+            <div class="relative w-28 h-28 mx-auto mb-8">
+                <div class="absolute inset-0 rounded-full border-8 border-t-red-500 border-r-green-500 border-b-yellow-500 border-l-blue-500 shadow-xl bg-white flex items-center justify-center">
+                    <i data-lucide="headphones" class="w-12 h-12 text-slate-700"></i>
+                </div>
+            </div>
+
+            <h1 class="text-4xl md:text-5xl font-header font-bold text-slate-800 mb-2">SDG Listening</h1>
+            <h2 class="text-xl text-green-600 mb-8 font-bold">Listen & Match</h2>
+
+            <div class="bg-white p-6 rounded-2xl shadow-lg border border-green-100 mb-8 text-left space-y-4">
+                <div class="flex items-center gap-4">
+                    <div class="bg-blue-100 p-2 rounded-full text-blue-600"><i data-lucide="volume-2" class="w-5 h-5"></i></div>
+                    <p class="text-slate-600 font-bold">1. Listen to the word</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="bg-yellow-100 p-2 rounded-full text-yellow-600"><i data-lucide="mouse-pointer-2" class="w-5 h-5"></i></div>
+                    <p class="text-slate-600 font-bold">2. Select the meaning</p>
+                </div>
+            </div>
+
+            <button onclick="startQuiz()" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transform transition active:scale-95 text-xl flex items-center justify-center gap-2">
+                Start Challenge <i data-lucide="play" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- === GAME SCREEN === -->
+    <div id="game-screen" class="hidden absolute inset-0 z-10 flex flex-col bg-slate-50">
+        
+        <!-- Header -->
+        <div class="h-16 bg-white shadow-sm flex items-center justify-between px-4 shrink-0 z-20">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                    <i data-lucide="ear" class="w-4 h-4"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xs text-slate-400 font-bold uppercase">Progress</span>
+                    <span class="text-sm font-bold text-slate-700"><span id="current-q">1</span> / <span id="total-q">10</span></span>
+                </div>
+            </div>
+
+            <div class="flex-1 mx-4 h-2 bg-slate-200 rounded-full overflow-hidden max-w-xs">
+                <div id="progress-bar" class="h-full bg-green-500 transition-all duration-500 ease-out" style="width: 0%"></div>
+            </div>
+
+            <div class="flex flex-col items-end">
+                <span class="text-xs text-slate-400 font-bold uppercase">Score</span>
+                <span id="score-display" class="text-sm font-bold text-green-600">0</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-y-auto p-4 flex flex-col items-center justify-center min-h-0 w-full max-w-2xl mx-auto">
+            
+            <!-- Audio Button Area -->
+            <div class="mb-8 w-full flex flex-col items-center">
+                <button id="audio-btn" onclick="playAudio()" class="w-32 h-32 bg-white rounded-full shadow-xl border-4 border-slate-100 flex items-center justify-center text-slate-700 hover:text-green-600 hover:border-green-100 transition-all active:scale-95 group relative">
+                    <i data-lucide="volume-2" class="w-12 h-12 transform group-hover:scale-110 transition-transform"></i>
+                    <span class="absolute -bottom-8 text-sm font-bold text-slate-400 uppercase tracking-widest">Tap to Listen</span>
+                </button>
+            </div>
+
+            <!-- Options Grid -->
+            <div id="options-container" class="grid grid-cols-1 gap-3 w-full fade-in">
+                <!-- Options injected here -->
+            </div>
+
+            <!-- Feedback Area -->
+            <div id="feedback-area" class="mt-6 h-16 flex items-center justify-center w-full opacity-0 transition-opacity">
+                <!-- Word Reveal -->
+                <div id="word-reveal" class="hidden flex flex-col items-center text-center">
+                    <span class="text-xs text-slate-400 font-bold uppercase">The word was:</span>
+                    <span id="revealed-word" class="text-2xl font-header font-bold text-slate-800">Pollution</span>
+                </div>
+                
+                <!-- Next Button -->
+                <button id="next-btn" onclick="nextQuestion()" class="hidden ml-4 px-6 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-full shadow-lg transform transition active:scale-95 flex items-center gap-2">
+                    Next <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- === RESULTS SCREEN === -->
+    <div id="results-screen" class="hidden absolute inset-0 z-40 flex flex-col items-center justify-center p-6 bg-white/95 backdrop-blur-sm">
+        <div class="text-center max-w-md w-full animate-fade-in-up">
+            <div class="w-24 h-24 bg-yellow-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl text-white">
+                <i data-lucide="award" class="w-12 h-12"></i>
+            </div>
+            
+            <h2 class="text-3xl font-header font-bold text-slate-800 mb-2">Well Done!</h2>
+            <p id="final-message" class="text-slate-500 mb-8">You've completed the listening challenge.</p>
+            
+            <div class="text-6xl font-bold text-green-600 mb-2" id="final-score">0</div>
+            <div class="text-slate-400 font-bold uppercase tracking-widest mb-10">Total Score</div>
+
+            <div class="space-y-3">
+                <button onclick="restartGame()" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transition active:scale-95">
+                    Play Again
+                </button>
+                <a href="index.html" class="block w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl transition text-center">
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA ---
+        // audioPath is auto-generated in logic if not specified
+        const sdgData = [
+            { word: "Poverty", meaning: "Not having enough money for basic needs." },
+            { word: "Hunger", meaning: "A severe lack of food." },
+            { word: "Health", meaning: "Being strong and free from illness." },
+            { word: "Education", meaning: "Learning at school or university." },
+            { word: "Gender Equality", meaning: "Men and women having the same rights." },
+            { word: "Sanitation", meaning: "Clean water and good sewage systems." },
+            { word: "Energy", meaning: "Power from wind, sun, or oil." },
+            { word: "Economy", meaning: "The system of money and trade." },
+            { word: "Infrastructure", meaning: "Basic systems like roads and bridges." },
+            { word: "Inequality", meaning: "When things are not fair or equal." },
+            { word: "Sustainable", meaning: "Using things without destroying nature." },
+            { word: "Consumption", meaning: "Using up resources like food or energy." },
+            { word: "Climate Action", meaning: "Efforts to stop global warming." },
+            { word: "Ocean", meaning: "The large body of salt water covering the earth." },
+            { word: "Peace", meaning: "Freedom from war and violence." },
+            { word: "Partnership", meaning: "Working together to achieve a goal." },
+            { word: "Innovation", meaning: "Creating new ideas or products." },
+            { word: "Pollution", meaning: "Dirtying the air, water, or land." }
+        ];
+
+        // --- STATE ---
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let isAnswering = false;
+        let currentAudio = null; // Store Audio object
+
+        // --- DOM ---
+        const screens = {
+            start: document.getElementById('start-screen'),
+            game: document.getElementById('game-screen'),
+            results: document.getElementById('results-screen')
+        };
+        const elements = {
+            currentQ: document.getElementById('current-q'),
+            totalQ: document.getElementById('total-q'),
+            score: document.getElementById('score-display'),
+            progress: document.getElementById('progress-bar'),
+            options: document.getElementById('options-container'),
+            audioBtn: document.getElementById('audio-btn'),
+            feedback: document.getElementById('feedback-area'),
+            wordReveal: document.getElementById('word-reveal'),
+            revealedWord: document.getElementById('revealed-word'),
+            nextBtn: document.getElementById('next-btn'),
+            finalScore: document.getElementById('final-score')
+        };
+
+        // --- GAME LOGIC ---
+
+        function startQuiz() {
+            // Pick 10 random questions
+            const shuffled = [...sdgData].sort(() => 0.5 - Math.random());
+            currentQuestions = shuffled.slice(0, 10);
+            currentIndex = 0;
+            score = 0;
+            
+            screens.start.classList.add('hidden');
+            screens.game.classList.remove('hidden');
+            screens.results.classList.add('hidden');
+            
+            updateHeader();
+            loadQuestion();
+        }
+
+        function updateHeader() {
+            elements.currentQ.textContent = currentIndex + 1;
+            elements.totalQ.textContent = currentQuestions.length;
+            elements.score.textContent = score;
+            elements.progress.style.width = `${((currentIndex) / currentQuestions.length) * 100}%`;
+        }
+
+        function loadQuestion() {
+            isAnswering = true;
+            updateHeader();
+            
+            // Reset UI
+            elements.feedback.style.opacity = '0';
+            elements.wordReveal.classList.add('hidden');
+            elements.nextBtn.classList.add('hidden');
+            elements.options.innerHTML = '';
+            
+            const currentItem = currentQuestions[currentIndex];
+            
+            // Generate Distractors
+            const distractors = sdgData
+                .filter(item => item.word !== currentItem.word)
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 2)
+                .map(item => item.meaning);
+                
+            // Combine and Shuffle Options
+            const options = [currentItem.meaning, ...distractors].sort(() => 0.5 - Math.random());
+            
+            // Render Buttons
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = `w-full p-4 text-left bg-white border-2 border-slate-200 rounded-xl shadow-sm hover:border-blue-400 hover:bg-blue-50 transition-all font-medium text-slate-700 text-lg active:scale-98`;
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(opt, btn);
+                elements.options.appendChild(btn);
+            });
+
+            // Auto-play audio after slight delay
+            setTimeout(() => playAudio(), 500);
+        }
+
+        function playAudio() {
+            // Stop any currently playing audio
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+
+            const currentItem = currentQuestions[currentIndex];
+            
+            // 1. Generate filename: lowercase, remove spaces, add .wav
+            // e.g., "Gender Equality" -> "genderequality.wav"
+            const filename = currentItem.word.toLowerCase().replace(/\s+/g, '') + ".wav";
+            const audioPath = `assets/${filename}`;
+
+            // 2. Create and play Audio
+            currentAudio = new Audio(audioPath);
+            
+            // UI Animation
+            const btn = elements.audioBtn;
+            btn.classList.add('speaker-active', 'border-green-400', 'text-green-600');
+            
+            currentAudio.onended = () => {
+                btn.classList.remove('speaker-active', 'border-green-400', 'text-green-600');
+                currentAudio = null;
+            };
+
+            currentAudio.onerror = () => {
+                console.error("Audio file not found:", audioPath);
+                btn.classList.remove('speaker-active', 'border-green-400', 'text-green-600');
+                // Optional: Fallback alert or visual cue that audio is missing
+            };
+
+            currentAudio.play().catch(e => {
+                console.log("Audio play prevented (user interaction needed):", e);
+                // The big "Tap to Listen" button handles the user interaction requirement
+            });
+        }
+
+        function checkAnswer(selectedMeaning, btn) {
+            if (!isAnswering) return;
+            isAnswering = false;
+
+            const currentItem = currentQuestions[currentIndex];
+            const isCorrect = selectedMeaning === currentItem.meaning;
+            const allBtns = elements.options.querySelectorAll('button');
+
+            // Disable all buttons
+            allBtns.forEach(b => {
+                b.disabled = true;
+                b.classList.remove('hover:border-blue-400', 'hover:bg-blue-50');
+            });
+
+            if (isCorrect) {
+                score++;
+                btn.classList.replace('border-slate-200', 'border-green-500');
+                btn.classList.replace('bg-white', 'bg-green-100');
+                btn.classList.add('text-green-800');
+                
+                // Confetti
+                const rect = btn.getBoundingClientRect();
+                confetti({
+                    particleCount: 50,
+                    spread: 60,
+                    origin: { 
+                        x: (rect.left + rect.width / 2) / window.innerWidth, 
+                        y: (rect.top + rect.height / 2) / window.innerHeight 
+                    },
+                    colors: ['#22c55e', '#facc15']
+                });
+            } else {
+                btn.classList.replace('border-slate-200', 'border-red-500');
+                btn.classList.replace('bg-white', 'bg-red-100');
+                btn.classList.add('text-red-800');
+                
+                // Highlight correct one
+                allBtns.forEach(b => {
+                    if (b.textContent === currentItem.meaning) {
+                        b.classList.replace('border-slate-200', 'border-green-500');
+                        b.classList.replace('bg-white', 'bg-green-50');
+                    }
+                });
+            }
+
+            elements.score.textContent = score;
+            
+            // Show Feedback
+            elements.revealedWord.textContent = currentItem.word;
+            elements.wordReveal.classList.remove('hidden');
+            elements.nextBtn.classList.remove('hidden');
+            elements.feedback.style.opacity = '1';
+        }
+
+        function nextQuestion() {
+            // Stop audio if moving to next question
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+            
+            currentIndex++;
+            if (currentIndex < currentQuestions.length) {
+                loadQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            screens.game.classList.add('hidden');
+            screens.results.classList.remove('hidden');
+            elements.finalScore.textContent = score;
+            
+            if (score === 10) confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+        }
+
+        function restartGame() {
+            startQuiz();
+        }
+
+        // Init Icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
