@@ -125,11 +125,6 @@
         <!-- Start Screen -->
         <div id="startScreen" class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-50 backdrop-blur-sm px-4">
             
-            <!-- Home Button -->
-            <a href="index.html" class="absolute top-6 left-6 text-gray-400 hover:text-white transition-colors flex items-center gap-2 font-bold text-lg z-50">
-                <i class="fa-solid fa-arrow-left"></i> Home
-            </a>
-
             <!-- Mode Switcher -->
             <div class="bg-gray-800 p-1 rounded-lg flex mb-6">
                 <button id="modeWordPop" onclick="setMode('word-pop')" class="px-6 py-2 rounded-md font-bold text-sm transition-colors bg-blue-600 text-white shadow-sm">
@@ -202,7 +197,7 @@
         
         // --- DATA STRUCTURE ---
         const GAME_DATA = {
-            colors: [
+            colours: [
                 { id: 'red', keywords: ['red', 'read'], type: 'color', val: '#EF4444' }, 
                 { id: 'blue', keywords: ['blue', 'glue'], type: 'color', val: '#3B82F6' },
                 { id: 'green', keywords: ['green'], type: 'color', val: '#22C55E' },
@@ -244,6 +239,13 @@
             ]
         };
 
+        const SOUNDS = {
+            pop: new Audio('https://www.soundjay.com/buttons/sounds/button-09.mp3'),
+            win: new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3'),
+            lose: new Audio('https://www.soundjay.com/misc/sounds/fail-buzzer-01.mp3'),
+            flip: new Audio('https://www.soundjay.com/misc/sounds/swish-1.mp3')
+        };
+
         // --- STATE MANAGEMENT ---
         let state = {
             mode: 'word-pop', // 'word-pop' or 'memory-pop'
@@ -252,7 +254,7 @@
             activeItems: [], // Items currently on screen
             hiddenItemIds: [], // IDs of items currently hidden in Memory mode
             recognition: null,
-            currentCategory: 'colors'
+            currentCategory: 'colours'
         };
 
         let timerInterval;
@@ -340,12 +342,17 @@
         // --- GAME LOGIC ---
 
         function startGame() {
+            // Setup Audio context
+            Object.values(SOUNDS).forEach(s => {
+                s.volume = 0; s.play().catch(e => {}); s.pause(); s.currentTime = 0; s.volume = 1;
+            });
+
             // Start Mic
             if (!state.recognition) initSpeech();
             try { state.recognition.start(); } catch (e) {}
 
             // Common Setup
-            const selectedCat = document.getElementById('categorySelect').value || 'colors';
+            const selectedCat = document.getElementById('categorySelect').value || 'colours';
             state.currentCategory = selectedCat;
             const categoryItems = GAME_DATA[selectedCat];
             state.activeItems = JSON.parse(JSON.stringify(categoryItems));
@@ -398,6 +405,8 @@
             
             state.hiddenItemIds = []; // Reset hidden list
             
+            SOUNDS.flip.play().catch(e=>{});
+
             toHideIndices.forEach(index => {
                 const item = state.activeItems[index];
                 state.hiddenItemIds.push(item.id);
@@ -419,6 +428,10 @@
                 el.classList.remove('flipped-hidden');
                 el.classList.add('revealed');
                 
+                // Sound
+                SOUNDS.pop.currentTime = 0;
+                SOUNDS.pop.play().catch(e => {});
+
                 // Remove from hidden list
                 state.hiddenItemIds = state.hiddenItemIds.filter(id => id !== itemId);
 
@@ -466,6 +479,8 @@
                     const element = document.getElementById(`item-${item.id}`);
                     if (element) {
                         element.classList.add('exploding');
+                        SOUNDS.pop.currentTime = 0;
+                        SOUNDS.pop.play().catch(e => {});
                         state.activeItems.splice(matchedItemIndex, 1);
                         if (state.activeItems.length === 0) setTimeout(() => gameOver(true), 500);
                     }
@@ -517,10 +532,12 @@
                 } else {
                     msg.textContent = "You found all the missing items!";
                 }
+                SOUNDS.win.play().catch(e => {});
             } else {
                 title.textContent = "GAME OVER";
                 title.className = "text-6xl font-bold text-red-500 mb-4 text-center";
                 msg.textContent = "Time's up!";
+                SOUNDS.lose.play().catch(e => {});
             }
         }
     </script>
