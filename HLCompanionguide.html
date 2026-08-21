@@ -61,7 +61,6 @@
             border: 2px dashed #9b7638;
             box-shadow: inset 0 0 10px rgba(155,118,56,0.2);
         }
-        /* Custom scrollbar for horizontal tab bar */
         .hide-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -72,10 +71,10 @@
     </style>
 </head>
 <!-- Chosen Palette: Warm Antique Manor (#1B2D23 Deep Forest Green, #6B1D2F Manor Burgundy, #C5A059 Heritage Gold, #F8F6F0 Soft Cream) -->
-<!-- Application Structure Plan: Tabbed interactive web user guide interface. Features a sticky navigation header, main hero header, a responsive tab bar to switch seamlessly between Overview and Modules 1 to 7, interactive simulators, and dynamic EN/JP language toggle. -->
+<!-- Application Structure Plan: Interactive web user guide for the Highland Companion application. Provides full bilingual switching (English / 日本語) across all modules, headers, descriptions, and interactive simulators. Target English language learning examples and activities remain in English for authentic practice. -->
 <!-- Visualization & Content Choices: 
-  - Tabbed Layout -> Goal: Clean, focused reading with fast module switching -> Method: Tailwind flex/grid + JS tab state switching.
-  - Interactive Simulators -> Goal: Engage user in app mechanics -> Method: HTML/JS native tools. -->
+  - Dynamic Bilingual Engine -> Goal: Full Japanese accessibility for guide content while preserving English learning examples -> Method: Comprehensive JS i18n object updating DOM elements via dedicated IDs.
+  - Module Interactive Simulators -> Goal: Practical learning engagement -> Method: Native HTML/JS interactive blocks (anagram solver, live spelling converter, politeness ranker, floating article dictionary). -->
 <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. NO emojis used. -->
 
 <body class="bg-manor-50 text-slate-800 font-sans antialiased selection:bg-gold-500 selection:text-white min-h-screen flex flex-col">
@@ -172,51 +171,51 @@
                             <th class="p-3.5 border-b border-gold-500/30 font-bold" id="th-module">Module</th>
                             <th class="p-3.5 border-b border-gold-500/30 font-bold" id="th-function">Core Function</th>
                             <th class="p-3.5 border-b border-gold-500/30 font-bold" id="th-goal">Primary Learning Goal</th>
-                            <th class="p-3.5 border-b border-gold-500/30 font-bold text-right">Action</th>
+                            <th class="p-3.5 border-b border-gold-500/30 font-bold text-right" id="th-action">Action</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-stone-200 text-stone-700">
                         <tr onclick="switchTab(1)" class="hover:bg-manor-100/70 transition cursor-pointer group">
-                            <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600">The Archives</td>
-                            <td class="p-3.5">QR-locked digital lesson supplements</td>
-                            <td class="p-3.5">Interactive practice & classroom consolidation</td>
-                            <td class="p-3.5 text-right font-bold text-xs text-gold-600">View Module &rarr;</td>
+                            <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600" id="row1-mod">The Archives</td>
+                            <td class="p-3.5" id="row1-func">QR-locked digital lesson supplements</td>
+                            <td class="p-3.5" id="row1-goal">Interactive practice & classroom consolidation</td>
+                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Module &rarr;</td>
                         </tr>
                         <tr onclick="switchTab(2)" class="hover:bg-manor-100/70 transition cursor-pointer group">
-                            <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600">The Journal</td>
-                            <td class="p-3.5">Photo scrapbook, spelling tool & souvenir video</td>
-                            <td class="p-3.5">Cultural reflection, media creation & spelling accuracy</td>
-                            <td class="p-3.5 text-right font-bold text-xs text-gold-600">View Module &rarr;</td>
+                            <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600" id="row2-mod">The Journal</td>
+                            <td class="p-3.5" id="row2-func">Photo scrapbook, spelling tool & souvenir video</td>
+                            <td class="p-3.5" id="row2-goal">Cultural reflection, media creation & spelling accuracy</td>
+                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Module &rarr;</td>
                         </tr>
                         <tr onclick="switchTab(3)" class="hover:bg-manor-100/70 transition cursor-pointer group">
-                            <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600">Lessons Diary</td>
-                            <td class="p-3.5">Academic portfolio & whiteboard logger</td>
-                            <td class="p-3.5">Classroom review & glossary building</td>
-                            <td class="p-3.5 text-right font-bold text-xs text-gold-600">View Module &rarr;</td>
+                            <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600" id="row3-mod">Lessons Diary</td>
+                            <td class="p-3.5" id="row3-func">Academic portfolio & whiteboard logger</td>
+                            <td class="p-3.5" id="row3-goal">Classroom review & glossary building</td>
+                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Module &rarr;</td>
                         </tr>
                         <tr onclick="switchTab(4)" class="hover:bg-manor-100/70 transition cursor-pointer group">
-                            <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600">The Glossary</td>
-                            <td class="p-3.5">Personal bespoke dictionary with audio</td>
-                            <td class="p-3.5">Vocabulary expansion & British phonetics</td>
-                            <td class="p-3.5 text-right font-bold text-xs text-gold-600">View Module &rarr;</td>
+                            <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600" id="row4-mod">The Glossary</td>
+                            <td class="p-3.5" id="row4-func">Personal bespoke dictionary with audio</td>
+                            <td class="p-3.5" id="row4-goal">Vocabulary expansion & British phonetics</td>
+                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Module &rarr;</td>
                         </tr>
                         <tr onclick="switchTab(5)" class="hover:bg-manor-100/70 transition cursor-pointer group">
-                            <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600">Weekly Challenges</td>
-                            <td class="p-3.5">Daily quizzes & politeness rankings</td>
-                            <td class="p-3.5">Continuous learning & long-term retention</td>
-                            <td class="p-3.5 text-right font-bold text-xs text-gold-600">View Module &rarr;</td>
+                            <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600" id="row5-mod">Weekly Challenges</td>
+                            <td class="p-3.5" id="row5-func">Daily quizzes & politeness rankings</td>
+                            <td class="p-3.5" id="row5-goal">Continuous learning & long-term retention</td>
+                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Module &rarr;</td>
                         </tr>
                         <tr onclick="switchTab(6)" class="hover:bg-manor-100/70 transition cursor-pointer group">
-                            <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600">The Highland Gazette</td>
-                            <td class="p-3.5">Weekly cultural magazine articles</td>
-                            <td class="p-3.5">Contextual reading & tap-to-lookup study</td>
-                            <td class="p-3.5 text-right font-bold text-xs text-gold-600">View Module &rarr;</td>
+                            <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600" id="row6-mod">The Highland Gazette</td>
+                            <td class="p-3.5" id="row6-func">Weekly cultural magazine articles</td>
+                            <td class="p-3.5" id="row6-goal">Contextual reading & tap-to-lookup study</td>
+                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Module &rarr;</td>
                         </tr>
                         <tr onclick="switchTab(7)" class="hover:bg-manor-100/70 transition cursor-pointer group">
-                            <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600">Settings & Profile</td>
-                            <td class="p-3.5">Bilingual toggle & guest profile setup</td>
-                            <td class="p-3.5">Personalised experience & interface options</td>
-                            <td class="p-3.5 text-right font-bold text-xs text-gold-600">View Module &rarr;</td>
+                            <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600" id="row7-mod">Settings & Profile</td>
+                            <td class="p-3.5" id="row7-func">Bilingual toggle & guest profile setup</td>
+                            <td class="p-3.5" id="row7-goal">Personalised experience & interface options</td>
+                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Module &rarr;</td>
                         </tr>
                     </tbody>
                 </table>
@@ -245,7 +244,7 @@
                 <!-- Interactive Activities -->
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                     <h3 class="font-serif font-bold text-base text-manor-900" id="s1-act-title">Interactive Activities</h3>
-                    <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4">
+                    <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4" id="s1-act-list">
                         <li><strong>Vocabulary & Anagram Matchers:</strong> Unscramble terms and pair target words with contextual definitions to reinforce key lesson vocabulary.</li>
                         <li><strong>Sentence Builders & Ordering:</strong> Reorder clause blocks to master authentic British sentence patterns and idiomatic structures.</li>
                         <li><strong>Pronunciation & Phonetics:</strong> Practice syllable stress, linking sounds, intonation contours, and natural speech rhythm using interactive audio cues.</li>
@@ -257,17 +256,17 @@
             <!-- Integrated Interactive Exercise: Anagram Unscrambler -->
             <div class="bg-manor-900 text-white p-5 rounded-xl border border-gold-500/30 space-y-3">
                 <div class="flex justify-between items-center border-b border-gold-500/20 pb-2">
-                    <h4 class="font-serif font-bold text-xs text-gold-400 uppercase tracking-wider">Archives Interactive Simulator: Anagram Unscrambler</h4>
-                    <span class="text-[10px] text-stone-400 font-mono">Module Practice</span>
+                    <h4 class="font-serif font-bold text-xs text-gold-400 uppercase tracking-wider" id="s1-sim-title">Archives Interactive Simulator: Anagram Unscrambler</h4>
+                    <span class="text-[10px] text-stone-400 font-mono" id="s1-sim-badge">Module Practice</span>
                 </div>
-                <p class="text-xs text-stone-300">Unscramble this essential British Hills etiquette term:</p>
+                <p class="text-xs text-stone-300" id="s1-sim-prompt">Unscramble this essential British Hills etiquette term:</p>
 
                 <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-3 bg-manor-800 p-3 rounded border border-gold-500/20">
                     <div class="text-lg font-mono tracking-widest text-gold-400 font-bold px-3 py-1 bg-manor-900 rounded border border-stone-700">
                         C - U - O - R - T - E - S - Y
                     </div>
                     <input type="text" id="anagram-input" placeholder="Type answer..." class="w-full sm:w-auto flex-grow bg-manor-900 border border-stone-600 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-gold-400">
-                    <button onclick="checkAnagram()" class="w-full sm:w-auto bg-gold-500 hover:bg-gold-600 text-manor-900 font-bold px-4 py-1.5 rounded text-xs transition cursor-pointer">
+                    <button onclick="checkAnagram()" class="w-full sm:w-auto bg-gold-500 hover:bg-gold-600 text-manor-900 font-bold px-4 py-1.5 rounded text-xs transition cursor-pointer" id="btn-anagram-verify">
                         Verify Answer
                     </button>
                 </div>
@@ -275,8 +274,8 @@
             </div>
 
             <div class="flex justify-between pt-4 border-t border-stone-200">
-                <button onclick="switchTab(0)" class="text-xs font-bold text-manor-900 hover:underline">&larr; Back to Overview</button>
-                <button onclick="switchTab(2)" class="text-xs font-bold text-manor-900 hover:underline">Next: 2. The Journal &rarr;</button>
+                <button onclick="switchTab(0)" class="text-xs font-bold text-manor-900 hover:underline nav-back-overview">&larr; Back to Overview</button>
+                <button onclick="switchTab(2)" class="text-xs font-bold text-manor-900 hover:underline nav-next-s2">Next: 2. The Journal &rarr;</button>
             </div>
         </section>
 
@@ -294,7 +293,7 @@
                 <!-- Memory Pages & Framing -->
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                     <h3 class="font-serif font-bold text-base text-manor-900" id="s2-p1-title">Memory Pages & Framing</h3>
-                    <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4">
+                    <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4" id="s2-p1-list">
                         <li><strong>Personal Scrapbook:</strong> Write reflections and attach photos captured around the British Hills estate.</li>
                         <li><strong>Classic Photo Framing:</strong> Personalise your images by choosing between Polaroid, Victorian, or Parchment frame styles.</li>
                     </ul>
@@ -303,7 +302,7 @@
                 <!-- British Spelling Converter -->
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                     <h3 class="font-serif font-bold text-base text-manor-900" id="s2-p2-title">British Spelling Converter</h3>
-                    <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                    <p class="text-xs sm:text-sm text-stone-600 leading-relaxed" id="s2-p2-desc">
                         Converts standard American spellings to British English (e.g., color to colour, traveler to traveller, center to centre).
                     </p>
                 </div>
@@ -311,7 +310,7 @@
                 <!-- Social Media Souvenir Video -->
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                     <h3 class="font-serif font-bold text-base text-manor-900" id="s2-p3-title">Social Media Souvenir Video</h3>
-                    <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4">
+                    <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4" id="s2-p3-list">
                         <li><strong>Animated Keepsake:</strong> Automatically generate an animated, vertical souvenir video of your journal scrapbook complete with background music.</li>
                         <li><strong>Direct Export:</strong> Save the video directly to your device's Camera Roll for easy sharing on social media.</li>
                     </ul>
@@ -323,11 +322,11 @@
                 <!-- Frame Style Preview Simulator -->
                 <div class="bg-stone-100 p-5 rounded-xl border border-stone-300 space-y-3">
                     <div class="flex justify-between items-center border-b border-stone-200 pb-2">
-                        <h4 class="font-serif font-bold text-xs text-manor-900 uppercase tracking-wider">Frame Style Selector</h4>
+                        <h4 class="font-serif font-bold text-xs text-manor-900 uppercase tracking-wider" id="s2-sim1-title">Frame Style Selector</h4>
                         <div class="space-x-1 text-xs">
-                            <button onclick="setFrameStyle('polaroid')" class="px-2 py-0.5 bg-white border border-stone-300 rounded hover:bg-stone-50 font-semibold cursor-pointer">Polaroid</button>
-                            <button onclick="setFrameStyle('victorian')" class="px-2 py-0.5 bg-white border border-stone-300 rounded hover:bg-stone-50 font-semibold cursor-pointer">Victorian</button>
-                            <button onclick="setFrameStyle('parchment')" class="px-2 py-0.5 bg-white border border-stone-300 rounded hover:bg-stone-50 font-semibold cursor-pointer">Parchment</button>
+                            <button onclick="setFrameStyle('polaroid')" class="px-2 py-0.5 bg-white border border-stone-300 rounded hover:bg-stone-50 font-semibold cursor-pointer" id="btn-frame-pol">Polaroid</button>
+                            <button onclick="setFrameStyle('victorian')" class="px-2 py-0.5 bg-white border border-stone-300 rounded hover:bg-stone-50 font-semibold cursor-pointer" id="btn-frame-vic">Victorian</button>
+                            <button onclick="setFrameStyle('parchment')" class="px-2 py-0.5 bg-white border border-stone-300 rounded hover:bg-stone-50 font-semibold cursor-pointer" id="btn-frame-par">Parchment</button>
                         </div>
                     </div>
                     <div class="flex justify-center py-2">
@@ -345,22 +344,22 @@
                 <div class="bg-manor-900 text-white p-5 rounded-xl border border-gold-500/30 space-y-3 flex flex-col justify-between">
                     <div class="space-y-2">
                         <div class="flex items-center justify-between border-b border-gold-500/20 pb-2">
-                            <h4 class="font-serif font-bold text-xs text-gold-400 uppercase tracking-wider">US to UK Live Spelling Engine</h4>
-                            <span class="text-[10px] bg-burgundy-700 text-stone-200 px-2 py-0.5 rounded">Auto Converter</span>
+                            <h4 class="font-serif font-bold text-xs text-gold-400 uppercase tracking-wider" id="s2-sim2-title">US to UK Live Spelling Engine</h4>
+                            <span class="text-[10px] bg-burgundy-700 text-stone-200 px-2 py-0.5 rounded" id="s2-sim2-badge">Auto Converter</span>
                         </div>
-                        <p class="text-xs text-stone-300">Type words like 'color', 'center', 'organize', 'traveler' below:</p>
+                        <p class="text-xs text-stone-300" id="s2-sim2-prompt">Type words like 'color', 'center', 'organize', 'traveler' below:</p>
                         <textarea id="spelling-input" oninput="convertSpelling()" rows="2" class="w-full bg-manor-800 border border-stone-700 rounded p-2 text-xs text-amber-100 focus:outline-none focus:border-gold-400" placeholder="Type here: The traveler liked the center color..."></textarea>
                     </div>
                     <div class="bg-manor-800 p-2.5 rounded border border-gold-500/20">
-                        <span class="text-[10px] text-stone-400 font-mono block uppercase">British English Output:</span>
+                        <span class="text-[10px] text-stone-400 font-mono block uppercase" id="s2-sim2-outlabel">British English Output:</span>
                         <p id="spelling-output" class="text-xs font-serif text-gold-300 min-h-[1.5rem]">The traveller liked the centre colour...</p>
                     </div>
                 </div>
             </div>
 
             <div class="flex justify-between pt-4 border-t border-stone-200">
-                <button onclick="switchTab(1)" class="text-xs font-bold text-manor-900 hover:underline">&larr; Previous: 1. The Archives</button>
-                <button onclick="switchTab(3)" class="text-xs font-bold text-manor-900 hover:underline">Next: 3. Lessons Diary &rarr;</button>
+                <button onclick="switchTab(1)" class="text-xs font-bold text-manor-900 hover:underline nav-prev-s1">&larr; Previous: 1. The Archives</button>
+                <button onclick="switchTab(3)" class="text-xs font-bold text-manor-900 hover:underline nav-next-s3">Next: 3. Lessons Diary &rarr;</button>
             </div>
         </section>
 
@@ -378,7 +377,7 @@
                 <!-- Classroom Records -->
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                     <h3 class="font-serif font-bold text-base text-manor-900" id="s3-r-title">Classroom Records</h3>
-                    <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4">
+                    <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4" id="s3-r-list">
                         <li><strong>Lesson Reflection:</strong> Record the lesson module, teacher name, date, and your personal comprehension rating (1 to 5 stars).</li>
                         <li><strong>Whiteboard Capture:</strong> Snap and store photos of classroom whiteboards, worksheets, and teacher notes directly into the corresponding entry.</li>
                         <li><strong>Key Takeaways & Target Phrases:</strong> Jot down essential grammar points, functional expressions, and new vocabulary introduced during class.</li>
@@ -388,7 +387,7 @@
                 <!-- One-Tap Glossary Sync -->
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                     <h3 class="font-serif font-bold text-base text-manor-900" id="s3-s-title">One-Tap Glossary Sync</h3>
-                    <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                    <p class="text-xs sm:text-sm text-stone-600 leading-relaxed" id="s3-s-desc">
                         <strong>Instant Saving:</strong> Tap the <strong>+</strong> button beside any highlighted expression or term in your notes to automatically transfer it to The Glossary for future review.
                     </p>
                 </div>
@@ -397,16 +396,16 @@
             <!-- Integrated One-Tap Sync Demo -->
             <div class="bg-stone-50 border border-stone-300 p-5 rounded-xl space-y-3">
                 <div class="flex justify-between items-center border-b border-stone-200 pb-2">
-                    <h4 class="font-serif font-bold text-xs text-manor-900 uppercase tracking-wider">Lesson Diary Sync Simulator</h4>
-                    <span class="text-[10px] text-stone-500 font-mono">Class Log Entry #04</span>
+                    <h4 class="font-serif font-bold text-xs text-manor-900 uppercase tracking-wider" id="s3-sim-title">Lesson Diary Sync Simulator</h4>
+                    <span class="text-[10px] text-stone-500 font-mono" id="s3-sim-badge">Class Log Entry #04</span>
                 </div>
                 <div class="space-y-2">
                     <div class="flex items-center justify-between p-2.5 bg-white rounded border border-stone-200 text-xs">
                         <div>
                             <span class="font-bold text-manor-900">"Would you mind terribly if..."</span>
-                            <span class="text-stone-500 block text-[10px]">Polite Request Pattern</span>
+                            <span class="text-stone-500 block text-[10px]" id="s3-sim-tag">Polite Request Pattern</span>
                         </div>
-                        <button onclick="syncToGlossary('Would you mind terribly if...')" class="bg-manor-800 hover:bg-manor-900 text-gold-400 font-bold px-3 py-1 rounded text-xs transition cursor-pointer">
+                        <button onclick="syncToGlossary('Would you mind terribly if...')" class="bg-manor-800 hover:bg-manor-900 text-gold-400 font-bold px-3 py-1 rounded text-xs transition cursor-pointer" id="btn-sync-demo">
                             + Sync
                         </button>
                     </div>
@@ -414,8 +413,8 @@
             </div>
 
             <div class="flex justify-between pt-4 border-t border-stone-200">
-                <button onclick="switchTab(2)" class="text-xs font-bold text-manor-900 hover:underline">&larr; Previous: 2. The Journal</button>
-                <button onclick="switchTab(4)" class="text-xs font-bold text-manor-900 hover:underline">Next: 4. The Glossary &rarr;</button>
+                <button onclick="switchTab(2)" class="text-xs font-bold text-manor-900 hover:underline nav-prev-s2">&larr; Previous: 2. The Journal</button>
+                <button onclick="switchTab(4)" class="text-xs font-bold text-manor-900 hover:underline nav-next-s4">Next: 4. The Glossary &rarr;</button>
             </div>
         </section>
 
@@ -432,7 +431,7 @@
             <!-- Automatic Vocabulary Records -->
             <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                 <h3 class="font-serif font-bold text-base text-manor-900" id="s4-rec-title">Automatic Vocabulary Records</h3>
-                <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4">
+                <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4" id="s4-rec-list">
                     <li><strong>Centralised Collection:</strong> Terms saved from your Journal, Lessons Diary, Highland Gazette articles, or Word of the Day are automatically aggregated in your personal dictionary.</li>
                     <li><strong>Automated Data Retrieval:</strong> The app automatically fetches English definitions, parts of speech, and IPA (International Phonetic Alphabet) transcriptions for every entry.</li>
                     <li><strong>British Audio Pronunciation:</strong> Tap the speaker button beside any headword to hear natural British English pronunciation recorded by native speakers.</li>
@@ -443,7 +442,7 @@
             <!-- Integrated Audio & Glossary Search Simulator -->
             <div class="bg-stone-50 p-5 rounded-xl border border-stone-300 space-y-3">
                 <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-stone-200 pb-2">
-                    <h4 class="font-serif font-bold text-xs text-manor-900 uppercase tracking-wider">Glossary Search & Audio Pronunciation Tool</h4>
+                    <h4 class="font-serif font-bold text-xs text-manor-900 uppercase tracking-wider" id="s4-sim-title">Glossary Search & Audio Pronunciation Tool</h4>
                     <input type="text" id="glossary-search" oninput="filterGlossary()" placeholder="Filter saved words..." class="bg-white border border-stone-300 rounded px-2.5 py-1 text-xs w-full sm:w-48 focus:outline-none focus:border-manor-800">
                 </div>
 
@@ -454,7 +453,7 @@
                                 <span class="font-serif font-bold text-sm text-manor-900 word-head">Chivalry</span>
                                 <span class="text-xs text-burgundy-700 font-mono ml-1.5">/ˈʃɪv.əl.ri/</span>
                             </div>
-                            <button onclick="speakWord('Chivalry')" class="bg-manor-100 hover:bg-manor-200 text-manor-900 px-2 py-0.5 rounded text-[10px] font-bold transition cursor-pointer">
+                            <button onclick="speakWord('Chivalry')" class="bg-manor-100 hover:bg-manor-200 text-manor-900 px-2 py-0.5 rounded text-[10px] font-bold transition cursor-pointer btn-audio-text">
                                 Listen Audio
                             </button>
                         </div>
@@ -467,7 +466,7 @@
                                 <span class="font-serif font-bold text-sm text-manor-900 word-head">Splendid</span>
                                 <span class="text-xs text-burgundy-700 font-mono ml-1.5">/ˈsplen.dɪd/</span>
                             </div>
-                            <button onclick="speakWord('Splendid')" class="bg-manor-100 hover:bg-manor-200 text-manor-900 px-2 py-0.5 rounded text-[10px] font-bold transition cursor-pointer">
+                            <button onclick="speakWord('Splendid')" class="bg-manor-100 hover:bg-manor-200 text-manor-900 px-2 py-0.5 rounded text-[10px] font-bold transition cursor-pointer btn-audio-text">
                                 Listen Audio
                             </button>
                         </div>
@@ -477,8 +476,8 @@
             </div>
 
             <div class="flex justify-between pt-4 border-t border-stone-200">
-                <button onclick="switchTab(3)" class="text-xs font-bold text-manor-900 hover:underline">&larr; Previous: 3. Lessons Diary</button>
-                <button onclick="switchTab(5)" class="text-xs font-bold text-manor-900 hover:underline">Next: 5. Weekly Challenges &rarr;</button>
+                <button onclick="switchTab(3)" class="text-xs font-bold text-manor-900 hover:underline nav-prev-s3">&larr; Previous: 3. Lessons Diary</button>
+                <button onclick="switchTab(5)" class="text-xs font-bold text-manor-900 hover:underline nav-next-s5">Next: 5. Weekly Challenges &rarr;</button>
             </div>
         </section>
 
@@ -496,7 +495,7 @@
                 <!-- Word of the Day -->
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                     <h3 class="font-serif font-bold text-base text-manor-900" id="s5-wotd-title">Word of the Day</h3>
-                    <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                    <p class="text-xs sm:text-sm text-stone-600 leading-relaxed" id="s5-wotd-desc">
                         <strong>Daily Vocabulary:</strong> Receive a curated daily English word complete with IPA phonetics, definitions, historical context, and real-world example sentences.
                     </p>
                 </div>
@@ -504,7 +503,7 @@
                 <!-- Dynamic Vocab Review -->
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                     <h3 class="font-serif font-bold text-base text-manor-900" id="s5-rev-title">Dynamic Vocab Review</h3>
-                    <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                    <p class="text-xs sm:text-sm text-stone-600 leading-relaxed" id="s5-rev-desc">
                         <strong>Personalised Quizzes:</strong> Take interactive multiple-choice quizzes generated dynamically from the words stored in your personal Glossary.
                     </p>
                 </div>
@@ -512,7 +511,7 @@
                 <!-- Weekly Highland Challenges -->
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                     <h3 class="font-serif font-bold text-base text-manor-900" id="s5-chal-title">Weekly Highland Challenges</h3>
-                    <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4">
+                    <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4" id="s5-chal-list">
                         <li><strong>Part A • Politeness Ranking:</strong> Drag and arrange phrases from Most Formal to Most Casual to master British pragmatics and social etiquette.</li>
                         <li><strong>Part B • Graded Cloze:</strong> Complete fill-in-the-blank reading passages calibrated to refine reading comprehension and contextual grammar.</li>
                         <li><strong>Part C • Phonetics & Stress:</strong> Test your understanding of primary syllable stress, connected speech patterns, and silent letters across challenging headwords.</li>
@@ -523,39 +522,39 @@
             <!-- Integrated Interactive Game: Politeness Ranking -->
             <div class="bg-manor-900 text-white p-5 rounded-xl border border-gold-500/30 space-y-3">
                 <div class="flex justify-between items-center border-b border-gold-500/20 pb-2">
-                    <h4 class="font-serif font-bold text-xs text-gold-400 uppercase tracking-wider">Part A Mini-Game: Politeness Ranking</h4>
-                    <span class="text-[10px] text-stone-400">Sort: Most Formal (Top) to Most Casual (Bottom)</span>
+                    <h4 class="font-serif font-bold text-xs text-gold-400 uppercase tracking-wider" id="s5-sim-title">Part A Mini-Game: Politeness Ranking</h4>
+                    <span class="text-[10px] text-stone-400" id="s5-sim-badge">Sort: Most Formal (Top) to Most Casual (Bottom)</span>
                 </div>
-                <p class="text-xs text-stone-300">Reorder these three expressions into correct politeness order:</p>
+                <p class="text-xs text-stone-300" id="s5-sim-prompt">Reorder these three expressions into correct politeness order:</p>
 
                 <div id="politeness-list" class="space-y-2">
                     <div data-rank="casual" class="rank-item flex items-center justify-between p-2.5 bg-manor-800 rounded border border-stone-700">
                         <span class="text-xs text-amber-100 font-medium">"Give me a hand with this, will you?"</span>
                         <div class="space-x-1">
-                            <button onclick="moveRank(this, -1)" class="px-2 py-0.5 bg-manor-900 text-gold-400 text-xs rounded border border-gold-500/30">Up</button>
-                            <button onclick="moveRank(this, 1)" class="px-2 py-0.5 bg-manor-900 text-gold-400 text-xs rounded border border-gold-500/30">Down</button>
+                            <button onclick="moveRank(this, -1)" class="btn-rank-up px-2 py-0.5 bg-manor-900 text-gold-400 text-xs rounded border border-gold-500/30">Up</button>
+                            <button onclick="moveRank(this, 1)" class="btn-rank-down px-2 py-0.5 bg-manor-900 text-gold-400 text-xs rounded border border-gold-500/30">Down</button>
                         </div>
                     </div>
 
                     <div data-rank="formal" class="rank-item flex items-center justify-between p-2.5 bg-manor-800 rounded border border-stone-700">
                         <span class="text-xs text-amber-100 font-medium">"I would be immensely grateful if you could assist me."</span>
                         <div class="space-x-1">
-                            <button onclick="moveRank(this, -1)" class="px-2 py-0.5 bg-manor-900 text-gold-400 text-xs rounded border border-gold-500/30">Up</button>
-                            <button onclick="moveRank(this, 1)" class="px-2 py-0.5 bg-manor-900 text-gold-400 text-xs rounded border border-gold-500/30">Down</button>
+                            <button onclick="moveRank(this, -1)" class="btn-rank-up px-2 py-0.5 bg-manor-900 text-gold-400 text-xs rounded border border-gold-500/30">Up</button>
+                            <button onclick="moveRank(this, 1)" class="btn-rank-down px-2 py-0.5 bg-manor-900 text-gold-400 text-xs rounded border border-gold-500/30">Down</button>
                         </div>
                     </div>
 
                     <div data-rank="neutral" class="rank-item flex items-center justify-between p-2.5 bg-manor-800 rounded border border-stone-700">
                         <span class="text-xs text-amber-100 font-medium">"Could you please help me with this?"</span>
                         <div class="space-x-1">
-                            <button onclick="moveRank(this, -1)" class="px-2 py-0.5 bg-manor-900 text-gold-400 text-xs rounded border border-gold-500/30">Up</button>
-                            <button onclick="moveRank(this, 1)" class="px-2 py-0.5 bg-manor-900 text-gold-400 text-xs rounded border border-gold-500/30">Down</button>
+                            <button onclick="moveRank(this, -1)" class="btn-rank-up px-2 py-0.5 bg-manor-900 text-gold-400 text-xs rounded border border-gold-500/30">Up</button>
+                            <button onclick="moveRank(this, 1)" class="btn-rank-down px-2 py-0.5 bg-manor-900 text-gold-400 text-xs rounded border border-gold-500/30">Down</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex justify-between items-center pt-1">
-                    <button onclick="checkRankingOrder()" class="bg-gold-500 hover:bg-gold-600 text-manor-900 font-bold px-4 py-1.5 rounded text-xs transition cursor-pointer">
+                    <button onclick="checkRankingOrder()" class="bg-gold-500 hover:bg-gold-600 text-manor-900 font-bold px-4 py-1.5 rounded text-xs transition cursor-pointer" id="btn-rank-submit">
                         Submit Order
                     </button>
                     <span id="ranking-feedback" class="text-xs font-bold text-gold-400"></span>
@@ -563,8 +562,8 @@
             </div>
 
             <div class="flex justify-between pt-4 border-t border-stone-200">
-                <button onclick="switchTab(4)" class="text-xs font-bold text-manor-900 hover:underline">&larr; Previous: 4. The Glossary</button>
-                <button onclick="switchTab(6)" class="text-xs font-bold text-manor-900 hover:underline">Next: 6. The Highland Gazette &rarr;</button>
+                <button onclick="switchTab(4)" class="text-xs font-bold text-manor-900 hover:underline nav-prev-s4">&larr; Previous: 4. The Glossary</button>
+                <button onclick="switchTab(6)" class="text-xs font-bold text-manor-900 hover:underline nav-next-s6">Next: 6. The Highland Gazette &rarr;</button>
             </div>
         </section>
 
@@ -580,7 +579,7 @@
 
             <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                 <h3 class="font-serif font-bold text-base text-manor-900" id="s6-art-title">Weekly Reading Features</h3>
-                <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4">
+                <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4" id="s6-art-list">
                     <li><strong>Weekly Articles:</strong> Read weekly articles published directly by British Hills instructors and staff.</li>
                     <li><strong>Tap-to-Lookup:</strong> Tap any unfamiliar word within an article text block to open a floating definition card.</li>
                     <li><strong>Record and Save:</strong> Tap Add to Glossary on the definition card to save the term directly to your personal dictionary.</li>
@@ -590,12 +589,12 @@
             <!-- Integrated Tap-To-Lookup Interactive Article Reader -->
             <div class="bg-stone-50 p-5 rounded-xl border border-stone-300 space-y-3">
                 <div class="border-b border-stone-200 pb-2">
-                    <span class="text-[10px] font-bold text-gold-600 uppercase tracking-wider">Highland Gazette Reader Demo</span>
-                    <h4 class="font-serif font-bold text-base text-manor-900">The Tradition of Afternoon Tea</h4>
+                    <span class="text-[10px] font-bold text-gold-600 uppercase tracking-wider" id="s6-sim-badge">Highland Gazette Reader Demo</span>
+                    <h4 class="font-serif font-bold text-base text-manor-900" id="s6-sim-title">The Tradition of Afternoon Tea</h4>
                 </div>
 
                 <div class="p-3 bg-white rounded border border-stone-200 text-stone-800 text-xs sm:text-sm leading-relaxed space-y-2 font-serif">
-                    <p>
+                    <p id="s6-sim-prompt">
                         Tap highlighted terms below to trigger the app's floating dictionary lookup:
                     </p>
                     <p class="bg-manor-50 p-2.5 rounded border-l-2 border-gold-500 italic">
@@ -610,12 +609,12 @@
                             <span id="pop-word" class="font-serif text-sm font-bold text-gold-400">Word</span>
                             <span id="pop-phonetic" class="text-xs font-mono text-stone-300 ml-2">/ipa/</span>
                         </div>
-                        <button onclick="closeLookup()" class="text-stone-400 hover:text-white text-xs">Close</button>
+                        <button onclick="closeLookup()" class="text-stone-400 hover:text-white text-xs" id="btn-pop-close">Close</button>
                     </div>
                     <p id="pop-def" class="text-xs text-stone-200">Definition...</p>
                     <div class="pt-1 flex justify-between items-center border-t border-gold-500/20">
-                        <span class="text-[10px] text-stone-400">Lookup Result</span>
-                        <button onclick="savePopToGlossary()" class="bg-gold-500 hover:bg-gold-600 text-manor-900 font-bold px-2.5 py-1 rounded text-[10px] transition cursor-pointer">
+                        <span class="text-[10px] text-stone-400" id="pop-result-label">Lookup Result</span>
+                        <button onclick="savePopToGlossary()" class="bg-gold-500 hover:bg-gold-600 text-manor-900 font-bold px-2.5 py-1 rounded text-[10px] transition cursor-pointer" id="btn-pop-add">
                             + Add to Glossary
                         </button>
                     </div>
@@ -623,8 +622,8 @@
             </div>
 
             <div class="flex justify-between pt-4 border-t border-stone-200">
-                <button onclick="switchTab(5)" class="text-xs font-bold text-manor-900 hover:underline">&larr; Previous: 5. Weekly Challenges</button>
-                <button onclick="switchTab(7)" class="text-xs font-bold text-manor-900 hover:underline">Next: 7. Settings & Personalisation &rarr;</button>
+                <button onclick="switchTab(5)" class="text-xs font-bold text-manor-900 hover:underline nav-prev-s5">&larr; Previous: 5. Weekly Challenges</button>
+                <button onclick="switchTab(7)" class="text-xs font-bold text-manor-900 hover:underline nav-next-s7">Next: 7. Settings & Personalisation &rarr;</button>
             </div>
         </section>
 
@@ -657,8 +656,8 @@
             </div>
 
             <div class="flex justify-between pt-4 border-t border-stone-200">
-                <button onclick="switchTab(6)" class="text-xs font-bold text-manor-900 hover:underline">&larr; Previous: 6. The Highland Gazette</button>
-                <button onclick="switchTab(0)" class="text-xs font-bold text-manor-900 hover:underline">Back to Overview Table &rarr;</button>
+                <button onclick="switchTab(6)" class="text-xs font-bold text-manor-900 hover:underline nav-prev-s6">&larr; Previous: 6. The Highland Gazette</button>
+                <button onclick="switchTab(0)" class="text-xs font-bold text-manor-900 hover:underline nav-back-overview">Back to Overview Table &rarr;</button>
             </div>
         </section>
 
@@ -668,8 +667,8 @@
     <footer class="bg-manor-900 text-stone-400 border-t border-gold-500/20 py-8 text-xs mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
             <p class="font-serif text-gold-400 font-bold text-sm">British Hills - Fukushima, Japan</p>
-            <p>Official Explanatory User Guide Web Application for the Highland Companion App.</p>
-            <p class="text-stone-400 text-[11px]">Highland Life Immersion Programme</p>
+            <p id="footer-text1">Official Explanatory User Guide Web Application for the Highland Companion App.</p>
+            <p class="text-stone-400 text-[11px]" id="footer-text2">Highland Life Immersion Programme</p>
         </div>
     </footer>
 
@@ -679,59 +678,262 @@
 
         const i18n = {
             EN: {
-                badge: "User guide",
                 navSubtitle: "Highland Companion - User Guide",
+                badge: "User guide",
                 heroTitle: "British Hills Highland Companion - User Guide",
                 heroDesc: "The Highland Companion is your digital companion for your Highland Life course at British Hills. This page introduces the core features and tools designed to help you make the most of your stay and continue your learning journey long after you return home.",
+                
+                // Tabs
+                tab0: "Overview",
+                tab1: "1. The Archives",
+                tab2: "2. The Journal",
+                tab3: "3. Lessons Diary",
+                tab4: "4. The Glossary",
+                tab5: "5. Weekly Challenges",
+                tab6: "6. The Highland Gazette",
+                tab7: "7. Settings & Personalisation",
+
+                // Tab 0
                 overviewTitle: "Quick Navigation Overview",
                 overviewSub: "Summary of core modules, functional mechanics, and target learning outcomes. Tap any row to navigate directly to that module.",
                 thModule: "Module",
                 thFunction: "Core Function",
                 thGoal: "Primary Learning Goal",
+                thAction: "Action",
+                actionBtnText: "View Module →",
+
+                r1Mod: "The Archives", r1Func: "QR-locked digital lesson supplements", r1Goal: "Interactive practice & classroom consolidation",
+                r2Mod: "The Journal", r2Func: "Photo scrapbook, spelling tool & souvenir video", r2Goal: "Cultural reflection, media creation & spelling accuracy",
+                r3Mod: "Lessons Diary", r3Func: "Academic portfolio & whiteboard logger", r3Goal: "Classroom review & glossary building",
+                r4Mod: "The Glossary", r4Func: "Personal bespoke dictionary with audio", r4Goal: "Vocabulary expansion & British phonetics",
+                r5Mod: "Weekly Challenges", r5Func: "Daily quizzes & politeness rankings", r5Goal: "Continuous learning & long-term retention",
+                r6Mod: "The Highland Gazette", r6Func: "Weekly cultural magazine articles", r6Goal: "Contextual reading & tap-to-lookup study",
+                r7Mod: "Settings & Profile", r7Func: "Bilingual toggle & guest profile setup", r7Goal: "Personalised experience & interface options",
+
+                // Tab 1
                 s1Title: "1. The Archives (Supplementary Lesson Materials)",
                 s1Intro: "The Archives serve as your digital repository for interactive lesson content during your stay.",
+                s1QrTitle: "QR Code Scanner",
+                s1QrDesc: "<strong>In-Class Unlocking:</strong> In each lesson, scan the unique QR code provided by your teacher to instantly unlock exclusive supplementary study materials tailored to that specific class.",
+                s1ActTitle: "Interactive Activities",
+                s1ActList: "<li><strong>Vocabulary & Anagram Matchers:</strong> Unscramble terms and pair target words with contextual definitions to reinforce key lesson vocabulary.</li><li><strong>Sentence Builders & Ordering:</strong> Reorder clause blocks to master authentic British sentence patterns and idiomatic structures.</li><li><strong>Pronunciation & Phonetics:</strong> Practice syllable stress, linking sounds, intonation contours, and natural speech rhythm using interactive audio cues.</li><li><strong>Special Lesson Modules:</strong> Access dedicated interactive tools designed for specific immersion classes, including digital card decks and magic trick simulators.</li>",
+                s1SimTitle: "Archives Interactive Simulator: Anagram Unscrambler",
+                s1SimBadge: "Module Practice",
+                s1SimPrompt: "Unscramble this essential British Hills etiquette term:",
+                btnAnagramVerify: "Verify Answer",
+
+                // Tab 2
                 s2Title: "2. The Journal & Souvenir Video",
                 s2Intro: "Capture and preserve your personal Highland Life memories while practicing expressive English writing.",
+                s2P1Title: "Memory Pages & Framing",
+                s2P1List: "<li><strong>Personal Scrapbook:</strong> Write reflections and attach photos captured around the British Hills estate.</li><li><strong>Classic Photo Framing:</strong> Personalise your images by choosing between Polaroid, Victorian, or Parchment frame styles.</li>",
+                s2P2Title: "British Spelling Converter",
+                s2P2Desc: "Converts standard American spellings to British English (e.g., color to colour, traveler to traveller, center to centre).",
+                s2P3Title: "Social Media Souvenir Video",
+                s2P3List: "<li><strong>Animated Keepsake:</strong> Automatically generate an animated, vertical souvenir video of your journal scrapbook complete with background music.</li><li><strong>Direct Export:</strong> Save the video directly to your device's Camera Roll for easy sharing on social media.</li>",
+                s2Sim1Title: "Frame Style Selector",
+                btnFramePol: "Polaroid", btnFrameVic: "Victorian", btnFramePar: "Parchment",
+                s2Sim2Title: "US to UK Live Spelling Engine",
+                s2Sim2Badge: "Auto Converter",
+                s2Sim2Prompt: "Type words like 'color', 'center', 'organize', 'traveler' below:",
+                s2Sim2Outlabel: "British English Output:",
+
+                // Tab 3
                 s3Title: "3. Lessons Diary",
                 s3Intro: "Track what you study in every classroom session to build a diary of what you learned.",
+                s3RTitle: "Classroom Records",
+                s3RList: "<li><strong>Lesson Reflection:</strong> Record the lesson module, teacher name, date, and your personal comprehension rating (1 to 5 stars).</li><li><strong>Whiteboard Capture:</strong> Snap and store photos of classroom whiteboards, worksheets, and teacher notes directly into the corresponding entry.</li><li><strong>Key Takeaways & Target Phrases:</strong> Jot down essential grammar points, functional expressions, and new vocabulary introduced during class.</li>",
+                s3STitle: "One-Tap Glossary Sync",
+                s3SDesc: "<strong>Instant Saving:</strong> Tap the <strong>+</strong> button beside any highlighted expression or term in your notes to automatically transfer it to The Glossary for future review.",
+                s3SimTitle: "Lesson Diary Sync Simulator",
+                s3SimBadge: "Class Log Entry #04",
+                s3SimTag: "Polite Request Pattern",
+                btnSyncDemo: "+ Sync",
+
+                // Tab 4
                 s4Title: "4. The Glossary (Personal Dictionary)",
                 s4Intro: "Your personal vocabulary book grows continuously alongside your learning progress.",
+                s4RecTitle: "Automatic Vocabulary Records",
+                s4RecList: "<li><strong>Centralised Collection:</strong> Terms saved from your Journal, Lessons Diary, Highland Gazette articles, or Word of the Day are automatically aggregated in your personal dictionary.</li><li><strong>Automated Data Retrieval:</strong> The app automatically fetches English definitions, parts of speech, and IPA (International Phonetic Alphabet) transcriptions for every entry.</li><li><strong>British Audio Pronunciation:</strong> Tap the speaker button beside any headword to hear natural British English pronunciation recorded by native speakers.</li><li><strong>Search & Filter:</strong> Quickly find any word you have collected using the real-time filter engine.</li>",
+                s4SimTitle: "Glossary Search & Audio Pronunciation Tool",
+                glossarySearchPlaceholder: "Filter saved words...",
+                btnAudioText: "Listen Audio",
+
+                // Tab 5
                 s5Title: "5. Continuous Learning & Weekly Challenges",
                 s5Intro: "Keep learning after leaving British Hills through ongoing practice.",
+                s5WotdTitle: "Word of the Day",
+                s5WotdDesc: "<strong>Daily Vocabulary:</strong> Receive a curated daily English word complete with IPA phonetics, definitions, historical context, and real-world example sentences.",
+                s5RevTitle: "Dynamic Vocab Review",
+                s5RevDesc: "<strong>Personalised Quizzes:</strong> Take interactive multiple-choice quizzes generated dynamically from the words stored in your personal Glossary.",
+                s5ChalTitle: "Weekly Highland Challenges",
+                s5ChalList: "<li><strong>Part A • Politeness Ranking:</strong> Drag and arrange phrases from Most Formal to Most Casual to master British pragmatics and social etiquette.</li><li><strong>Part B • Graded Cloze:</strong> Complete fill-in-the-blank reading passages calibrated to refine reading comprehension and contextual grammar.</li><li><strong>Part C • Phonetics & Stress:</strong> Test your understanding of primary syllable stress, connected speech patterns, and silent letters across challenging headwords.</li>",
+                s5SimTitle: "Part A Mini-Game: Politeness Ranking",
+                s5SimBadge: "Sort: Most Formal (Top) to Most Casual (Bottom)",
+                s5SimPrompt: "Reorder these three expressions into correct politeness order:",
+                btnRankUp: "Up", btnRankDown: "Down", btnRankSubmit: "Submit Order",
+
+                // Tab 6
                 s6Title: "6. The Highland Gazette",
                 s6Intro: "Stay connected with British Hills through weekly articles exploring British and Commonwealth heritage, traditions, lifestyle, and history.",
+                s6ArtTitle: "Weekly Reading Features",
+                s6ArtList: "<li><strong>Weekly Articles:</strong> Read weekly articles published directly by British Hills instructors and staff.</li><li><strong>Tap-to-Lookup:</strong> Tap any unfamiliar word within an article text block to open a floating definition card.</li><li><strong>Record and Save:</strong> Tap Add to Glossary on the definition card to save the term directly to your personal dictionary.</li>",
+                s6SimBadge: "Highland Gazette Reader Demo",
+                s6SimTitle: "The Tradition of Afternoon Tea",
+                s6SimPrompt: "Tap highlighted terms below to trigger the app's floating dictionary lookup:",
+                btnPopClose: "Close", popResultLabel: "Lookup Result", btnPopAdd: "+ Add to Glossary",
+
+                // Tab 7
                 s7Title: "7. Settings & Personalisation",
-                s7Intro: "Tailor the application interface and export settings to suit your learning preferences."
+                s7Intro: "Tailor the application interface and export settings to suit your learning preferences.",
+                s7LangTitle: "Bilingual Support",
+                s7LangDesc: "<strong>Language Toggle (English / 日本語):</strong> Switch the entire application interface, instructions, and navigation prompts between English and Japanese at any time.",
+                s7ProfTitle: "Personalised Profile",
+                s7ProfDesc: "Set your guest name to customise your learning screens, journal metadata, and exportable souvenir video.",
+
+                // Navigation Links
+                navBackOverview: "Back to Overview Table →",
+                navPrevS1: "← Previous: 1. The Archives", navNextS2: "Next: 2. The Journal →",
+                navPrevS2: "← Previous: 2. The Journal", navNextS3: "Next: 3. Lessons Diary →",
+                navPrevS3: "← Previous: 3. Lessons Diary", navNextS4: "Next: 4. The Glossary →",
+                navPrevS4: "← Previous: 4. The Glossary", navNextS5: "Next: 5. Weekly Challenges →",
+                navPrevS5: "← Previous: 5. Weekly Challenges", navNextS6: "Next: 6. The Highland Gazette →",
+                navPrevS6: "← Previous: 6. The Highland Gazette", navNextS7: "Next: 7. Settings & Personalisation →",
+
+                // Footer
+                footerText1: "Official Explanatory User Guide Web Application for the Highland Companion App.",
+                footerText2: "Highland Life Immersion Programme"
             },
             JP: {
-                badge: "ユーザーガイド",
                 navSubtitle: "ハイランド・コンパニオン ユーザーガイド",
-                heroTitle: "ブリティッシュヒルズ ハイランド・コンパニオン 公式ガイド",
-                heroDesc: "ハイランド・コンパニオンは、ブリティッシュヒルズでのハイランド・ライフコースのためのデジタルコンパニオンです。このページでは、滞在を最大限に活用し、帰宅後も学習の旅を続けるために設計された主要機能とツールをご紹介します。",
+                badge: "ユーザーガイド",
+                heroTitle: "ブリティッシュヒルズ ハイランド・コンパニオン 公式Webガイド",
+                heroDesc: "ハイランド・コンパニオンは、ブリティッシュヒルズでのハイランド・ライフコースのためのデジタル学習ツールです。滞在中の学習効果を最大化し、帰宅後も楽しく英語学習を継続できるよう設計された主要機能とツールをご紹介します。",
+                
+                // Tabs
+                tab0: "概要一覧",
+                tab1: "1. ザ・アーカイブズ",
+                tab2: "2. ザ・ジャーナル",
+                tab3: "3. レッスン・ダイアリー",
+                tab4: "4. ザ・グロッサリー",
+                tab5: "5. ウィークリー・チャレンジ",
+                tab6: "6. ハイランド・ガゼット",
+                tab7: "7. 設定・パーソナライズ",
+
+                // Tab 0
                 overviewTitle: "機能概要一覧テーブル",
-                overviewSub: "主要モジュール、機能概要、学習目標のサマリーです。行をタップすると直接そのモジュールに切り替わります。",
+                overviewSub: "主要モジュール、機能概要、学習目標のサマリーです。行をタップすると直接該当モジュールへ移動します。",
                 thModule: "モジュール",
                 thFunction: "主要機能",
-                thGoal: "学習目標",
-                s1Title: "1. The Archives (補足教材アーカイブ)",
-                s1Intro: "授業に連動したデジタル補足教材やインタラクティブ演習を保管するリポジトリ機能です。",
-                s2Title: "2. The Journal (ジャーナル＆記念動画)",
-                s2Intro: "写真や英文日記で滞在の思い出を記録し、自動英式スペル変換やBGM付き縦型動画を出力できます。",
-                s3Title: "3. Lessons Diary (授業ダイアリー)",
-                s3Intro: "毎回の授業内容、担当講師、理解度評価、板書写真を保存し、ワンタップで単語帳へ同期できます。",
-                s4Title: "4. The Glossary (個人専用辞書)",
-                s4Intro: "保存した単語の定義、品詞、IPA発音記号、イギリス英語ネイティブ音声を自動取得・集約します。",
-                s5Title: "5. 継続学習＆週間チャレンジ",
-                s5Intro: "帰宅後も毎日のWord of the Dayやクイズ、丁寧さの順位付けなどで英式マナーと語彙力を維持します。",
-                s6Title: "6. The Highland Gazette (文化マガジン)",
-                s6Intro: "講師陣による週刊記事を読みながら、単語を直接タップして辞書検索・保存が可能です。",
-                s7Title: "7. 設定＆パーソナライズ",
-                s7Intro: "アプリの表示言語（英語/日本語）の切り替えやプロフィールのカスタマイズが可能です。"
+                thGoal: "主な学習目標",
+                thAction: "操作",
+                actionBtnText: "モジュールを見る →",
+
+                r1Mod: "ザ・アーカイブズ", r1Func: "QRコードで解禁する授業連動デジタル教材", r1Goal: "授業の復習とインタラクティブ演習",
+                r2Mod: "ザ・ジャーナル", r2Func: "写真アルバム、英式スペル変換＆記念動画", r2Goal: "文化体験の記録、メディア作成、英式スペルの習得",
+                r3Mod: "レッスン・ダイアリー", r3Func: "授業記録＆板書キャプチャ機能", r3Goal: "授業の振り返りと単語帳連携",
+                r4Mod: "ザ・グロッサリー", r4Func: "音声付き個人専用デジタル辞書", r4Goal: "語彙力強化とイギリス英語の発音習得",
+                r5Mod: "ウィークリー・チャレンジ", r5Func: "毎日のクイズと丁寧さの順位付け演習", r5Goal: "帰宅後の継続学習と定着",
+                r6Mod: "ハイランド・ガゼット", r6Func: "講師陣による週刊文化マガジン", r6Goal: "文脈での読解とワンタップ辞書検索",
+                r7Mod: "設定・パーソナライズ", r7Func: "言語切り替え＆ゲストプロフィール設定", r7Goal: "自分に合わせた学習環境の設定",
+
+                // Tab 1
+                s1Title: "1. ザ・アーカイブズ（授業補足教材）",
+                s1Intro: "ザ・アーカイブズは、滞在中の授業に連動したインタラクティブ教材を管理するリポジトリ機能です。",
+                s1QrTitle: "QRコードスキャナー",
+                s1QrDesc: "<strong>授業中での解禁：</strong>毎授業で講師から提示される専用QRコードを読み取ることで、該当レッスンに特化した補足教材を即座に開くことができます。",
+                s1ActTitle: "インタラクティブ演習",
+                s1ActList: "<li><strong>単語・アナグラムパズル：</strong>英単語を並べ替えたり定義とペアにすることで語彙を定着させます。</li><li><strong>構文ビルド演習：</strong>フレーズの構成要素を並べ替えて自然なイギリス英語の文法パターンを学びます。</li><li><strong>発音・フォニックス：</strong>アクセント、音声変化、イントネーションを音声ガイドと共に練習します。</li><li><strong>特別レッスン用モジュール：</strong>マジック体験授業やカードワークなど、各体験授業専用のインタラクティブツールにアクセスできます。</li>",
+                s1SimTitle: "アーカイブズ体験シミュレーター：アナグラム解読",
+                s1SimBadge: "モジュール体験",
+                s1SimPrompt: "ブリティッシュヒルズのマナーに関する以下の英単語を並べ替えてください：",
+                btnAnagramVerify: "解答を確認",
+
+                // Tab 2
+                s2Title: "2. ザ・ジャーナル＆記念動画",
+                s2Intro: "英文での日記執筆を通して、ブリティッシュヒルズでの思い出を鮮やかに記録します。",
+                s2P1Title: "思い出ページとフォトフレーム",
+                s2P1List: "<li><strong>スクラップブック：</strong>施設内で撮影した写真と一緒に振り返り文を書き残せます。</li><li><strong>クラシックフォトフレーム：</strong>ポラロイド風、ヴィクトリア調、羊皮紙風のフレームを選択して写真を演出できます。</li>",
+                s2P2Title: "イギリス英語スペル変換機能",
+                s2P2Desc: "アメリカ英語（color, center, traveler等）を自動的にイギリス英語（colour, centre, traveller等）へ変換します。",
+                s2P3Title: "SNS用縦型記念動画",
+                s2P3List: "<li><strong>アニメーション記念動画：</strong>ジャーナルに記録した写真とテキストから、BGM付きの縦型動画を自動生成します。</li><li><strong>直接保存：</strong>生成した動画は端末のカメラロールに保存し、SNSで簡単に共有できます。</li>",
+                s2Sim1Title: "フレームスタイル選択",
+                btnFramePol: "ポラロイド風", btnFrameVic: "ヴィクトリア調", btnFramePar: "羊皮紙風",
+                s2Sim2Title: "イギリス英語自動変換シミュレーター",
+                s2Sim2Badge: "自動変換",
+                s2Sim2Prompt: "アメリカ英語の単語（color, center, organize, traveler等）を入力してください：",
+                s2Sim2Outlabel: "イギリス英語変換結果：",
+
+                // Tab 3
+                s3Title: "3. レッスン・ダイアリー",
+                s3Intro: "受講したすべてのレッスンの学習記録を残し、自分だけの受講ダイアリーを作成します。",
+                s3RTitle: "授業記録機能",
+                s3RList: "<li><strong>レッスンの記録：</strong>受講モジュール、担当講師名、受講日、理解度（5段階評価）を記録します。</li><li><strong>板書キャプチャ：</strong>授業中のホワイトボードやワークシートの写真を直接エントリーに保存できます。</li><li><strong>重要フレーズの記録：</strong>授業で習った重要な文法ポイントや表現、新出単語をメモします。</li>",
+                s3STitle: "ワンタップ単語帳同期",
+                s3SDesc: "<strong>即時保存：</strong>メモ内のハイライトされた表現や単語の「+」ボタンをタップするだけで、自動的に「ザ・グロッサリー」へ転送されます。",
+                s3SimTitle: "レッスン・ダイアリー同期シミュレーター",
+                s3SimBadge: "授業ログ #04",
+                s3SimTag: "丁寧な依頼の構文パターン",
+                btnSyncDemo: "+ 同期",
+
+                // Tab 4
+                s4Title: "4. ザ・グロッサリー（個人専用辞書）",
+                s4Intro: "学びの進捗に合わせて、あなただけのオリジナル英和・英英単語帳が充実していきます。",
+                s4RecTitle: "自動単語収集・登録機能",
+                s4RecList: "<li><strong>自動集約：</strong>ジャーナル、レッスン・ダイアリー、マガジン記事、Word of the Dayで保存した単語が一箇所に集まります。</li><li><strong>データ自動取得：</strong>登録された単語の英語定義、品詞、IPA発音記号をシステムが自動取得します。</li><li><strong>ネイティブ音声：</strong>スピーカーアイコンをタップすると、イギリス英語ネイティブの正確な発音を聞くことができます。</li><li><strong>検索・絞り込み：</strong>リアルタイムフィルター機能により、保存した単語をすばやく検索できます。</li>",
+                s4SimTitle: "単語帳検索＆音声再生ツール",
+                glossarySearchPlaceholder: "単語を検索...",
+                btnAudioText: "音声再生",
+
+                // Tab 5
+                s5Title: "5. 継続学習＆ウィークリー・チャレンジ",
+                s5Intro: "ブリティッシュヒルズを離れた後も、毎日の演習で学習効果を継続させます。",
+                s5WotdTitle: "本日の英単語 (Word of the Day)",
+                s5WotdDesc: "<strong>日替わり語彙：</strong>IPA発音記号、定義、語源や背景、実用例文が記載された単語が毎日届きます。",
+                s5RevTitle: "動的語彙クイズ",
+                s5RevDesc: "<strong>個別クイズ：</strong>あなたの「ザ・グロッサリー」に保存されている単語から自動生成される選択式クイズです。",
+                s5ChalTitle: "ウィークリー・ハイランド・チャレンジ",
+                s5ChalList: "<li><strong>Part A • 丁寧さの順位付け：</strong>フレーズを「最も丁寧」から「カジュアル」へ並べ替え、イギリス英語の配慮表現をマスターします。</li><li><strong>Part B • 穴埋め読解：</strong>段階的な穴埋め問題で読解力と文脈理解を鍛えます。</li><li><strong>Part C • 音声・アクセント：</strong>主要アクセントの位置や音の変化、サイレント・レター（不発音）をテストします。</li>",
+                s5SimTitle: "Part A ミニゲーム：丁寧さの順位付け",
+                s5SimBadge: "整理：最も丁寧（上）からカジュアル（下）へ",
+                s5SimPrompt: "以下の3つの表現を丁寧さの順に並べ替えてください：",
+                btnRankUp: "上へ", btnRankDown: "下へ", btnRankSubmit: "解答を送信",
+
+                // Tab 6
+                s6Title: "6. ザ・ハイランド・ガゼット",
+                s6Intro: "ブリティッシュヒルズの講師陣が届ける週刊記事を通して、イギリスや連邦国の歴史・文化・習慣に触れられます。",
+                s6ArtTitle: "マガジン読解機能",
+                s6ArtList: "<li><strong>週刊記事：</strong>講師やスタッフが執筆した文化記事を定期的に購読できます。</li><li><strong>タップ辞書検索：</strong>本文中の分からない単語をタップすると、その場でポップアップ辞書が表示されます。</li><li><strong>辞書へ保存：</strong>ポップアップ内の「ザ・グロッサリーに追加」ボタンをタップすると、直接自分専用の単語帳に登録されます。</li>",
+                s6SimBadge: "ハイランド・ガゼット 読解デモ",
+                s6SimTitle: "The Tradition of Afternoon Tea",
+                s6SimPrompt: "下記のハイライトされた英単語をタップして辞書機能を体験してください：",
+                btnPopClose: "閉じる", popResultLabel: "辞書検索結果", btnPopAdd: "+ 単語帳に追加",
+
+                // Tab 7
+                s7Title: "7. 設定・パーソナライズ",
+                s7Intro: "アプリの表示言語や出力設定を、あなたの学習スタイルに合わせてカスタマイズできます。",
+                s7LangTitle: "バイリンガル表示対応",
+                s7LangDesc: "<strong>言語切替（英語 / 日本語）：</strong>アプリ全体の表示言語や説明文をいつでも英語と日本語で切り替えられます。",
+                s7ProfTitle: "プロフィール設定",
+                s7ProfDesc: "ゲスト名を登録することで、学習画面やジャーナルの記録、出力される記念動画にあなたの名前が反映されます。",
+
+                // Navigation Links
+                navBackOverview: "概要テーブルへ戻る →",
+                navPrevS1: "← 前へ: 1. ザ・アーカイブズ", navNextS2: "次へ: 2. ザ・ジャーナル →",
+                navPrevS2: "← 前へ: 2. ザ・ジャーナル", navNextS3: "次へ: 3. レッスン・ダイアリー →",
+                navPrevS3: "← 前へ: 3. レッスン・ダイアリー", navNextS4: "次へ: 4. ザ・グロッサリー →",
+                navPrevS4: "← 前へ: 4. ザ・グロッサリー", navNextS5: "次へ: 5. ウィークリー・チャレンジ →",
+                navPrevS5: "← 前へ: 5. ウィークリー・チャレンジ", navNextS6: "次へ: 6. ザ・ハイランド・ガゼット →",
+                navPrevS6: "← 前へ: 6. ザ・ハイランド・ガゼット", navNextS7: "次へ: 7. 設定・パーソナライズ →",
+
+                // Footer
+                footerText1: "ハイランド・コンパニオン アプリ公式解説Webガイド",
+                footerText2: "ハイランド・ライフ 英語没入プログラム"
             }
         };
 
         function switchTab(tabIndex) {
-            // Hide all tab content panes
             document.querySelectorAll('.tab-pane').forEach((pane, idx) => {
                 if (idx === tabIndex) {
                     pane.classList.remove('hidden');
@@ -740,7 +942,6 @@
                 }
             });
 
-            // Update tab button styles
             document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
                 if (idx === tabIndex) {
                     btn.className = 'tab-btn px-4 py-2.5 rounded-lg font-serif text-xs font-bold transition-all shadow-sm bg-manor-900 text-gold-400 border border-gold-500/50 cursor-pointer whitespace-nowrap';
@@ -749,7 +950,6 @@
                 }
             });
 
-            // Smooth scroll up to tabs bar for clear view
             const nav = document.getElementById('tabs-navigation');
             if (nav) {
                 const rect = nav.getBoundingClientRect();
@@ -761,46 +961,162 @@
 
         function toggleLanguage() {
             currentLang = currentLang === 'EN' ? 'JP' : 'EN';
+            applyLanguage();
+        }
+
+        function applyLanguage() {
             const data = i18n[currentLang];
-            
-            document.getElementById('hero-badge').textContent = data.badge;
+
+            // Subtitle & Header
             document.getElementById('nav-subtitle').textContent = data.navSubtitle;
+            document.getElementById('hero-badge').textContent = data.badge;
             document.getElementById('hero-title').textContent = data.heroTitle;
             document.getElementById('hero-desc').textContent = data.heroDesc;
+
+            // Tabs
+            for (let i = 0; i <= 7; i++) {
+                const el = document.getElementById(`tab-btn-${i}`);
+                if (el) el.textContent = data[`tab${i}`];
+            }
+
+            // Tab 0
             document.getElementById('overview-title').textContent = data.overviewTitle;
             document.getElementById('overview-sub').textContent = data.overviewSub;
             document.getElementById('th-module').textContent = data.thModule;
             document.getElementById('th-function').textContent = data.thFunction;
             document.getElementById('th-goal').textContent = data.thGoal;
+            document.getElementById('th-action').textContent = data.thAction;
+            document.querySelectorAll('.action-btn-text').forEach(el => el.textContent = data.actionBtnText);
 
+            document.getElementById('row1-mod').textContent = data.r1Mod; document.getElementById('row1-func').textContent = data.r1Func; document.getElementById('row1-goal').textContent = data.r1Goal;
+            document.getElementById('row2-mod').textContent = data.r2Mod; document.getElementById('row2-func').textContent = data.r2Func; document.getElementById('row2-goal').textContent = data.r2Goal;
+            document.getElementById('row3-mod').textContent = data.r3Mod; document.getElementById('row3-func').textContent = data.r3Func; document.getElementById('row3-goal').textContent = data.r3Goal;
+            document.getElementById('row4-mod').textContent = data.r4Mod; document.getElementById('row4-func').textContent = data.r4Func; document.getElementById('row4-goal').textContent = data.r4Goal;
+            document.getElementById('row5-mod').textContent = data.r5Mod; document.getElementById('row5-func').textContent = data.r5Func; document.getElementById('row5-goal').textContent = data.r5Goal;
+            document.getElementById('row6-mod').textContent = data.r6Mod; document.getElementById('row6-func').textContent = data.r6Func; document.getElementById('row6-goal').textContent = data.r6Goal;
+            document.getElementById('row7-mod').textContent = data.r7Mod; document.getElementById('row7-func').textContent = data.r7Func; document.getElementById('row7-goal').textContent = data.r7Goal;
+
+            // Tab 1
             document.getElementById('s1-title').textContent = data.s1Title;
             document.getElementById('s1-intro').textContent = data.s1Intro;
+            document.getElementById('s1-qr-title').textContent = data.s1QrTitle;
+            document.getElementById('s1-qr-desc').innerHTML = data.s1QrDesc;
+            document.getElementById('s1-act-title').textContent = data.s1ActTitle;
+            document.getElementById('s1-act-list').innerHTML = data.s1ActList;
+            document.getElementById('s1-sim-title').textContent = data.s1SimTitle;
+            document.getElementById('s1-sim-badge').textContent = data.s1SimBadge;
+            document.getElementById('s1-sim-prompt').textContent = data.s1SimPrompt;
+            document.getElementById('btn-anagram-verify').textContent = data.btnAnagramVerify;
+
+            // Tab 2
             document.getElementById('s2-title').textContent = data.s2Title;
             document.getElementById('s2-intro').textContent = data.s2Intro;
+            document.getElementById('s2-p1-title').textContent = data.s2P1Title;
+            document.getElementById('s2-p1-list').innerHTML = data.s2P1List;
+            document.getElementById('s2-p2-title').textContent = data.s2P2Title;
+            document.getElementById('s2-p2-desc').textContent = data.s2P2Desc;
+            document.getElementById('s2-p3-title').textContent = data.s2P3Title;
+            document.getElementById('s2-p3-list').innerHTML = data.s2P3List;
+            document.getElementById('s2-sim1-title').textContent = data.s2Sim1Title;
+            document.getElementById('btn-frame-pol').textContent = data.btnFramePol;
+            document.getElementById('btn-frame-vic').textContent = data.btnFrameVic;
+            document.getElementById('btn-frame-par').textContent = data.btnFramePar;
+            document.getElementById('s2-sim2-title').textContent = data.s2Sim2Title;
+            document.getElementById('s2-sim2-badge').textContent = data.s2Sim2Badge;
+            document.getElementById('s2-sim2-prompt').textContent = data.s2Sim2Prompt;
+            document.getElementById('s2-sim2-outlabel').textContent = data.s2Sim2Outlabel;
+
+            // Tab 3
             document.getElementById('s3-title').textContent = data.s3Title;
             document.getElementById('s3-intro').textContent = data.s3Intro;
+            document.getElementById('s3-r-title').textContent = data.s3RTitle;
+            document.getElementById('s3-r-list').innerHTML = data.s3RList;
+            document.getElementById('s3-s-title').textContent = data.s3STitle;
+            document.getElementById('s3-s-desc').innerHTML = data.s3SDesc;
+            document.getElementById('s3-sim-title').textContent = data.s3SimTitle;
+            document.getElementById('s3-sim-badge').textContent = data.s3SimBadge;
+            document.getElementById('s3-sim-tag').textContent = data.s3SimTag;
+            document.getElementById('btn-sync-demo').textContent = data.btnSyncDemo;
+
+            // Tab 4
             document.getElementById('s4-title').textContent = data.s4Title;
             document.getElementById('s4-intro').textContent = data.s4Intro;
+            document.getElementById('s4-rec-title').textContent = data.s4RecTitle;
+            document.getElementById('s4-rec-list').innerHTML = data.s4RecList;
+            document.getElementById('s4-sim-title').textContent = data.s4SimTitle;
+            document.getElementById('glossary-search').placeholder = data.glossarySearchPlaceholder;
+            document.querySelectorAll('.btn-audio-text').forEach(btn => btn.textContent = data.btnAudioText);
+
+            // Tab 5
             document.getElementById('s5-title').textContent = data.s5Title;
             document.getElementById('s5-intro').textContent = data.s5Intro;
+            document.getElementById('s5-wotd-title').textContent = data.s5WotdTitle;
+            document.getElementById('s5-wotd-desc').innerHTML = data.s5WotdDesc;
+            document.getElementById('s5-rev-title').textContent = data.s5RevTitle;
+            document.getElementById('s5-rev-desc').innerHTML = data.s5RevDesc;
+            document.getElementById('s5-chal-title').textContent = data.s5ChalTitle;
+            document.getElementById('s5-chal-list').innerHTML = data.s5ChalList;
+            document.getElementById('s5-sim-title').textContent = data.s5SimTitle;
+            document.getElementById('s5-sim-badge').textContent = data.s5SimBadge;
+            document.getElementById('s5-sim-prompt').textContent = data.s5SimPrompt;
+            document.querySelectorAll('.btn-rank-up').forEach(b => b.textContent = data.btnRankUp);
+            document.querySelectorAll('.btn-rank-down').forEach(b => b.textContent = data.btnRankDown);
+            document.getElementById('btn-rank-submit').textContent = data.btnRankSubmit;
+
+            // Tab 6
             document.getElementById('s6-title').textContent = data.s6Title;
             document.getElementById('s6-intro').textContent = data.s6Intro;
+            document.getElementById('s6-art-title').textContent = data.s6ArtTitle;
+            document.getElementById('s6-art-list').innerHTML = data.s6ArtList;
+            document.getElementById('s6-sim-badge').textContent = data.s6SimBadge;
+            document.getElementById('s6-sim-title').textContent = data.s6SimTitle;
+            document.getElementById('s6-sim-prompt').textContent = data.s6SimPrompt;
+            document.getElementById('btn-pop-close').textContent = data.btnPopClose;
+            document.getElementById('pop-result-label').textContent = data.popResultLabel;
+            document.getElementById('btn-pop-add').textContent = data.btnPopAdd;
+
+            // Tab 7
             document.getElementById('s7-title').textContent = data.s7Title;
             document.getElementById('s7-intro').textContent = data.s7Intro;
+            document.getElementById('s7-lang-title').textContent = data.s7LangTitle;
+            document.getElementById('s7-lang-desc').innerHTML = data.s7LangDesc;
+            document.getElementById('s7-prof-title').textContent = data.s7ProfTitle;
+            document.getElementById('s7-prof-desc').textContent = data.s7ProfDesc;
+
+            // Navigation buttons
+            document.querySelectorAll('.nav-back-overview').forEach(b => b.textContent = data.navBackOverview);
+            document.querySelectorAll('.nav-prev-s1').forEach(b => b.textContent = data.navPrevS1);
+            document.querySelectorAll('.nav-next-s2').forEach(b => b.textContent = data.navNextS2);
+            document.querySelectorAll('.nav-prev-s2').forEach(b => b.textContent = data.navPrevS2);
+            document.querySelectorAll('.nav-next-s3').forEach(b => b.textContent = data.navNextS3);
+            document.querySelectorAll('.nav-prev-s3').forEach(b => b.textContent = data.navPrevS3);
+            document.querySelectorAll('.nav-next-s4').forEach(b => b.textContent = data.navNextS4);
+            document.querySelectorAll('.nav-prev-s4').forEach(b => b.textContent = data.navPrevS4);
+            document.querySelectorAll('.nav-next-s5').forEach(b => b.textContent = data.navNextS5);
+            document.querySelectorAll('.nav-prev-s5').forEach(b => b.textContent = data.navPrevS5);
+            document.querySelectorAll('.nav-next-s6').forEach(b => b.textContent = data.navNextS6);
+            document.querySelectorAll('.nav-prev-s6').forEach(b => b.textContent = data.navPrevS6);
+            document.querySelectorAll('.nav-next-s7').forEach(b => b.textContent = data.navNextS7);
+
+            // Footer
+            document.getElementById('footer-text1').textContent = data.footerText1;
+            document.getElementById('footer-text2').textContent = data.footerText2;
         }
 
+        // Anagram Checker
         function checkAnagram() {
             const val = document.getElementById('anagram-input').value.trim().toUpperCase();
             const feedback = document.getElementById('anagram-feedback');
             if (val === 'COURTESY') {
-                feedback.textContent = 'Correct! COURTESY matches key etiquette vocabulary.';
+                feedback.textContent = currentLang === 'EN' ? 'Correct! COURTESY matches key etiquette vocabulary.' : '正解です！COURTESYはマナーに関する重要語彙です。';
                 feedback.className = 'text-xs font-bold text-emerald-400 h-4';
             } else {
-                feedback.textContent = 'Incorrect. Hint: C-O-U-R-T-E-S-Y';
+                feedback.textContent = currentLang === 'EN' ? 'Incorrect. Hint: C-O-U-R-T-E-S-Y' : '不正解です。ヒント：C-O-U-R-T-E-S-Y';
                 feedback.className = 'text-xs font-bold text-rose-400 h-4';
             }
         }
 
+        // Frame Styling
         function setFrameStyle(style) {
             const box = document.getElementById('frame-preview-box');
             box.className = 'transition-all duration-300 max-w-xs w-full text-center ';
@@ -809,6 +1125,7 @@
             if(style === 'parchment') box.classList.add('frame-parchment');
         }
 
+        // Spelling Converter
         function convertSpelling() {
             const text = document.getElementById('spelling-input').value;
             let ukText = text
@@ -819,16 +1136,22 @@
                 .replace(/\btraveler\b/gi, 'traveller')
                 .replace(/\borganize\b/gi, 'organise');
 
-            document.getElementById('spelling-output').textContent = ukText || 'Type above to test...';
+            document.getElementById('spelling-output').textContent = ukText || (currentLang === 'EN' ? 'Type above to test...' : '上記に入力してテストしてください...');
         }
 
+        // Audio Mock
         function speakWord(word) {
-            alert(`In the App, high-quality native British English audio is recorded for "${word}".`);
+            const msg = currentLang === 'EN' 
+                ? `In the App, high-quality native British English audio is recorded for "${word}".` 
+                : `アプリでは、「${word}」のネイティブによる高音質イギリス英語音声が再生されます。`;
+            alert(msg);
         }
 
+        // Sync to Glossary Simulator
         function syncToGlossary(word) {
-            addWordToGlossaryUI(word, '/uk.ph/', 'Synced Entry.');
-            alert(`"${word}" synced directly to your Glossary!`);
+            addWordToGlossaryUI(word, '/uk.ph/', currentLang === 'EN' ? 'Synced Entry.' : '同期されたエントリー');
+            const msg = currentLang === 'EN' ? `"${word}" synced directly to your Glossary!` : `「${word}」が直接ザ・グロッサリーに同期されました！`;
+            alert(msg);
         }
 
         function addWordToGlossaryUI(word, phonetic, def) {
@@ -841,8 +1164,8 @@
                         <span class="font-serif font-bold text-sm text-manor-900 word-head">${word}</span>
                         <span class="text-xs text-burgundy-700 font-mono ml-1.5">${phonetic}</span>
                     </div>
-                    <button onclick="speakWord('${word}')" class="bg-manor-100 hover:bg-manor-200 text-manor-900 px-2 py-0.5 rounded text-[10px] font-bold transition cursor-pointer">
-                        Listen Audio
+                    <button onclick="speakWord('${word}')" class="bg-manor-100 hover:bg-manor-200 text-manor-900 px-2 py-0.5 rounded text-[10px] font-bold transition cursor-pointer btn-audio-text">
+                        ${i18n[currentLang].btnAudioText}
                     </button>
                 </div>
                 <p class="text-xs text-stone-600">${def}</p>
@@ -858,6 +1181,7 @@
             });
         }
 
+        // Ranking Game
         function moveRank(btn, direction) {
             const item = btn.closest('.rank-item');
             const list = document.getElementById('politeness-list');
@@ -874,14 +1198,15 @@
             const feedback = document.getElementById('ranking-feedback');
 
             if(order[0] === 'formal' && order[1] === 'neutral' && order[2] === 'casual') {
-                feedback.textContent = 'Correct Order!';
+                feedback.textContent = currentLang === 'EN' ? 'Correct Order!' : '正解の順序です！';
                 feedback.className = 'text-xs font-bold text-emerald-400';
             } else {
-                feedback.textContent = 'Incorrect order. Try again.';
+                feedback.textContent = currentLang === 'EN' ? 'Incorrect order. Try again.' : '順序が異なります。もう一度試してください。';
                 feedback.className = 'text-xs font-bold text-rose-400';
             }
         }
 
+        // Article Lookup Popover
         let currentActiveLookup = null;
         function showLookup(word, phonetic, pos, def, source) {
             currentActiveLookup = { word, phonetic, pos, def, source };
@@ -899,7 +1224,8 @@
             if(currentActiveLookup) {
                 addWordToGlossaryUI(currentActiveLookup.word, currentActiveLookup.phonetic, currentActiveLookup.def);
                 closeLookup();
-                alert(`"${currentActiveLookup.word}" added to Glossary!`);
+                const msg = currentLang === 'EN' ? `"${currentActiveLookup.word}" added to Glossary!` : `「${currentActiveLookup.word}」をザ・グロッサリーに追加しました！`;
+                alert(msg);
             }
         }
     </script>
