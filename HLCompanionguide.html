@@ -71,11 +71,11 @@
     </style>
 </head>
 <!-- Chosen Palette: Warm Antique Manor (#1B2D23 Deep Forest Green, #6B1D2F Manor Burgundy, #C5A059 Heritage Gold, #F8F6F0 Soft Cream) -->
-<!-- Application Structure Plan: Interactive web user guide for the Highland Companion application. Provides full bilingual switching (English / 日本語) across all modules, headers, descriptions, and interactive simulators. Target English language learning examples and activities remain in English for authentic practice. -->
+<!-- Application Structure Plan: Interactive web user guide for the Highland Companion app. All English text is written in accessible CEFR B1 level language, avoiding overly complex vocabulary, idioms, or linguistic terms. Fully integrated bilingual switcher (English / 日本語). -->
 <!-- Visualization & Content Choices: 
-  - Dynamic Bilingual Engine -> Goal: Full Japanese accessibility for guide content while preserving English learning examples -> Method: Comprehensive JS i18n object updating DOM elements via dedicated IDs.
+  - Dynamic Bilingual Engine -> Goal: Full Japanese and simplified CEFR B1 English interface -> Method: JS i18n dictionary updating DOM nodes dynamically.
   - Module Interactive Simulators -> Goal: Practical learning engagement -> Method: Native HTML/JS interactive blocks (anagram solver, live spelling converter, politeness ranker, floating article dictionary). -->
-<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. NO emojis used. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
 <body class="bg-manor-50 text-slate-800 font-sans antialiased selection:bg-gold-500 selection:text-white min-h-screen flex flex-col">
 
@@ -110,10 +110,10 @@
                     User guide
                 </div>
                 <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-amber-50 leading-tight" id="hero-title">
-                    British Hills Highland Companion - User Guide
+                    British Hills Highland Companion
                 </h2>
                 <p class="text-stone-300 text-sm sm:text-base leading-relaxed" id="hero-desc">
-                    The Highland Companion is your digital companion for your Highland Life course at British Hills. This page introduces the core features and tools designed to help you make the most of your stay and continue your learning journey long after you return home.
+                    The Highland Companion is your digital app for the Highland Life course at British Hills. This guide explains the key features to help you learn during your stay and keep practicing after you return home.
                 </p>
             </div>
         </div>
@@ -145,7 +145,7 @@
                     6. The Highland Gazette
                 </button>
                 <button onclick="switchTab(7)" class="tab-btn px-4 py-2.5 rounded-lg font-serif text-xs font-semibold transition-all bg-white text-stone-700 hover:bg-manor-200 hover:text-manor-900 border border-stone-200 cursor-pointer whitespace-nowrap" id="tab-btn-7">
-                    7. Settings & Personalisation
+                    7. Settings & Profile
                 </button>
             </div>
         </div>
@@ -159,7 +159,7 @@
             <div class="border-b border-stone-200 pb-3 flex flex-col sm:flex-row justify-between sm:items-center gap-2">
                 <div>
                     <h2 class="font-serif text-2xl font-bold text-manor-900" id="overview-title">Quick Navigation Overview</h2>
-                    <p class="text-xs sm:text-sm text-stone-600" id="overview-sub">Summary of core modules, functional mechanics, and target learning outcomes. Tap any row to navigate directly to that module.</p>
+                    <p class="text-xs sm:text-sm text-stone-600" id="overview-sub">Overview of main features and learning goals. Tap any row to open that section.</p>
                 </div>
             </div>
 
@@ -168,54 +168,54 @@
                 <table class="w-full text-left border-collapse text-xs sm:text-sm">
                     <thead>
                         <tr class="bg-manor-900 text-gold-400 font-serif">
-                            <th class="p-3.5 border-b border-gold-500/30 font-bold" id="th-module">Module</th>
-                            <th class="p-3.5 border-b border-gold-500/30 font-bold" id="th-function">Core Function</th>
-                            <th class="p-3.5 border-b border-gold-500/30 font-bold" id="th-goal">Primary Learning Goal</th>
+                            <th class="p-3.5 border-b border-gold-500/30 font-bold" id="th-module">Feature</th>
+                            <th class="p-3.5 border-b border-gold-500/30 font-bold" id="th-function">Main Function</th>
+                            <th class="p-3.5 border-b border-gold-500/30 font-bold" id="th-goal">Learning Goal</th>
                             <th class="p-3.5 border-b border-gold-500/30 font-bold text-right" id="th-action">Action</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-stone-200 text-stone-700">
                         <tr onclick="switchTab(1)" class="hover:bg-manor-100/70 transition cursor-pointer group">
                             <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600" id="row1-mod">The Archives</td>
-                            <td class="p-3.5" id="row1-func">QR-locked digital lesson supplements</td>
-                            <td class="p-3.5" id="row1-goal">Interactive practice & classroom consolidation</td>
-                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Module &rarr;</td>
+                            <td class="p-3.5" id="row1-func">QR code extra lesson materials</td>
+                            <td class="p-3.5" id="row1-goal">Fun practice and review for classes</td>
+                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Section &rarr;</td>
                         </tr>
                         <tr onclick="switchTab(2)" class="hover:bg-manor-100/70 transition cursor-pointer group">
                             <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600" id="row2-mod">The Journal</td>
                             <td class="p-3.5" id="row2-func">Photo scrapbook, spelling tool & souvenir video</td>
-                            <td class="p-3.5" id="row2-goal">Cultural reflection, media creation & spelling accuracy</td>
-                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Module &rarr;</td>
+                            <td class="p-3.5" id="row2-goal">Sharing experiences, videos & British spelling</td>
+                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Section &rarr;</td>
                         </tr>
                         <tr onclick="switchTab(3)" class="hover:bg-manor-100/70 transition cursor-pointer group">
                             <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600" id="row3-mod">Lessons Diary</td>
-                            <td class="p-3.5" id="row3-func">Academic portfolio & whiteboard logger</td>
-                            <td class="p-3.5" id="row3-goal">Classroom review & glossary building</td>
-                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Module &rarr;</td>
+                            <td class="p-3.5" id="row3-func">Class notes and whiteboard photo saver</td>
+                            <td class="p-3.5" id="row3-goal">Reviewing lessons and saving new words</td>
+                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Section &rarr;</td>
                         </tr>
                         <tr onclick="switchTab(4)" class="hover:bg-manor-100/70 transition cursor-pointer group">
                             <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600" id="row4-mod">The Glossary</td>
-                            <td class="p-3.5" id="row4-func">Personal bespoke dictionary with audio</td>
-                            <td class="p-3.5" id="row4-goal">Vocabulary expansion & British phonetics</td>
-                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Module &rarr;</td>
+                            <td class="p-3.5" id="row4-func">Your personal dictionary with audio</td>
+                            <td class="p-3.5" id="row4-goal">Building vocabulary and British pronunciation</td>
+                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Section &rarr;</td>
                         </tr>
                         <tr onclick="switchTab(5)" class="hover:bg-manor-100/70 transition cursor-pointer group">
                             <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600" id="row5-mod">Weekly Challenges</td>
-                            <td class="p-3.5" id="row5-func">Daily quizzes & politeness rankings</td>
-                            <td class="p-3.5" id="row5-goal">Continuous learning & long-term retention</td>
-                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Module &rarr;</td>
+                            <td class="p-3.5" id="row5-func">Daily quizzes and politeness practice</td>
+                            <td class="p-3.5" id="row5-goal">Daily learning and remembering new English</td>
+                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Section &rarr;</td>
                         </tr>
                         <tr onclick="switchTab(6)" class="hover:bg-manor-100/70 transition cursor-pointer group">
                             <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600" id="row6-mod">The Highland Gazette</td>
-                            <td class="p-3.5" id="row6-func">Weekly cultural magazine articles</td>
-                            <td class="p-3.5" id="row6-goal">Contextual reading & tap-to-lookup study</td>
-                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Module &rarr;</td>
+                            <td class="p-3.5" id="row6-func">Weekly articles about British culture</td>
+                            <td class="p-3.5" id="row6-goal">Reading practice and tap-to-check dictionary</td>
+                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Section &rarr;</td>
                         </tr>
                         <tr onclick="switchTab(7)" class="hover:bg-manor-100/70 transition cursor-pointer group">
                             <td class="p-3.5 font-semibold text-manor-900 group-hover:text-gold-600" id="row7-mod">Settings & Profile</td>
-                            <td class="p-3.5" id="row7-func">Bilingual toggle & guest profile setup</td>
-                            <td class="p-3.5" id="row7-goal">Personalised experience & interface options</td>
-                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Module &rarr;</td>
+                            <td class="p-3.5" id="row7-func">Language switch and guest profile settings</td>
+                            <td class="p-3.5" id="row7-goal">Custom settings and profile options</td>
+                            <td class="p-3.5 text-right font-bold text-xs text-gold-600 action-btn-text">View Section &rarr;</td>
                         </tr>
                     </tbody>
                 </table>
@@ -225,11 +225,11 @@
         <!-- TAB CONTENT 1: THE ARCHIVES -->
         <section id="tab-content-1" class="tab-pane hidden bg-white rounded-2xl border border-stone-200 p-6 sm:p-8 shadow-sm space-y-6">
             <div class="border-b border-stone-200 pb-4">
-                <h2 class="font-serif text-2xl sm:text-3xl font-bold text-manor-900" id="s1-title">1. The Archives (Supplementary Lesson Materials)</h2>
+                <h2 class="font-serif text-2xl sm:text-3xl font-bold text-manor-900" id="s1-title">1. The Archives (Extra Lesson Materials)</h2>
             </div>
 
             <p class="text-stone-700 leading-relaxed text-sm sm:text-base" id="s1-intro">
-                The Archives serve as your digital repository for interactive lesson content during your stay.
+                The Archives hold interactive study materials for your lessons at British Hills.
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -237,7 +237,7 @@
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                     <h3 class="font-serif font-bold text-base text-manor-900" id="s1-qr-title">QR Code Scanner</h3>
                     <p class="text-xs sm:text-sm text-stone-600 leading-relaxed" id="s1-qr-desc">
-                        <strong>In-Class Unlocking:</strong> In each lesson, scan the unique QR code provided by your teacher to instantly unlock exclusive supplementary study materials tailored to that specific class.
+                        <strong>Unlocking in Class:</strong> Scan the QR code from your teacher in each lesson to open special study materials for that class.
                     </p>
                 </div>
 
@@ -245,10 +245,10 @@
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                     <h3 class="font-serif font-bold text-base text-manor-900" id="s1-act-title">Interactive Activities</h3>
                     <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4" id="s1-act-list">
-                        <li><strong>Vocabulary & Anagram Matchers:</strong> Unscramble terms and pair target words with contextual definitions to reinforce key lesson vocabulary.</li>
-                        <li><strong>Sentence Builders & Ordering:</strong> Reorder clause blocks to master authentic British sentence patterns and idiomatic structures.</li>
-                        <li><strong>Pronunciation & Phonetics:</strong> Practice syllable stress, linking sounds, intonation contours, and natural speech rhythm using interactive audio cues.</li>
-                        <li><strong>Special Lesson Modules:</strong> Access dedicated interactive tools designed for specific immersion classes, including digital card decks and magic trick simulators.</li>
+                        <li><strong>Word & Anagram Games:</strong> Unscramble words and match them with their meanings to learn new lesson words.</li>
+                        <li><strong>Sentence Building:</strong> Put word blocks in order to practice natural British sentences.</li>
+                        <li><strong>Pronunciation Practice:</strong> Listen and practice British pronunciation, word stress, and rhythm with audio samples.</li>
+                        <li><strong>Special Class Tools:</strong> Use interactive tools for special classes, like digital card games or magic trick activities.</li>
                     </ul>
                 </div>
             </div>
@@ -256,10 +256,10 @@
             <!-- Integrated Interactive Exercise: Anagram Unscrambler -->
             <div class="bg-manor-900 text-white p-5 rounded-xl border border-gold-500/30 space-y-3">
                 <div class="flex justify-between items-center border-b border-gold-500/20 pb-2">
-                    <h4 class="font-serif font-bold text-xs text-gold-400 uppercase tracking-wider" id="s1-sim-title">Archives Interactive Simulator: Anagram Unscrambler</h4>
-                    <span class="text-[10px] text-stone-400 font-mono" id="s1-sim-badge">Module Practice</span>
+                    <h4 class="font-serif font-bold text-xs text-gold-400 uppercase tracking-wider" id="s1-sim-title">Archives Interactive Practice: Anagram Game</h4>
+                    <span class="text-[10px] text-stone-400 font-mono" id="s1-sim-badge">Practice Game</span>
                 </div>
-                <p class="text-xs text-stone-300" id="s1-sim-prompt">Unscramble this essential British Hills etiquette term:</p>
+                <p class="text-xs text-stone-300" id="s1-sim-prompt">Unscramble this British Hills polite word:</p>
 
                 <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-3 bg-manor-800 p-3 rounded border border-gold-500/20">
                     <div class="text-lg font-mono tracking-widest text-gold-400 font-bold px-3 py-1 bg-manor-900 rounded border border-stone-700">
@@ -267,7 +267,7 @@
                     </div>
                     <input type="text" id="anagram-input" placeholder="Type answer..." class="w-full sm:w-auto flex-grow bg-manor-900 border border-stone-600 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-gold-400">
                     <button onclick="checkAnagram()" class="w-full sm:w-auto bg-gold-500 hover:bg-gold-600 text-manor-900 font-bold px-4 py-1.5 rounded text-xs transition cursor-pointer" id="btn-anagram-verify">
-                        Verify Answer
+                        Check Answer
                     </button>
                 </div>
                 <div id="anagram-feedback" class="text-xs font-semibold text-gold-400 h-4"></div>
@@ -286,16 +286,16 @@
             </div>
 
             <p class="text-stone-700 leading-relaxed text-sm sm:text-base" id="s2-intro">
-                Capture and preserve your personal Highland Life memories while practicing expressive English writing.
+                Save your memories from British Hills and practice writing in English.
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Memory Pages & Framing -->
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
-                    <h3 class="font-serif font-bold text-base text-manor-900" id="s2-p1-title">Memory Pages & Framing</h3>
+                    <h3 class="font-serif font-bold text-base text-manor-900" id="s2-p1-title">Memory Pages & Frames</h3>
                     <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4" id="s2-p1-list">
-                        <li><strong>Personal Scrapbook:</strong> Write reflections and attach photos captured around the British Hills estate.</li>
-                        <li><strong>Classic Photo Framing:</strong> Personalise your images by choosing between Polaroid, Victorian, or Parchment frame styles.</li>
+                        <li><strong>Personal Journal:</strong> Write about your experiences and add photos taken around British Hills.</li>
+                        <li><strong>Photo Frames:</strong> Choose Polaroid, Victorian, or Parchment style frames for your photos.</li>
                     </ul>
                 </div>
 
@@ -303,16 +303,16 @@
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                     <h3 class="font-serif font-bold text-base text-manor-900" id="s2-p2-title">British Spelling Converter</h3>
                     <p class="text-xs sm:text-sm text-stone-600 leading-relaxed" id="s2-p2-desc">
-                        Converts standard American spellings to British English (e.g., color to colour, traveler to traveller, center to centre).
+                        Changes American spelling to British spelling (for example, "color" to "colour" and "center" to "centre").
                     </p>
                 </div>
 
                 <!-- Social Media Souvenir Video -->
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
-                    <h3 class="font-serif font-bold text-base text-manor-900" id="s2-p3-title">Social Media Souvenir Video</h3>
+                    <h3 class="font-serif font-bold text-base text-manor-900" id="s2-p3-title">Souvenir Video</h3>
                     <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4" id="s2-p3-list">
-                        <li><strong>Animated Keepsake:</strong> Automatically generate an animated, vertical souvenir video of your journal scrapbook complete with background music.</li>
-                        <li><strong>Direct Export:</strong> Save the video directly to your device's Camera Roll for easy sharing on social media.</li>
+                        <li><strong>Short Memory Video:</strong> Automatically make a short vertical video of your journal photos with background music.</li>
+                        <li><strong>Easy Saving:</strong> Save the video directly to your phone to share with friends and family.</li>
                     </ul>
                 </div>
             </div>
@@ -322,7 +322,7 @@
                 <!-- Frame Style Preview Simulator -->
                 <div class="bg-stone-100 p-5 rounded-xl border border-stone-300 space-y-3">
                     <div class="flex justify-between items-center border-b border-stone-200 pb-2">
-                        <h4 class="font-serif font-bold text-xs text-manor-900 uppercase tracking-wider" id="s2-sim1-title">Frame Style Selector</h4>
+                        <h4 class="font-serif font-bold text-xs text-manor-900 uppercase tracking-wider" id="s2-sim1-title">Frame Style Chooser</h4>
                         <div class="space-x-1 text-xs">
                             <button onclick="setFrameStyle('polaroid')" class="px-2 py-0.5 bg-white border border-stone-300 rounded hover:bg-stone-50 font-semibold cursor-pointer" id="btn-frame-pol">Polaroid</button>
                             <button onclick="setFrameStyle('victorian')" class="px-2 py-0.5 bg-white border border-stone-300 rounded hover:bg-stone-50 font-semibold cursor-pointer" id="btn-frame-vic">Victorian</button>
@@ -344,14 +344,14 @@
                 <div class="bg-manor-900 text-white p-5 rounded-xl border border-gold-500/30 space-y-3 flex flex-col justify-between">
                     <div class="space-y-2">
                         <div class="flex items-center justify-between border-b border-gold-500/20 pb-2">
-                            <h4 class="font-serif font-bold text-xs text-gold-400 uppercase tracking-wider" id="s2-sim2-title">US to UK Live Spelling Engine</h4>
+                            <h4 class="font-serif font-bold text-xs text-gold-400 uppercase tracking-wider" id="s2-sim2-title">Spelling Tool (US to UK)</h4>
                             <span class="text-[10px] bg-burgundy-700 text-stone-200 px-2 py-0.5 rounded" id="s2-sim2-badge">Auto Converter</span>
                         </div>
                         <p class="text-xs text-stone-300" id="s2-sim2-prompt">Type words like 'color', 'center', 'organize', 'traveler' below:</p>
                         <textarea id="spelling-input" oninput="convertSpelling()" rows="2" class="w-full bg-manor-800 border border-stone-700 rounded p-2 text-xs text-amber-100 focus:outline-none focus:border-gold-400" placeholder="Type here: The traveler liked the center color..."></textarea>
                     </div>
                     <div class="bg-manor-800 p-2.5 rounded border border-gold-500/20">
-                        <span class="text-[10px] text-stone-400 font-mono block uppercase" id="s2-sim2-outlabel">British English Output:</span>
+                        <span class="text-[10px] text-stone-400 font-mono block uppercase" id="s2-sim2-outlabel">British English Spelling:</span>
                         <p id="spelling-output" class="text-xs font-serif text-gold-300 min-h-[1.5rem]">The traveller liked the centre colour...</p>
                     </div>
                 </div>
@@ -370,25 +370,25 @@
             </div>
 
             <p class="text-stone-700 leading-relaxed text-sm sm:text-base" id="s3-intro">
-                Track what you study in every classroom session to build a diary of what you learned.
+                Keep track of what you learn in every class to build your personal learning diary.
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Classroom Records -->
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
-                    <h3 class="font-serif font-bold text-base text-manor-900" id="s3-r-title">Classroom Records</h3>
+                    <h3 class="font-serif font-bold text-base text-manor-900" id="s3-r-title">Class Records</h3>
                     <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4" id="s3-r-list">
-                        <li><strong>Lesson Reflection:</strong> Record the lesson module, teacher name, date, and your personal comprehension rating (1 to 5 stars).</li>
-                        <li><strong>Whiteboard Capture:</strong> Snap and store photos of classroom whiteboards, worksheets, and teacher notes directly into the corresponding entry.</li>
-                        <li><strong>Key Takeaways & Target Phrases:</strong> Jot down essential grammar points, functional expressions, and new vocabulary introduced during class.</li>
+                        <li><strong>Lesson Notes:</strong> Save the lesson name, teacher name, date, and rate how well you understood the class (1 to 5 stars).</li>
+                        <li><strong>Whiteboard Photos:</strong> Take photos of whiteboards and worksheets to save with your lesson notes.</li>
+                        <li><strong>Useful Expressions & Grammar:</strong> Write down helpful grammar points, useful expressions, and new words from class.</li>
                     </ul>
                 </div>
 
                 <!-- One-Tap Glossary Sync -->
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
-                    <h3 class="font-serif font-bold text-base text-manor-900" id="s3-s-title">One-Tap Glossary Sync</h3>
+                    <h3 class="font-serif font-bold text-base text-manor-900" id="s3-s-title">One-Tap Glossary Save</h3>
                     <p class="text-xs sm:text-sm text-stone-600 leading-relaxed" id="s3-s-desc">
-                        <strong>Instant Saving:</strong> Tap the <strong>+</strong> button beside any highlighted expression or term in your notes to automatically transfer it to The Glossary for future review.
+                        <strong>Instant Save:</strong> Tap the <strong>+</strong> button next to any expression or word to save it directly to your Glossary for review later.
                     </p>
                 </div>
             </div>
@@ -396,8 +396,8 @@
             <!-- Integrated One-Tap Sync Demo -->
             <div class="bg-stone-50 border border-stone-300 p-5 rounded-xl space-y-3">
                 <div class="flex justify-between items-center border-b border-stone-200 pb-2">
-                    <h4 class="font-serif font-bold text-xs text-manor-900 uppercase tracking-wider" id="s3-sim-title">Lesson Diary Sync Simulator</h4>
-                    <span class="text-[10px] text-stone-500 font-mono" id="s3-sim-badge">Class Log Entry #04</span>
+                    <h4 class="font-serif font-bold text-xs text-manor-900 uppercase tracking-wider" id="s3-sim-title">Lesson Diary Save Practice</h4>
+                    <span class="text-[10px] text-stone-500 font-mono" id="s3-sim-badge">Lesson Entry #04</span>
                 </div>
                 <div class="space-y-2">
                     <div class="flex items-center justify-between p-2.5 bg-white rounded border border-stone-200 text-xs">
@@ -406,7 +406,7 @@
                             <span class="text-stone-500 block text-[10px]" id="s3-sim-tag">Polite Request Pattern</span>
                         </div>
                         <button onclick="syncToGlossary('Would you mind terribly if...')" class="bg-manor-800 hover:bg-manor-900 text-gold-400 font-bold px-3 py-1 rounded text-xs transition cursor-pointer" id="btn-sync-demo">
-                            + Sync
+                            + Save
                         </button>
                     </div>
                 </div>
@@ -425,24 +425,24 @@
             </div>
 
             <p class="text-stone-700 leading-relaxed text-sm sm:text-base" id="s4-intro">
-                Your personal vocabulary book grows continuously alongside your learning progress.
+                Your personal dictionary grows as you learn new English words.
             </p>
 
             <!-- Automatic Vocabulary Records -->
             <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
-                <h3 class="font-serif font-bold text-base text-manor-900" id="s4-rec-title">Automatic Vocabulary Records</h3>
+                <h3 class="font-serif font-bold text-base text-manor-900" id="s4-rec-title">Automatic Word Saver</h3>
                 <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4" id="s4-rec-list">
-                    <li><strong>Centralised Collection:</strong> Terms saved from your Journal, Lessons Diary, Highland Gazette articles, or Word of the Day are automatically aggregated in your personal dictionary.</li>
-                    <li><strong>Automated Data Retrieval:</strong> The app automatically fetches English definitions, parts of speech, and IPA (International Phonetic Alphabet) transcriptions for every entry.</li>
-                    <li><strong>British Audio Pronunciation:</strong> Tap the speaker button beside any headword to hear natural British English pronunciation recorded by native speakers.</li>
-                    <li><strong>Search & Filter:</strong> Quickly find any word you have collected using the real-time filter engine.</li>
+                    <li><strong>All Words in One Place:</strong> Words saved from your Journal, Lessons Diary, Highland Gazette articles, or Word of the Day are automatically saved to your dictionary.</li>
+                    <li><strong>Automatic Word Info:</strong> The app automatically adds simple English definitions, word types (noun, verb, etc.), and pronunciation guides.</li>
+                    <li><strong>British Audio Pronunciation:</strong> Tap the speaker button next to any word to listen to its British English pronunciation.</li>
+                    <li><strong>Easy Search:</strong> Type in the search box to quickly find words in your dictionary.</li>
                 </ul>
             </div>
 
             <!-- Integrated Audio & Glossary Search Simulator -->
             <div class="bg-stone-50 p-5 rounded-xl border border-stone-300 space-y-3">
                 <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-stone-200 pb-2">
-                    <h4 class="font-serif font-bold text-xs text-manor-900 uppercase tracking-wider" id="s4-sim-title">Glossary Search & Audio Pronunciation Tool</h4>
+                    <h4 class="font-serif font-bold text-xs text-manor-900 uppercase tracking-wider" id="s4-sim-title">Glossary Search & Audio Tool</h4>
                     <input type="text" id="glossary-search" oninput="filterGlossary()" placeholder="Filter saved words..." class="bg-white border border-stone-300 rounded px-2.5 py-1 text-xs w-full sm:w-48 focus:outline-none focus:border-manor-800">
                 </div>
 
@@ -457,7 +457,7 @@
                                 Listen Audio
                             </button>
                         </div>
-                        <p class="text-xs text-stone-600">The medieval knightly system with its religious, moral, and social code.</p>
+                        <p class="text-xs text-stone-600">The medieval system of polite rules and behavior for knights.</p>
                     </div>
 
                     <div class="glossary-card bg-white p-3.5 rounded border border-stone-200 space-y-1.5 shadow-sm">
@@ -470,7 +470,7 @@
                                 Listen Audio
                             </button>
                         </div>
-                        <p class="text-xs text-stone-600">Magnificent; very good or impressive; excellent in appearance.</p>
+                        <p class="text-xs text-stone-600">Very good, wonderful, or impressive.</p>
                     </div>
                 </div>
             </div>
@@ -484,11 +484,11 @@
         <!-- TAB CONTENT 5: CONTINUOUS LEARNING & WEEKLY CHALLENGES -->
         <section id="tab-content-5" class="tab-pane hidden bg-white rounded-2xl border border-stone-200 p-6 sm:p-8 shadow-sm space-y-6">
             <div class="border-b border-stone-200 pb-4">
-                <h2 class="font-serif text-2xl sm:text-3xl font-bold text-manor-900" id="s5-title">5. Continuous Learning & Weekly Challenges</h2>
+                <h2 class="font-serif text-2xl sm:text-3xl font-bold text-manor-900" id="s5-title">5. Practice & Weekly Challenges</h2>
             </div>
 
             <p class="text-stone-700 leading-relaxed text-sm sm:text-base" id="s5-intro">
-                Keep learning after leaving British Hills through ongoing practice.
+                Keep practicing English after leaving British Hills.
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -496,15 +496,15 @@
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                     <h3 class="font-serif font-bold text-base text-manor-900" id="s5-wotd-title">Word of the Day</h3>
                     <p class="text-xs sm:text-sm text-stone-600 leading-relaxed" id="s5-wotd-desc">
-                        <strong>Daily Vocabulary:</strong> Receive a curated daily English word complete with IPA phonetics, definitions, historical context, and real-world example sentences.
+                        <strong>Daily Vocabulary:</strong> Learn a new English word every day with simple definitions, pronunciation guides, and example sentences.
                     </p>
                 </div>
 
                 <!-- Dynamic Vocab Review -->
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
-                    <h3 class="font-serif font-bold text-base text-manor-900" id="s5-rev-title">Dynamic Vocab Review</h3>
+                    <h3 class="font-serif font-bold text-base text-manor-900" id="s5-rev-title">Vocabulary Quizzes</h3>
                     <p class="text-xs sm:text-sm text-stone-600 leading-relaxed" id="s5-rev-desc">
-                        <strong>Personalised Quizzes:</strong> Take interactive multiple-choice quizzes generated dynamically from the words stored in your personal Glossary.
+                        <strong>Personalized Quizzes:</strong> Practice with quick multiple-choice quizzes created from the words in your Glossary.
                     </p>
                 </div>
 
@@ -512,9 +512,9 @@
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                     <h3 class="font-serif font-bold text-base text-manor-900" id="s5-chal-title">Weekly Highland Challenges</h3>
                     <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4" id="s5-chal-list">
-                        <li><strong>Part A • Politeness Ranking:</strong> Drag and arrange phrases from Most Formal to Most Casual to master British pragmatics and social etiquette.</li>
-                        <li><strong>Part B • Graded Cloze:</strong> Complete fill-in-the-blank reading passages calibrated to refine reading comprehension and contextual grammar.</li>
-                        <li><strong>Part C • Phonetics & Stress:</strong> Test your understanding of primary syllable stress, connected speech patterns, and silent letters across challenging headwords.</li>
+                        <li><strong>Part A • Politeness Ranking:</strong> Put phrases in order from Most Formal to Most Casual to learn polite British English.</li>
+                        <li><strong>Part B • Fill-in-the-Blanks:</strong> Fill in missing words in short reading texts to practice reading and grammar.</li>
+                        <li><strong>Part C • Pronunciation & Stress:</strong> Practice word stress, silent letters, and British English speech patterns.</li>
                     </ul>
                 </div>
             </div>
@@ -523,9 +523,9 @@
             <div class="bg-manor-900 text-white p-5 rounded-xl border border-gold-500/30 space-y-3">
                 <div class="flex justify-between items-center border-b border-gold-500/20 pb-2">
                     <h4 class="font-serif font-bold text-xs text-gold-400 uppercase tracking-wider" id="s5-sim-title">Part A Mini-Game: Politeness Ranking</h4>
-                    <span class="text-[10px] text-stone-400" id="s5-sim-badge">Sort: Most Formal (Top) to Most Casual (Bottom)</span>
+                    <span class="text-[10px] text-stone-400" id="s5-sim-badge">Order: Most Formal (Top) to Casual (Bottom)</span>
                 </div>
-                <p class="text-xs text-stone-300" id="s5-sim-prompt">Reorder these three expressions into correct politeness order:</p>
+                <p class="text-xs text-stone-300" id="s5-sim-prompt">Put these three sentences in order from most polite to most casual:</p>
 
                 <div id="politeness-list" class="space-y-2">
                     <div data-rank="casual" class="rank-item flex items-center justify-between p-2.5 bg-manor-800 rounded border border-stone-700">
@@ -555,7 +555,7 @@
 
                 <div class="flex justify-between items-center pt-1">
                     <button onclick="checkRankingOrder()" class="bg-gold-500 hover:bg-gold-600 text-manor-900 font-bold px-4 py-1.5 rounded text-xs transition cursor-pointer" id="btn-rank-submit">
-                        Submit Order
+                        Submit Answer
                     </button>
                     <span id="ranking-feedback" class="text-xs font-bold text-gold-400"></span>
                 </div>
@@ -574,31 +574,31 @@
             </div>
 
             <p class="text-stone-700 leading-relaxed text-sm sm:text-base" id="s6-intro">
-                Stay connected with British Hills through weekly articles exploring British and Commonwealth heritage, traditions, lifestyle, and history.
+                Read weekly articles about British culture, history, and life at British Hills.
             </p>
 
             <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
                 <h3 class="font-serif font-bold text-base text-manor-900" id="s6-art-title">Weekly Reading Features</h3>
                 <ul class="text-xs sm:text-sm text-stone-600 space-y-1.5 list-disc pl-4" id="s6-art-list">
-                    <li><strong>Weekly Articles:</strong> Read weekly articles published directly by British Hills instructors and staff.</li>
-                    <li><strong>Tap-to-Lookup:</strong> Tap any unfamiliar word within an article text block to open a floating definition card.</li>
-                    <li><strong>Record and Save:</strong> Tap Add to Glossary on the definition card to save the term directly to your personal dictionary.</li>
+                    <li><strong>Weekly Articles:</strong> Read interesting weekly articles written by British Hills teachers.</li>
+                    <li><strong>Tap to Check Meaning:</strong> Tap any word you do not know in an article to see its meaning right away.</li>
+                    <li><strong>Save Words Easily:</strong> Tap "Add to Glossary" on the definition card to save the word to your personal dictionary.</li>
                 </ul>
             </div>
 
             <!-- Integrated Tap-To-Lookup Interactive Article Reader -->
             <div class="bg-stone-50 p-5 rounded-xl border border-stone-300 space-y-3">
                 <div class="border-b border-stone-200 pb-2">
-                    <span class="text-[10px] font-bold text-gold-600 uppercase tracking-wider" id="s6-sim-badge">Highland Gazette Reader Demo</span>
+                    <span class="text-[10px] font-bold text-gold-600 uppercase tracking-wider" id="s6-sim-badge">Highland Gazette Reader Practice</span>
                     <h4 class="font-serif font-bold text-base text-manor-900" id="s6-sim-title">The Tradition of Afternoon Tea</h4>
                 </div>
 
                 <div class="p-3 bg-white rounded border border-stone-200 text-stone-800 text-xs sm:text-sm leading-relaxed space-y-2 font-serif">
                     <p id="s6-sim-prompt">
-                        Tap highlighted terms below to trigger the app's floating dictionary lookup:
+                        Tap highlighted words below to test the dictionary popup:
                     </p>
                     <p class="bg-manor-50 p-2.5 rounded border-l-2 border-gold-500 italic">
-                        Guests enjoy warm <span onclick="showLookup('Scones', '/skɒnz/', 'Noun', 'Small British baked bread made of flour and butter.', 'Highland Gazette')" class="underline font-bold text-burgundy-700 cursor-pointer bg-gold-500/10 px-1 rounded">Scones</span> served alongside rich <span onclick="showLookup('Clotted Cream', '/ˈklɒt.ɪd kriːm/', 'Noun', 'Thick cream made by indirectly heating full-cream milk.', 'Highland Gazette')" class="underline font-bold text-burgundy-700 cursor-pointer bg-gold-500/10 px-1 rounded">Clotted Cream</span> and preserves.
+                        Guests enjoy warm <span onclick="showLookup('Scones', '/skɒnz/', 'Noun', 'Small British baked bread made of flour and butter.', 'Highland Gazette')" class="underline font-bold text-burgundy-700 cursor-pointer bg-gold-500/10 px-1 rounded">Scones</span> served alongside rich <span onclick="showLookup('Clotted Cream', '/ˈklɒt.ɪd kriːm/', 'Noun', 'Thick cream made by heating full-cream milk.', 'Highland Gazette')" class="underline font-bold text-burgundy-700 cursor-pointer bg-gold-500/10 px-1 rounded">Clotted Cream</span> and jam.
                     </p>
                 </div>
 
@@ -613,7 +613,7 @@
                     </div>
                     <p id="pop-def" class="text-xs text-stone-200">Definition...</p>
                     <div class="pt-1 flex justify-between items-center border-t border-gold-500/20">
-                        <span class="text-[10px] text-stone-400" id="pop-result-label">Lookup Result</span>
+                        <span class="text-[10px] text-stone-400" id="pop-result-label">Dictionary Result</span>
                         <button onclick="savePopToGlossary()" class="bg-gold-500 hover:bg-gold-600 text-manor-900 font-bold px-2.5 py-1 rounded text-[10px] transition cursor-pointer" id="btn-pop-add">
                             + Add to Glossary
                         </button>
@@ -622,42 +622,42 @@
             </div>
 
             <div class="flex justify-between pt-4 border-t border-stone-200">
-                <button onclick="switchTab(5)" class="text-xs font-bold text-manor-900 hover:underline nav-prev-s5">&larr; Previous: 5. Weekly Challenges</button>
-                <button onclick="switchTab(7)" class="text-xs font-bold text-manor-900 hover:underline nav-next-s7">Next: 7. Settings & Personalisation &rarr;</button>
+                <button onclick="switchTab(5)" class="text-xs font-bold text-manor-900 hover:underline nav-prev-s5">&larr; Previous: 5. Practice & Challenges</button>
+                <button onclick="switchTab(7)" class="text-xs font-bold text-manor-900 hover:underline nav-next-s7">Next: 7. Settings & Profile &rarr;</button>
             </div>
         </section>
 
         <!-- TAB CONTENT 7: SETTINGS & PERSONALISATION -->
         <section id="tab-content-7" class="tab-pane hidden bg-white rounded-2xl border border-stone-200 p-6 sm:p-8 shadow-sm space-y-6">
             <div class="border-b border-stone-200 pb-4">
-                <h2 class="font-serif text-2xl sm:text-3xl font-bold text-manor-900" id="s7-title">7. Settings & Personalisation</h2>
+                <h2 class="font-serif text-2xl sm:text-3xl font-bold text-manor-900" id="s7-title">7. Settings & Profile</h2>
             </div>
 
             <p class="text-stone-700 leading-relaxed text-sm sm:text-base" id="s7-intro">
-                Tailor the application interface and export settings to suit your learning preferences.
+                Change your app language and settings to match your needs.
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Language Toggle -->
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
-                    <h3 class="font-serif font-bold text-base text-manor-900" id="s7-lang-title">Bilingual Support</h3>
+                    <h3 class="font-serif font-bold text-base text-manor-900" id="s7-lang-title">Language Switch</h3>
                     <p class="text-xs sm:text-sm text-stone-600 leading-relaxed" id="s7-lang-desc">
-                        <strong>Language Toggle (English / 日本語):</strong> Switch the entire application interface, instructions, and navigation prompts between English and Japanese at any time.
+                        <strong>Language Switch (English / 日本語):</strong> Switch the app language between English and Japanese at any time.
                     </p>
                 </div>
 
                 <!-- Personalised Profile -->
                 <div class="bg-manor-50 p-5 rounded-xl border border-manor-200 space-y-2">
-                    <h3 class="font-serif font-bold text-base text-manor-900" id="s7-prof-title">Personalised Profile</h3>
+                    <h3 class="font-serif font-bold text-base text-manor-900" id="s7-prof-title">User Profile</h3>
                     <p class="text-xs sm:text-sm text-stone-600 leading-relaxed" id="s7-prof-desc">
-                        Set your guest name to customise your learning screens, journal metadata, and exportable souvenir video.
+                        Set your name to personalize your app screen, journal entries, and souvenir video.
                     </p>
                 </div>
             </div>
 
             <div class="flex justify-between pt-4 border-t border-stone-200">
                 <button onclick="switchTab(6)" class="text-xs font-bold text-manor-900 hover:underline nav-prev-s6">&larr; Previous: 6. The Highland Gazette</button>
-                <button onclick="switchTab(0)" class="text-xs font-bold text-manor-900 hover:underline nav-back-overview">Back to Overview Table &rarr;</button>
+                <button onclick="switchTab(0)" class="text-xs font-bold text-manor-900 hover:underline nav-back-overview">Back to Overview &rarr;</button>
             </div>
         </section>
 
@@ -667,7 +667,7 @@
     <footer class="bg-manor-900 text-stone-400 border-t border-gold-500/20 py-8 text-xs mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
             <p class="font-serif text-gold-400 font-bold text-sm">British Hills - Fukushima, Japan</p>
-            <p id="footer-text1">Official Explanatory User Guide Web Application for the Highland Companion App.</p>
+            <p id="footer-text1">Official User Guide Web App for the Highland Companion App.</p>
             <p class="text-stone-400 text-[11px]" id="footer-text2">Highland Life Immersion Programme</p>
         </div>
     </footer>
@@ -680,8 +680,8 @@
             EN: {
                 navSubtitle: "Highland Companion - User Guide",
                 badge: "User guide",
-                heroTitle: "British Hills Highland Companion - User Guide",
-                heroDesc: "The Highland Companion is your digital companion for your Highland Life course at British Hills. This page introduces the core features and tools designed to help you make the most of your stay and continue your learning journey long after you return home.",
+                heroTitle: "British Hills Highland Companion",
+                heroDesc: "The Highland Companion is your digital app for the Highland Life course at British Hills. This guide explains the key features to help you learn during your stay and keep practicing after you return home.",
                 
                 // Tabs
                 tab0: "Overview",
@@ -691,123 +691,123 @@
                 tab4: "4. The Glossary",
                 tab5: "5. Weekly Challenges",
                 tab6: "6. The Highland Gazette",
-                tab7: "7. Settings & Personalisation",
+                tab7: "7. Settings & Profile",
 
                 // Tab 0
                 overviewTitle: "Quick Navigation Overview",
-                overviewSub: "Summary of core modules, functional mechanics, and target learning outcomes. Tap any row to navigate directly to that module.",
-                thModule: "Module",
-                thFunction: "Core Function",
-                thGoal: "Primary Learning Goal",
+                overviewSub: "Overview of main features and learning goals. Tap any row to open that section.",
+                thModule: "Feature",
+                thFunction: "Main Function",
+                thGoal: "Learning Goal",
                 thAction: "Action",
-                actionBtnText: "View Module →",
+                actionBtnText: "View Section →",
 
-                r1Mod: "The Archives", r1Func: "QR-locked digital lesson supplements", r1Goal: "Interactive practice & classroom consolidation",
-                r2Mod: "The Journal", r2Func: "Photo scrapbook, spelling tool & souvenir video", r2Goal: "Cultural reflection, media creation & spelling accuracy",
-                r3Mod: "Lessons Diary", r3Func: "Academic portfolio & whiteboard logger", r3Goal: "Classroom review & glossary building",
-                r4Mod: "The Glossary", r4Func: "Personal bespoke dictionary with audio", r4Goal: "Vocabulary expansion & British phonetics",
-                r5Mod: "Weekly Challenges", r5Func: "Daily quizzes & politeness rankings", r5Goal: "Continuous learning & long-term retention",
-                r6Mod: "The Highland Gazette", r6Func: "Weekly cultural magazine articles", r6Goal: "Contextual reading & tap-to-lookup study",
-                r7Mod: "Settings & Profile", r7Func: "Bilingual toggle & guest profile setup", r7Goal: "Personalised experience & interface options",
+                r1Mod: "The Archives", r1Func: "QR code extra lesson materials", r1Goal: "Fun practice and review for classes",
+                r2Mod: "The Journal", r2Func: "Photo scrapbook, spelling tool & souvenir video", r2Goal: "Sharing experiences, videos & British spelling",
+                r3Mod: "Lessons Diary", r3Func: "Class notes and whiteboard photo saver", r3Goal: "Reviewing lessons and saving new words",
+                r4Mod: "The Glossary", r4Func: "Your personal dictionary with audio", r4Goal: "Building vocabulary and British pronunciation",
+                r5Mod: "Weekly Challenges", r5Func: "Daily quizzes and politeness practice", r5Goal: "Daily learning and remembering new English",
+                r6Mod: "The Highland Gazette", r6Func: "Weekly articles about British culture", r6Goal: "Reading practice and tap-to-check dictionary",
+                r7Mod: "Settings & Profile", r7Func: "Language switch and guest profile settings", r7Goal: "Custom settings and profile options",
 
                 // Tab 1
-                s1Title: "1. The Archives (Supplementary Lesson Materials)",
-                s1Intro: "The Archives serve as your digital repository for interactive lesson content during your stay.",
+                s1Title: "1. The Archives (Extra Lesson Materials)",
+                s1Intro: "The Archives hold interactive study materials for your lessons at British Hills.",
                 s1QrTitle: "QR Code Scanner",
-                s1QrDesc: "<strong>In-Class Unlocking:</strong> In each lesson, scan the unique QR code provided by your teacher to instantly unlock exclusive supplementary study materials tailored to that specific class.",
+                s1QrDesc: "<strong>Unlocking in Class:</strong> Scan the QR code from your teacher in each lesson to open special study materials for that class.",
                 s1ActTitle: "Interactive Activities",
-                s1ActList: "<li><strong>Vocabulary & Anagram Matchers:</strong> Unscramble terms and pair target words with contextual definitions to reinforce key lesson vocabulary.</li><li><strong>Sentence Builders & Ordering:</strong> Reorder clause blocks to master authentic British sentence patterns and idiomatic structures.</li><li><strong>Pronunciation & Phonetics:</strong> Practice syllable stress, linking sounds, intonation contours, and natural speech rhythm using interactive audio cues.</li><li><strong>Special Lesson Modules:</strong> Access dedicated interactive tools designed for specific immersion classes, including digital card decks and magic trick simulators.</li>",
-                s1SimTitle: "Archives Interactive Simulator: Anagram Unscrambler",
-                s1SimBadge: "Module Practice",
-                s1SimPrompt: "Unscramble this essential British Hills etiquette term:",
-                btnAnagramVerify: "Verify Answer",
+                s1ActList: "<li><strong>Word & Anagram Games:</strong> Unscramble words and match them with their meanings to learn new lesson words.</li><li><strong>Sentence Building:</strong> Put word blocks in order to practice natural British sentences.</li><li><strong>Pronunciation Practice:</strong> Listen and practice British pronunciation, word stress, and rhythm with audio samples.</li><li><strong>Special Class Tools:</strong> Use interactive tools for special classes, like digital card games or magic trick activities.</li>",
+                s1SimTitle: "Archives Interactive Practice: Anagram Game",
+                s1SimBadge: "Practice Game",
+                s1SimPrompt: "Unscramble this British Hills polite word:",
+                btnAnagramVerify: "Check Answer",
 
                 // Tab 2
                 s2Title: "2. The Journal & Souvenir Video",
-                s2Intro: "Capture and preserve your personal Highland Life memories while practicing expressive English writing.",
-                s2P1Title: "Memory Pages & Framing",
-                s2P1List: "<li><strong>Personal Scrapbook:</strong> Write reflections and attach photos captured around the British Hills estate.</li><li><strong>Classic Photo Framing:</strong> Personalise your images by choosing between Polaroid, Victorian, or Parchment frame styles.</li>",
+                s2Intro: "Save your memories from British Hills and practice writing in English.",
+                s2P1Title: "Memory Pages & Frames",
+                s2P1List: "<li><strong>Personal Journal:</strong> Write about your experiences and add photos taken around British Hills.</li><li><strong>Photo Frames:</strong> Choose Polaroid, Victorian, or Parchment style frames for your photos.</li>",
                 s2P2Title: "British Spelling Converter",
-                s2P2Desc: "Converts standard American spellings to British English (e.g., color to colour, traveler to traveller, center to centre).",
-                s2P3Title: "Social Media Souvenir Video",
-                s2P3List: "<li><strong>Animated Keepsake:</strong> Automatically generate an animated, vertical souvenir video of your journal scrapbook complete with background music.</li><li><strong>Direct Export:</strong> Save the video directly to your device's Camera Roll for easy sharing on social media.</li>",
-                s2Sim1Title: "Frame Style Selector",
+                s2P2Desc: "Changes American spelling to British spelling (for example, 'color' to 'colour' and 'center' to 'centre').",
+                s2P3Title: "Souvenir Video",
+                s2P3List: "<li><strong>Short Memory Video:</strong> Automatically make a short vertical video of your journal photos with background music.</li><li><strong>Easy Saving:</strong> Save the video directly to your phone to share with friends and family.</li>",
+                s2Sim1Title: "Frame Style Chooser",
                 btnFramePol: "Polaroid", btnFrameVic: "Victorian", btnFramePar: "Parchment",
-                s2Sim2Title: "US to UK Live Spelling Engine",
+                s2Sim2Title: "Spelling Tool (US to UK)",
                 s2Sim2Badge: "Auto Converter",
                 s2Sim2Prompt: "Type words like 'color', 'center', 'organize', 'traveler' below:",
-                s2Sim2Outlabel: "British English Output:",
+                s2Sim2Outlabel: "British English Spelling:",
 
                 // Tab 3
                 s3Title: "3. Lessons Diary",
-                s3Intro: "Track what you study in every classroom session to build a diary of what you learned.",
-                s3RTitle: "Classroom Records",
-                s3RList: "<li><strong>Lesson Reflection:</strong> Record the lesson module, teacher name, date, and your personal comprehension rating (1 to 5 stars).</li><li><strong>Whiteboard Capture:</strong> Snap and store photos of classroom whiteboards, worksheets, and teacher notes directly into the corresponding entry.</li><li><strong>Key Takeaways & Target Phrases:</strong> Jot down essential grammar points, functional expressions, and new vocabulary introduced during class.</li>",
-                s3STitle: "One-Tap Glossary Sync",
-                s3SDesc: "<strong>Instant Saving:</strong> Tap the <strong>+</strong> button beside any highlighted expression or term in your notes to automatically transfer it to The Glossary for future review.",
-                s3SimTitle: "Lesson Diary Sync Simulator",
-                s3SimBadge: "Class Log Entry #04",
+                s3Intro: "Keep track of what you learn in every class to build your personal learning diary.",
+                s3RTitle: "Class Records",
+                s3RList: "<li><strong>Lesson Notes:</strong> Save the lesson name, teacher name, date, and rate how well you understood the class (1 to 5 stars).</li><li><strong>Whiteboard Photos:</strong> Take photos of whiteboards and worksheets to save with your lesson notes.</li><li><strong>Useful Expressions & Grammar:</strong> Write down helpful grammar points, useful expressions, and new words from class.</li>",
+                s3STitle: "One-Tap Glossary Save",
+                s3SDesc: "<strong>Instant Save:</strong> Tap the <strong>+</strong> button next to any expression or word to save it directly to your Glossary for review later.",
+                s3SimTitle: "Lesson Diary Save Practice",
+                s3SimBadge: "Lesson Entry #04",
                 s3SimTag: "Polite Request Pattern",
-                btnSyncDemo: "+ Sync",
+                btnSyncDemo: "+ Save",
 
                 // Tab 4
                 s4Title: "4. The Glossary (Personal Dictionary)",
-                s4Intro: "Your personal vocabulary book grows continuously alongside your learning progress.",
-                s4RecTitle: "Automatic Vocabulary Records",
-                s4RecList: "<li><strong>Centralised Collection:</strong> Terms saved from your Journal, Lessons Diary, Highland Gazette articles, or Word of the Day are automatically aggregated in your personal dictionary.</li><li><strong>Automated Data Retrieval:</strong> The app automatically fetches English definitions, parts of speech, and IPA (International Phonetic Alphabet) transcriptions for every entry.</li><li><strong>British Audio Pronunciation:</strong> Tap the speaker button beside any headword to hear natural British English pronunciation recorded by native speakers.</li><li><strong>Search & Filter:</strong> Quickly find any word you have collected using the real-time filter engine.</li>",
-                s4SimTitle: "Glossary Search & Audio Pronunciation Tool",
+                s4Intro: "Your personal dictionary grows as you learn new English words.",
+                s4RecTitle: "Automatic Word Saver",
+                s4RecList: "<li><strong>All Words in One Place:</strong> Words saved from your Journal, Lessons Diary, Highland Gazette articles, or Word of the Day are automatically saved to your dictionary.</li><li><strong>Automatic Word Info:</strong> The app automatically adds simple English definitions, word types (noun, verb, etc.), and pronunciation guides.</li><li><strong>British Audio Pronunciation:</strong> Tap the speaker button next to any word to listen to its British English pronunciation.</li><li><strong>Easy Search:</strong> Type in the search box to quickly find words in your dictionary.</li>",
+                s4SimTitle: "Glossary Search & Audio Tool",
                 glossarySearchPlaceholder: "Filter saved words...",
                 btnAudioText: "Listen Audio",
 
                 // Tab 5
-                s5Title: "5. Continuous Learning & Weekly Challenges",
-                s5Intro: "Keep learning after leaving British Hills through ongoing practice.",
+                s5Title: "5. Practice & Weekly Challenges",
+                s5Intro: "Keep practicing English after leaving British Hills.",
                 s5WotdTitle: "Word of the Day",
-                s5WotdDesc: "<strong>Daily Vocabulary:</strong> Receive a curated daily English word complete with IPA phonetics, definitions, historical context, and real-world example sentences.",
-                s5RevTitle: "Dynamic Vocab Review",
-                s5RevDesc: "<strong>Personalised Quizzes:</strong> Take interactive multiple-choice quizzes generated dynamically from the words stored in your personal Glossary.",
+                s5WotdDesc: "<strong>Daily Vocabulary:</strong> Learn a new English word every day with simple definitions, pronunciation guides, and example sentences.",
+                s5RevTitle: "Vocabulary Quizzes",
+                s5RevDesc: "<strong>Personalized Quizzes:</strong> Practice with quick multiple-choice quizzes created from the words in your Glossary.",
                 s5ChalTitle: "Weekly Highland Challenges",
-                s5ChalList: "<li><strong>Part A • Politeness Ranking:</strong> Drag and arrange phrases from Most Formal to Most Casual to master British pragmatics and social etiquette.</li><li><strong>Part B • Graded Cloze:</strong> Complete fill-in-the-blank reading passages calibrated to refine reading comprehension and contextual grammar.</li><li><strong>Part C • Phonetics & Stress:</strong> Test your understanding of primary syllable stress, connected speech patterns, and silent letters across challenging headwords.</li>",
+                s5ChalList: "<li><strong>Part A • Politeness Ranking:</strong> Put phrases in order from Most Formal to Most Casual to learn polite British English.</li><li><strong>Part B • Fill-in-the-Blanks:</strong> Fill in missing words in short reading texts to practice reading and grammar.</li><li><strong>Part C • Pronunciation & Stress:</strong> Practice word stress, silent letters, and British English speech patterns.</li>",
                 s5SimTitle: "Part A Mini-Game: Politeness Ranking",
-                s5SimBadge: "Sort: Most Formal (Top) to Most Casual (Bottom)",
-                s5SimPrompt: "Reorder these three expressions into correct politeness order:",
-                btnRankUp: "Up", btnRankDown: "Down", btnRankSubmit: "Submit Order",
+                s5SimBadge: "Order: Most Formal (Top) to Casual (Bottom)",
+                s5SimPrompt: "Put these three sentences in order from most polite to most casual:",
+                btnRankUp: "Up", btnRankDown: "Down", btnRankSubmit: "Submit Answer",
 
                 // Tab 6
                 s6Title: "6. The Highland Gazette",
-                s6Intro: "Stay connected with British Hills through weekly articles exploring British and Commonwealth heritage, traditions, lifestyle, and history.",
+                s6Intro: "Read weekly articles about British culture, history, and life at British Hills.",
                 s6ArtTitle: "Weekly Reading Features",
-                s6ArtList: "<li><strong>Weekly Articles:</strong> Read weekly articles published directly by British Hills instructors and staff.</li><li><strong>Tap-to-Lookup:</strong> Tap any unfamiliar word within an article text block to open a floating definition card.</li><li><strong>Record and Save:</strong> Tap Add to Glossary on the definition card to save the term directly to your personal dictionary.</li>",
-                s6SimBadge: "Highland Gazette Reader Demo",
+                s6ArtList: "<li><strong>Weekly Articles:</strong> Read interesting weekly articles written by British Hills teachers.</li><li><strong>Tap to Check Meaning:</strong> Tap any word you do not know in an article to see its meaning right away.</li><li><strong>Save Words Easily:</strong> Tap 'Add to Glossary' on the definition card to save the word to your personal dictionary.</li>",
+                s6SimBadge: "Highland Gazette Reader Practice",
                 s6SimTitle: "The Tradition of Afternoon Tea",
-                s6SimPrompt: "Tap highlighted terms below to trigger the app's floating dictionary lookup:",
-                btnPopClose: "Close", popResultLabel: "Lookup Result", btnPopAdd: "+ Add to Glossary",
+                s6SimPrompt: "Tap highlighted words below to test the dictionary popup:",
+                btnPopClose: "Close", popResultLabel: "Dictionary Result", btnPopAdd: "+ Add to Glossary",
 
                 // Tab 7
-                s7Title: "7. Settings & Personalisation",
-                s7Intro: "Tailor the application interface and export settings to suit your learning preferences.",
-                s7LangTitle: "Bilingual Support",
-                s7LangDesc: "<strong>Language Toggle (English / 日本語):</strong> Switch the entire application interface, instructions, and navigation prompts between English and Japanese at any time.",
-                s7ProfTitle: "Personalised Profile",
-                s7ProfDesc: "Set your guest name to customise your learning screens, journal metadata, and exportable souvenir video.",
+                s7Title: "7. Settings & Profile",
+                s7Intro: "Change your app language and settings to match your needs.",
+                s7LangTitle: "Language Switch",
+                s7LangDesc: "<strong>Language Switch (English / 日本語):</strong> Switch the app language between English and Japanese at any time.",
+                s7ProfTitle: "User Profile",
+                s7ProfDesc: "Set your name to personalize your app screen, journal entries, and souvenir video.",
 
                 // Navigation Links
-                navBackOverview: "Back to Overview Table →",
+                navBackOverview: "Back to Overview →",
                 navPrevS1: "← Previous: 1. The Archives", navNextS2: "Next: 2. The Journal →",
                 navPrevS2: "← Previous: 2. The Journal", navNextS3: "Next: 3. Lessons Diary →",
                 navPrevS3: "← Previous: 3. Lessons Diary", navNextS4: "Next: 4. The Glossary →",
-                navPrevS4: "← Previous: 4. The Glossary", navNextS5: "Next: 5. Weekly Challenges →",
-                navPrevS5: "← Previous: 5. Weekly Challenges", navNextS6: "Next: 6. The Highland Gazette →",
-                navPrevS6: "← Previous: 6. The Highland Gazette", navNextS7: "Next: 7. Settings & Personalisation →",
+                navPrevS4: "← Previous: 4. The Glossary", navNextS5: "Next: 5. Practice & Challenges →",
+                navPrevS5: "← Previous: 5. Practice & Challenges", navNextS6: "Next: 6. The Highland Gazette →",
+                navPrevS6: "← Previous: 6. The Highland Gazette", navNextS7: "Next: 7. Settings & Profile →",
 
                 // Footer
-                footerText1: "Official Explanatory User Guide Web Application for the Highland Companion App.",
+                footerText1: "Official User Guide Web App for the Highland Companion App.",
                 footerText2: "Highland Life Immersion Programme"
             },
             JP: {
                 navSubtitle: "ハイランド・コンパニオン ユーザーガイド",
                 badge: "ユーザーガイド",
-                heroTitle: "ブリティッシュヒルズ ハイランド・コンパニオン 公式Webガイド",
+                heroTitle: "ブリティッシュヒルズ ハイランド・コンパニオン",
                 heroDesc: "ハイランド・コンパニオンは、ブリティッシュヒルズでのハイランド・ライフコースのためのデジタル学習ツールです。滞在中の学習効果を最大化し、帰宅後も楽しく英語学習を継続できるよう設計された主要機能とツールをご紹介します。",
                 
                 // Tabs
@@ -818,7 +818,7 @@
                 tab4: "4. ザ・グロッサリー",
                 tab5: "5. ウィークリー・チャレンジ",
                 tab6: "6. ハイランド・ガゼット",
-                tab7: "7. 設定・パーソナライズ",
+                tab7: "7. 設定・プロフィール",
 
                 // Tab 0
                 overviewTitle: "機能概要一覧テーブル",
@@ -835,7 +835,7 @@
                 r4Mod: "ザ・グロッサリー", r4Func: "音声付き個人専用デジタル辞書", r4Goal: "語彙力強化とイギリス英語の発音習得",
                 r5Mod: "ウィークリー・チャレンジ", r5Func: "毎日のクイズと丁寧さの順位付け演習", r5Goal: "帰宅後の継続学習と定着",
                 r6Mod: "ハイランド・ガゼット", r6Func: "講師陣による週刊文化マガジン", r6Goal: "文脈での読解とワンタップ辞書検索",
-                r7Mod: "設定・パーソナライズ", r7Func: "言語切り替え＆ゲストプロフィール設定", r7Goal: "自分に合わせた学習環境の設定",
+                r7Mod: "設定・プロフィール", r7Func: "言語切り替え＆ゲストプロフィール設定", r7Goal: "自分に合わせた学習環境の設定",
 
                 // Tab 1
                 s1Title: "1. ザ・アーカイブズ（授業補足教材）",
@@ -881,7 +881,7 @@
                 s4Title: "4. ザ・グロッサリー（個人専用辞書）",
                 s4Intro: "学びの進捗に合わせて、あなただけのオリジナル英和・英英単語帳が充実していきます。",
                 s4RecTitle: "自動単語収集・登録機能",
-                s4RecList: "<li><strong>自動集約：</strong>ジャーナル、レッスン・ダイアリー、マガジン記事、Word of the Dayで保存した単語が一箇所に集まります。</li><li><strong>データ自動取得：</strong>登録された単語の英語定義、品詞、IPA発音記号をシステムが自動取得します。</li><li><strong>ネイティブ音声：</strong>スピーカーアイコンをタップすると、イギリス英語ネイティブの正確な発音を聞くことができます。</li><li><strong>検索・絞り込み：</strong>リアルタイムフィルター機能により、保存した単語をすばやく検索できます。</li>",
+                s4RecList: "<li><strong>自動集約：</strong>ジャーナル、レッスン・ダイアリー、マガジン記事、Word of the Dayで保存した単語が一箇所に集まります。</li><li><strong>データ自動取得：</strong>登録された単語の英語定義、品詞、発音記号をシステムが自動取得します。</li><li><strong>イギリス英語音声：</strong>スピーカーアイコンをタップすると、正確なイギリス英語の発音を聞くことができます。</li><li><strong>検索・絞り込み：</strong>リアルタイムフィルター機能により、保存した単語をすばやく検索できます。</li>",
                 s4SimTitle: "単語帳検索＆音声再生ツール",
                 glossarySearchPlaceholder: "単語を検索...",
                 btnAudioText: "音声再生",
@@ -890,7 +890,7 @@
                 s5Title: "5. 継続学習＆ウィークリー・チャレンジ",
                 s5Intro: "ブリティッシュヒルズを離れた後も、毎日の演習で学習効果を継続させます。",
                 s5WotdTitle: "本日の英単語 (Word of the Day)",
-                s5WotdDesc: "<strong>日替わり語彙：</strong>IPA発音記号、定義、語源や背景、実用例文が記載された単語が毎日届きます。",
+                s5WotdDesc: "<strong>日替わり語彙：</strong>発音記号、定義、語源や背景、実用例文が記載された単語が毎日届きます。",
                 s5RevTitle: "動的語彙クイズ",
                 s5RevDesc: "<strong>個別クイズ：</strong>あなたの「ザ・グロッサリー」に保存されている単語から自動生成される選択式クイズです。",
                 s5ChalTitle: "ウィークリー・ハイランド・チャレンジ",
@@ -911,7 +911,7 @@
                 btnPopClose: "閉じる", popResultLabel: "辞書検索結果", btnPopAdd: "+ 単語帳に追加",
 
                 // Tab 7
-                s7Title: "7. 設定・パーソナライズ",
+                s7Title: "7. 設定・プロフィール",
                 s7Intro: "アプリの表示言語や出力設定を、あなたの学習スタイルに合わせてカスタマイズできます。",
                 s7LangTitle: "バイリンガル表示対応",
                 s7LangDesc: "<strong>言語切替（英語 / 日本語）：</strong>アプリ全体の表示言語や説明文をいつでも英語と日本語で切り替えられます。",
@@ -923,9 +923,9 @@
                 navPrevS1: "← 前へ: 1. ザ・アーカイブズ", navNextS2: "次へ: 2. ザ・ジャーナル →",
                 navPrevS2: "← 前へ: 2. ザ・ジャーナル", navNextS3: "次へ: 3. レッスン・ダイアリー →",
                 navPrevS3: "← 前へ: 3. レッスン・ダイアリー", navNextS4: "次へ: 4. ザ・グロッサリー →",
-                navPrevS4: "← 前へ: 4. ザ・グロッサリー", navNextS5: "次へ: 5. ウィークリー・チャレンジ →",
-                navPrevS5: "← 前へ: 5. ウィークリー・チャレンジ", navNextS6: "次へ: 6. ザ・ハイランド・ガゼット →",
-                navPrevS6: "← 前へ: 6. ザ・ハイランド・ガゼット", navNextS7: "次へ: 7. 設定・パーソナライズ →",
+                navPrevS4: "← 前へ: 4. ザ・グロッサリー", navNextS5: "次へ: 5. 練習＆チャレンジ →",
+                navPrevS5: "← 前へ: 5. 練習＆チャレンジ", navNextS6: "次へ: 6. ザ・ハイランド・ガゼット →",
+                navPrevS6: "← 前へ: 6. ザ・ハイランド・ガゼット", navNextS7: "次へ: 7. 設定・プロフィール →",
 
                 // Footer
                 footerText1: "ハイランド・コンパニオン アプリ公式解説Webガイド",
@@ -1108,7 +1108,7 @@
             const val = document.getElementById('anagram-input').value.trim().toUpperCase();
             const feedback = document.getElementById('anagram-feedback');
             if (val === 'COURTESY') {
-                feedback.textContent = currentLang === 'EN' ? 'Correct! COURTESY matches key etiquette vocabulary.' : '正解です！COURTESYはマナーに関する重要語彙です。';
+                feedback.textContent = currentLang === 'EN' ? 'Correct! COURTESY is an important word for polite behavior.' : '正解です！COURTESYはマナーに関する重要語彙です。';
                 feedback.className = 'text-xs font-bold text-emerald-400 h-4';
             } else {
                 feedback.textContent = currentLang === 'EN' ? 'Incorrect. Hint: C-O-U-R-T-E-S-Y' : '不正解です。ヒント：C-O-U-R-T-E-S-Y';
@@ -1142,15 +1142,15 @@
         // Audio Mock
         function speakWord(word) {
             const msg = currentLang === 'EN' 
-                ? `In the App, high-quality native British English audio is recorded for "${word}".` 
-                : `アプリでは、「${word}」のネイティブによる高音質イギリス英語音声が再生されます。`;
+                ? `In the App, British English audio is available for "${word}".` 
+                : `アプリでは、「${word}」のイギリス英語音声が再生されます。`;
             alert(msg);
         }
 
         // Sync to Glossary Simulator
         function syncToGlossary(word) {
-            addWordToGlossaryUI(word, '/uk.ph/', currentLang === 'EN' ? 'Synced Entry.' : '同期されたエントリー');
-            const msg = currentLang === 'EN' ? `"${word}" synced directly to your Glossary!` : `「${word}」が直接ザ・グロッサリーに同期されました！`;
+            addWordToGlossaryUI(word, '/uk.ph/', currentLang === 'EN' ? 'Saved Entry.' : '保存されたエントリー');
+            const msg = currentLang === 'EN' ? `"${word}" saved directly to your Glossary!` : `「${word}」が直接ザ・グロッサリーに保存されました！`;
             alert(msg);
         }
 
