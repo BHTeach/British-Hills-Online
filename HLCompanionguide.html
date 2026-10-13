@@ -6,7 +6,7 @@
     <title>British Hills Highland Companion - User Guide</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Cinzel for titling, Cormorant Garamond for editorial flair, Plus Jakarta Sans for UI readability -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -50,23 +50,43 @@
         }
     </script>
     <style>
-        /* Luxury Textured & Gilded Styling */
         body {
             background-color: #faf8f5;
             background-image: 
-                radial-gradient(at 10% 20%, rgba(223, 186, 104, 0.04) 0px, transparent 50%),
-                radial-gradient(at 90% 80%, rgba(27, 45, 35, 0.03) 0px, transparent 50%);
+                radial-gradient(at 12% 18%, rgba(223, 186, 104, 0.05) 0px, transparent 45%),
+                radial-gradient(at 88% 82%, rgba(27, 45, 35, 0.04) 0px, transparent 50%);
         }
 
-        /* Gold Foil Gradients */
-        .gold-foil-text {
-            background: linear-gradient(135deg, #dfba68 0%, #fef3c7 45%, #c5a059 80%, #9b7638 100%);
+        /* Smooth Tab Pane Switching */
+        .tab-pane {
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+        .tab-pane.hidden {
+            display: none !important;
+        }
+
+        /* Gilded Foil Shimmer - Slowed down for a gentle, luxurious transition */
+        @keyframes foilShimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .foil-shimmer {
+            background: linear-gradient(105deg, #dfba68 0%, #fffbe8 35%, #dfba68 70%, #9b7638 100%);
+            background-size: 250% auto;
+            animation: foilShimmer 20s ease-in-out infinite;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .gold-gradient-border {
-            border-image: linear-gradient(to right, rgba(170, 130, 61, 0.1), rgba(223, 186, 104, 0.8), rgba(170, 130, 61, 0.1)) 1;
+        /* Ambient Aura Background */
+        @keyframes ambientAura {
+            0%, 100% { opacity: 0.18; transform: scale(1); }
+            50% { opacity: 0.32; transform: scale(1.04); }
+        }
+
+        .ambient-pulse {
+            animation: ambientAura 7s ease-in-out infinite;
         }
 
         /* Manor Estate Card Surfaces */
@@ -74,6 +94,7 @@
             background: radial-gradient(circle at top left, #ffffff 0%, #fdfcf9 60%, #f9f6ef 100%);
             border: 1px solid #e7decb;
             box-shadow: 0 10px 30px -5px rgba(27, 45, 35, 0.05), 0 2px 8px rgba(0, 0, 0, 0.03);
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
         }
 
         .estate-panel-dark {
@@ -82,30 +103,14 @@
             box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 12px 28px -6px rgba(0, 0, 0, 0.5);
         }
 
-        /* Architectural Dividers */
-        .heritage-divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: #c5a059;
-            font-size: 0.75rem;
-            letter-spacing: 0.2em;
-        }
-        .heritage-divider::before, .heritage-divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid rgba(197, 160, 89, 0.3);
-        }
-        .heritage-divider:not(:empty)::before { margin-right: 1.5rem; }
-        .heritage-divider:not(:empty)::after { margin-left: 1.5rem; }
-
-        /* Authentic Frame Simulators */
+        /* Interactive Frames */
         .frame-polaroid {
             background: #ffffff;
             padding: 14px 14px 38px 14px;
             box-shadow: 0 14px 30px -6px rgba(0,0,0,0.2), 0 2px 6px rgba(0,0,0,0.06);
             border: 1px solid #e2e8f0;
             transform: rotate(-0.5deg);
+            transition: all 0.3s ease;
         }
         .frame-victorian {
             background: #1e130c;
@@ -114,6 +119,7 @@
             outline: 2px solid #5a3e1b;
             outline-offset: -8px;
             box-shadow: inset 0 0 25px rgba(0,0,0,0.9), 0 16px 32px rgba(0,0,0,0.35);
+            transition: all 0.3s ease;
         }
         .frame-parchment {
             background: #f7eedc;
@@ -122,6 +128,7 @@
             outline: 1px dashed #aa823d;
             outline-offset: -6px;
             box-shadow: inset 0 0 18px rgba(170, 130, 61, 0.2), 0 10px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
         }
 
         .hide-scrollbar::-webkit-scrollbar {
@@ -143,7 +150,6 @@
     <header class="sticky top-0 z-50 bg-manor-950/95 backdrop-blur-md border-b border-gold-500/30 text-white shadow-xl">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3.5">
-                <!-- Crest Monogram -->
                 <div class="relative w-11 h-11 rounded-full p-[1.5px] bg-gradient-to-tr from-gold-600 via-gold-400 to-amber-200 shadow-md flex-shrink-0">
                     <div class="w-full h-full rounded-full bg-manor-950 flex items-center justify-center font-serif text-gold-400 font-bold text-sm tracking-widest border border-gold-500/40">
                         BH
@@ -164,10 +170,9 @@
 
             <!-- Header Quick Controls -->
             <div class="flex items-center space-x-3 sm:space-x-6">
-                <!-- Language Switcher Button -->
-                <button onclick="toggleLanguage()" class="group flex items-center bg-gradient-to-r from-burgundy-800 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-amber-50 text-xs font-semibold px-4 py-2 rounded-lg border border-gold-500/50 shadow-md transition-all duration-300 cursor-pointer hover:border-gold-400 hover:shadow-gold-500/10">
-                    <span class="mr-1.5 text-gold-400">🌐</span>
-                    <span id="lang-btn-text" class="tracking-wider">English / 日本語</span>
+                <button onclick="toggleLanguage()" class="group flex items-center bg-gradient-to-r from-burgundy-800 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-amber-50 text-xs font-semibold px-4 py-2 rounded-lg border border-gold-500/50 shadow-md transition cursor-pointer hover:border-gold-400 hover:shadow-gold-500/20 active:scale-95">
+                    <span class="mr-2 text-gold-400">🌐</span>
+                    <span id="lang-btn-text" class="tracking-wider font-serif">Language: EN</span>
                 </button>
             </div>
         </div>
@@ -175,7 +180,9 @@
 
     <!-- Main Hero Header -->
     <section class="relative bg-gradient-to-b from-manor-950 via-manor-900 to-manor-950 text-white py-12 md:py-16 border-b border-gold-500/25 overflow-hidden">
-        <!-- Subtle Estate Background Watermark -->
+        <div class="ambient-pulse absolute -top-24 -left-24 w-96 h-96 rounded-full bg-gold-500/10 blur-3xl pointer-events-none"></div>
+        <div class="ambient-pulse absolute -bottom-24 right-1/4 w-96 h-96 rounded-full bg-manor-700/20 blur-3xl pointer-events-none" style="animation-delay: -3.5s;"></div>
+
         <div class="absolute right-6 top-1/2 -translate-y-1/2 opacity-[0.03] select-none pointer-events-none font-serif text-[18rem] text-gold-400 leading-none font-black">
             BH
         </div>
@@ -183,11 +190,11 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="max-w-4xl space-y-4">
                 <div class="inline-flex items-center space-x-2 bg-gold-500/10 border border-gold-500/40 text-gold-300 px-3.5 py-1 rounded-full text-xs font-serif font-bold uppercase tracking-widest shadow-inner">
-                    <span>✦</span>
+                    <span class="text-gold-400">✦</span>
                     <span id="hero-badge">User guide</span>
-                    <span>✦</span>
+                    <span class="text-gold-400">✦</span>
                 </div>
-                <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-stone-100 via-amber-100 to-stone-200 leading-tight" id="hero-title">
+                <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight foil-shimmer leading-tight" id="hero-title">
                     British Hills Highland Companion
                 </h2>
                 <p class="text-stone-300 text-sm sm:text-base leading-relaxed font-sans max-w-3xl" id="hero-desc">
@@ -197,34 +204,43 @@
         </div>
     </section>
 
-    <!-- TAB NAVIGATION BAR -->
-    <div id="tabs-navigation" class="sticky top-20 z-40 bg-manor-900/90 backdrop-blur-md border-b border-gold-500/30 shadow-md py-2.5">
+    <!-- TAB NAVIGATION BAR (With Non-Blocking Pointer-Transparent Scroll Edge Masks) -->
+    <div id="tabs-navigation" class="sticky top-20 z-40 bg-manor-900/95 backdrop-blur-md border-b border-gold-500/30 shadow-md py-2.5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center space-x-2 overflow-x-auto hide-scrollbar pb-0.5">
-                <button onclick="switchTab(0)" class="tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-bold transition-all duration-300 shadow-md bg-gradient-to-b from-manor-800 to-manor-900 text-gold-400 border border-gold-500/60 ring-1 ring-gold-400/30 cursor-pointer whitespace-nowrap flex items-center gap-1.5" id="tab-btn-0">
-                    Overview
-                </button>
-                <button onclick="switchTab(1)" class="tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-semibold transition-all duration-300 bg-white/80 hover:bg-manor-100 text-stone-700 hover:text-manor-900 border border-amber-900/10 hover:border-gold-500/40 cursor-pointer whitespace-nowrap flex items-center gap-1.5" id="tab-btn-1">
-                    1. The Archives
-                </button>
-                <button onclick="switchTab(2)" class="tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-semibold transition-all duration-300 bg-white/80 hover:bg-manor-100 text-stone-700 hover:text-manor-900 border border-amber-900/10 hover:border-gold-500/40 cursor-pointer whitespace-nowrap flex items-center gap-1.5" id="tab-btn-2">
-                    2. The Journal
-                </button>
-                <button onclick="switchTab(3)" class="tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-semibold transition-all duration-300 bg-white/80 hover:bg-manor-100 text-stone-700 hover:text-manor-900 border border-amber-900/10 hover:border-gold-500/40 cursor-pointer whitespace-nowrap flex items-center gap-1.5" id="tab-btn-3">
-                    3. Lessons Diary
-                </button>
-                <button onclick="switchTab(4)" class="tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-semibold transition-all duration-300 bg-white/80 hover:bg-manor-100 text-stone-700 hover:text-manor-900 border border-amber-900/10 hover:border-gold-500/40 cursor-pointer whitespace-nowrap flex items-center gap-1.5" id="tab-btn-4">
-                    4. The Glossary
-                </button>
-                <button onclick="switchTab(5)" class="tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-semibold transition-all duration-300 bg-white/80 hover:bg-manor-100 text-stone-700 hover:text-manor-900 border border-amber-900/10 hover:border-gold-500/40 cursor-pointer whitespace-nowrap flex items-center gap-1.5" id="tab-btn-5">
-                    5. Weekly Challenges
-                </button>
-                <button onclick="switchTab(6)" class="tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-semibold transition-all duration-300 bg-white/80 hover:bg-manor-100 text-stone-700 hover:text-manor-900 border border-amber-900/10 hover:border-gold-500/40 cursor-pointer whitespace-nowrap flex items-center gap-1.5" id="tab-btn-6">
-                    6. The Highland Gazette
-                </button>
-                <button onclick="switchTab(7)" class="tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-semibold transition-all duration-300 bg-white/80 hover:bg-manor-100 text-stone-700 hover:text-manor-900 border border-amber-900/10 hover:border-gold-500/40 cursor-pointer whitespace-nowrap flex items-center gap-1.5" id="tab-btn-7">
-                    7. Settings & Profile
-                </button>
+            <div class="relative">
+                <!-- Left Gradient Edge Dissolve (Pointer-transparent, never blocks tabs) -->
+                <div class="pointer-events-none absolute left-0 top-0 bottom-0 w-8 sm:w-14 bg-gradient-to-r from-manor-950 via-manor-900/70 to-transparent z-10"></div>
+
+                <!-- Scrollable Tab Buttons Track -->
+                <div class="flex items-center space-x-2 overflow-x-auto hide-scrollbar pb-0.5 px-3">
+                    <button onclick="switchTab(0)" class="tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-bold transition shadow-md bg-gradient-to-b from-manor-800 to-manor-900 text-gold-400 border border-gold-500/60 ring-1 ring-gold-400/30 cursor-pointer whitespace-nowrap active:scale-95" id="tab-btn-0">
+                        Overview
+                    </button>
+                    <button onclick="switchTab(1)" class="tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-semibold transition bg-white/90 hover:bg-manor-100 text-stone-700 hover:text-manor-900 border border-amber-900/10 hover:border-gold-500/40 cursor-pointer whitespace-nowrap active:scale-95" id="tab-btn-1">
+                        1. The Archives
+                    </button>
+                    <button onclick="switchTab(2)" class="tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-semibold transition bg-white/90 hover:bg-manor-100 text-stone-700 hover:text-manor-900 border border-amber-900/10 hover:border-gold-500/40 cursor-pointer whitespace-nowrap active:scale-95" id="tab-btn-2">
+                        2. The Journal
+                    </button>
+                    <button onclick="switchTab(3)" class="tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-semibold transition bg-white/90 hover:bg-manor-100 text-stone-700 hover:text-manor-900 border border-amber-900/10 hover:border-gold-500/40 cursor-pointer whitespace-nowrap active:scale-95" id="tab-btn-3">
+                        3. Lessons Diary
+                    </button>
+                    <button onclick="switchTab(4)" class="tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-semibold transition bg-white/90 hover:bg-manor-100 text-stone-700 hover:text-manor-900 border border-amber-900/10 hover:border-gold-500/40 cursor-pointer whitespace-nowrap active:scale-95" id="tab-btn-4">
+                        4. The Glossary
+                    </button>
+                    <button onclick="switchTab(5)" class="tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-semibold transition bg-white/90 hover:bg-manor-100 text-stone-700 hover:text-manor-900 border border-amber-900/10 hover:border-gold-500/40 cursor-pointer whitespace-nowrap active:scale-95" id="tab-btn-5">
+                        5. Weekly Challenges
+                    </button>
+                    <button onclick="switchTab(6)" class="tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-semibold transition bg-white/90 hover:bg-manor-100 text-stone-700 hover:text-manor-900 border border-amber-900/10 hover:border-gold-500/40 cursor-pointer whitespace-nowrap active:scale-95" id="tab-btn-6">
+                        6. The Highland Gazette
+                    </button>
+                    <button onclick="switchTab(7)" class="tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-semibold transition bg-white/90 hover:bg-manor-100 text-stone-700 hover:text-manor-900 border border-amber-900/10 hover:border-gold-500/40 cursor-pointer whitespace-nowrap active:scale-95" id="tab-btn-7">
+                        7. Settings & Profile
+                    </button>
+                </div>
+
+                <!-- Right Gradient Edge Dissolve (Pointer-transparent, never blocks tabs) -->
+                <div class="pointer-events-none absolute right-0 top-0 bottom-0 w-8 sm:w-14 bg-gradient-to-l from-manor-950 via-manor-900/70 to-transparent z-10"></div>
             </div>
         </div>
     </div>
@@ -254,7 +270,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-amber-900/10 text-stone-700">
-                        <tr onclick="switchTab(1)" class="hover:bg-manor-100/80 transition-colors duration-200 cursor-pointer group">
+                        <tr onclick="switchTab(1)" class="hover:bg-manor-100/80 transition-colors duration-150 cursor-pointer group active:bg-manor-200/50">
                             <td class="p-4 font-serif font-bold text-manor-900 group-hover:text-gold-700 flex items-center gap-2" id="row1-mod">
                                 <span class="text-gold-500 text-xs">I.</span> The Archives
                             </td>
@@ -262,7 +278,7 @@
                             <td class="p-4 text-stone-600" id="row1-goal">Further practice and review materials for the classes you took at British Hills</td>
                             <td class="p-4 text-right font-serif font-bold text-xs text-gold-600 group-hover:text-gold-700 action-btn-text">View Section &rarr;</td>
                         </tr>
-                        <tr onclick="switchTab(2)" class="hover:bg-manor-100/80 transition-colors duration-200 cursor-pointer group bg-stone-50/50">
+                        <tr onclick="switchTab(2)" class="hover:bg-manor-100/80 transition-colors duration-150 cursor-pointer group bg-stone-50/50 active:bg-manor-200/50">
                             <td class="p-4 font-serif font-bold text-manor-900 group-hover:text-gold-700 flex items-center gap-2" id="row2-mod">
                                 <span class="text-gold-500 text-xs">II.</span> The Journal
                             </td>
@@ -270,7 +286,7 @@
                             <td class="p-4 text-stone-600" id="row2-goal">Record your stay at British Hills through images and writing, and create a souvenir video</td>
                             <td class="p-4 text-right font-serif font-bold text-xs text-gold-600 group-hover:text-gold-700 action-btn-text">View Section &rarr;</td>
                         </tr>
-                        <tr onclick="switchTab(3)" class="hover:bg-manor-100/80 transition-colors duration-200 cursor-pointer group">
+                        <tr onclick="switchTab(3)" class="hover:bg-manor-100/80 transition-colors duration-150 cursor-pointer group active:bg-manor-200/50">
                             <td class="p-4 font-serif font-bold text-manor-900 group-hover:text-gold-700 flex items-center gap-2" id="row3-mod">
                                 <span class="text-gold-500 text-xs">III.</span> Lessons Diary
                             </td>
@@ -278,7 +294,7 @@
                             <td class="p-4 text-stone-600" id="row3-goal">Take notes during your lessons and record new words and phrases.</td>
                             <td class="p-4 text-right font-serif font-bold text-xs text-gold-600 group-hover:text-gold-700 action-btn-text">View Section &rarr;</td>
                         </tr>
-                        <tr onclick="switchTab(4)" class="hover:bg-manor-100/80 transition-colors duration-200 cursor-pointer group bg-stone-50/50">
+                        <tr onclick="switchTab(4)" class="hover:bg-manor-100/80 transition-colors duration-150 cursor-pointer group bg-stone-50/50 active:bg-manor-200/50">
                             <td class="p-4 font-serif font-bold text-manor-900 group-hover:text-gold-700 flex items-center gap-2" id="row4-mod">
                                 <span class="text-gold-500 text-xs">IV.</span> The Glossary
                             </td>
@@ -286,7 +302,7 @@
                             <td class="p-4 text-stone-600" id="row4-goal">Save new vocabulary here and test yourself on it whenever you like</td>
                             <td class="p-4 text-right font-serif font-bold text-xs text-gold-600 group-hover:text-gold-700 action-btn-text">View Section &rarr;</td>
                         </tr>
-                        <tr onclick="switchTab(5)" class="hover:bg-manor-100/80 transition-colors duration-200 cursor-pointer group">
+                        <tr onclick="switchTab(5)" class="hover:bg-manor-100/80 transition-colors duration-150 cursor-pointer group active:bg-manor-200/50">
                             <td class="p-4 font-serif font-bold text-manor-900 group-hover:text-gold-700 flex items-center gap-2" id="row5-mod">
                                 <span class="text-gold-500 text-xs">V.</span> Weekly Challenges
                             </td>
@@ -294,7 +310,7 @@
                             <td class="p-4 text-stone-600" id="row5-goal">Daily learning and new words and phrases</td>
                             <td class="p-4 text-right font-serif font-bold text-xs text-gold-600 group-hover:text-gold-700 action-btn-text">View Section &rarr;</td>
                         </tr>
-                        <tr onclick="switchTab(6)" class="hover:bg-manor-100/80 transition-colors duration-200 cursor-pointer group bg-stone-50/50">
+                        <tr onclick="switchTab(6)" class="hover:bg-manor-100/80 transition-colors duration-150 cursor-pointer group bg-stone-50/50 active:bg-manor-200/50">
                             <td class="p-4 font-serif font-bold text-manor-900 group-hover:text-gold-700 flex items-center gap-2" id="row6-mod">
                                 <span class="text-gold-500 text-xs">VI.</span> The Highland Gazette
                             </td>
@@ -302,7 +318,7 @@
                             <td class="p-4 text-stone-600" id="row6-goal">Reading practice and tap-to-check dictionary</td>
                             <td class="p-4 text-right font-serif font-bold text-xs text-gold-600 group-hover:text-gold-700 action-btn-text">View Section &rarr;</td>
                         </tr>
-                        <tr onclick="switchTab(7)" class="hover:bg-manor-100/80 transition-colors duration-200 cursor-pointer group">
+                        <tr onclick="switchTab(7)" class="hover:bg-manor-100/80 transition-colors duration-150 cursor-pointer group active:bg-manor-200/50">
                             <td class="p-4 font-serif font-bold text-manor-900 group-hover:text-gold-700 flex items-center gap-2" id="row7-mod">
                                 <span class="text-gold-500 text-xs">VII.</span> Settings & Profile
                             </td>
@@ -366,12 +382,12 @@
                 </div>
                 <p class="text-xs text-stone-300" id="s1-sim-prompt">Unscramble this British Hills polite word:</p>
 
-                <div class="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4 bg-manor-950/70 p-4 rounded-lg border border-gold-500/25">
+                <div flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4 bg-manor-950/70 p-4 rounded-lg border border-gold-500/25>
                     <div class="text-xl font-mono tracking-[0.25em] text-gold-300 font-bold px-4 py-2 bg-manor-900 rounded border border-gold-500/30 shadow-inner">
                         C - U - O - R - T - E - S - Y
                     </div>
                     <input type="text" id="anagram-input" placeholder="Type answer..." class="w-full sm:w-auto flex-grow bg-manor-900/90 border border-gold-500/40 rounded px-3.5 py-2 text-xs text-amber-50 focus:outline-none focus:border-gold-300 focus:ring-1 focus:ring-gold-400">
-                    <button onclick="checkAnagram()" class="w-full sm:w-auto bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-manor-950 font-serif font-bold px-5 py-2 rounded text-xs transition-all shadow-md cursor-pointer" id="btn-anagram-verify">
+                    <button onclick="checkAnagram()" class="w-full sm:w-auto bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-manor-950 font-serif font-bold px-5 py-2 rounded text-xs transition shadow-md cursor-pointer active:scale-95" id="btn-anagram-verify">
                         Check Answer
                     </button>
                 </div>
@@ -430,13 +446,13 @@
                     <div class="flex justify-between items-center border-b border-amber-900/10 pb-2">
                         <h4 class="font-serif font-bold text-xs text-manor-900 uppercase tracking-wider" id="s2-sim1-title">Frame Style Chooser</h4>
                         <div class="space-x-1 text-xs">
-                            <button onclick="setFrameStyle('polaroid')" class="px-2.5 py-1 bg-white border border-stone-300 rounded font-serif text-[11px] font-semibold hover:border-gold-500 shadow-sm cursor-pointer" id="btn-frame-pol">Polaroid</button>
-                            <button onclick="setFrameStyle('victorian')" class="px-2.5 py-1 bg-white border border-stone-300 rounded font-serif text-[11px] font-semibold hover:border-gold-500 shadow-sm cursor-pointer" id="btn-frame-vic">Victorian</button>
-                            <button onclick="setFrameStyle('parchment')" class="px-2.5 py-1 bg-white border border-stone-300 rounded font-serif text-[11px] font-semibold hover:border-gold-500 shadow-sm cursor-pointer" id="btn-frame-par">Parchment</button>
+                            <button onclick="setFrameStyle('polaroid')" class="px-2.5 py-1 bg-white border border-stone-300 rounded font-serif text-[11px] font-semibold hover:border-gold-500 shadow-sm transition active:scale-95 cursor-pointer" id="btn-frame-pol">Polaroid</button>
+                            <button onclick="setFrameStyle('victorian')" class="px-2.5 py-1 bg-white border border-stone-300 rounded font-serif text-[11px] font-semibold hover:border-gold-500 shadow-sm transition active:scale-95 cursor-pointer" id="btn-frame-vic">Victorian</button>
+                            <button onclick="setFrameStyle('parchment')" class="px-2.5 py-1 bg-white border border-stone-300 rounded font-serif text-[11px] font-semibold hover:border-gold-500 shadow-sm transition active:scale-95 cursor-pointer" id="btn-frame-par">Parchment</button>
                         </div>
                     </div>
                     <div class="flex justify-center py-4">
-                        <div id="frame-preview-box" class="frame-polaroid transition-all duration-300 max-w-xs w-full text-center">
+                        <div id="frame-preview-box" class="frame-polaroid max-w-xs w-full text-center">
                             <div class="bg-manor-800 text-gold-400 h-36 rounded flex flex-col items-center justify-center space-y-1 p-3 shadow-inner">
                                 <span class="font-serif font-bold text-xs tracking-wider">Main Manor Great Hall</span>
                                 <span class="text-[10px] text-stone-300 italic">Photo Entry</span>
@@ -454,7 +470,7 @@
                             <span class="text-[10px] bg-burgundy-800 text-amber-100 px-2.5 py-0.5 rounded border border-gold-500/30" id="s2-sim2-badge">Auto Converter</span>
                         </div>
                         <p class="text-xs text-stone-300" id="s2-sim2-prompt">Type words like 'color', 'center', 'organize', 'traveler' below:</p>
-                        <textarea id="spelling-input" oninput="convertSpelling()" rows="2" class="w-full bg-manor-950/80 border border-gold-500/30 rounded p-2.5 text-xs text-amber-100 focus:outline-none focus:border-gold-400" placeholder="Type here: The traveler liked the center color..."></textarea>
+                        <textarea id="spelling-input" oninput="convertSpelling()" rows="2" class="w-full bg-manor-950/80 border border-gold-500/30 rounded p-2.5 text-xs text-amber-100 focus:outline-none focus:border-gold-400 transition" placeholder="Type here: The traveler liked the center color..."></textarea>
                     </div>
                     <div class="bg-manor-950/90 p-3 rounded border border-gold-500/25">
                         <span class="text-[10px] text-gold-400 font-mono block uppercase tracking-wider mb-1" id="s2-sim2-outlabel">British English Spelling:</span>
@@ -511,7 +527,7 @@
                             <span class="font-bold text-manor-900 text-sm font-editorial">"Would you mind terribly if..."</span>
                             <span class="text-stone-500 block text-[10px] uppercase tracking-wider mt-0.5" id="s3-sim-tag">Polite Request Pattern</span>
                         </div>
-                        <button onclick="syncToGlossary('Would you mind terribly if...')" class="bg-gradient-to-r from-manor-900 to-manor-800 hover:from-manor-800 hover:to-manor-700 text-gold-400 font-serif font-bold px-4 py-1.5 rounded text-xs transition border border-gold-500/40 cursor-pointer shadow-sm" id="btn-sync-demo">
+                        <button onclick="syncToGlossary('Would you mind terribly if...')" class="bg-gradient-to-r from-manor-900 to-manor-800 hover:from-manor-800 hover:to-manor-700 text-gold-400 font-serif font-bold px-4 py-1.5 rounded text-xs transition border border-gold-500/40 cursor-pointer shadow-sm active:scale-95" id="btn-sync-demo">
                             + Save
                         </button>
                     </div>
@@ -560,7 +576,7 @@
                                 <span class="font-serif font-bold text-base text-manor-900 word-head">Chivalry</span>
                                 <span class="text-xs text-burgundy-700 font-mono ml-2 font-semibold">/ˈʃɪv.əl.ri/</span>
                             </div>
-                            <button onclick="speakWord('Chivalry')" class="bg-manor-100 hover:bg-manor-200 text-manor-900 px-2.5 py-1 rounded text-[10px] font-serif font-bold transition cursor-pointer btn-audio-text border border-amber-900/10">
+                            <button onclick="speakWord('Chivalry')" class="bg-manor-100 hover:bg-manor-200 text-manor-900 px-2.5 py-1 rounded text-[10px] font-serif font-bold transition cursor-pointer btn-audio-text border border-amber-900/10 active:scale-95">
                                 Listen Audio
                             </button>
                         </div>
@@ -573,7 +589,7 @@
                                 <span class="font-serif font-bold text-base text-manor-900 word-head">Splendid</span>
                                 <span class="text-xs text-burgundy-700 font-mono ml-2 font-semibold">/ˈsplen.dɪd/</span>
                             </div>
-                            <button onclick="speakWord('Splendid')" class="bg-manor-100 hover:bg-manor-200 text-manor-900 px-2.5 py-1 rounded text-[10px] font-serif font-bold transition cursor-pointer btn-audio-text border border-amber-900/10">
+                            <button onclick="speakWord('Splendid')" class="bg-manor-100 hover:bg-manor-200 text-manor-900 px-2.5 py-1 rounded text-[10px] font-serif font-bold transition cursor-pointer btn-audio-text border border-amber-900/10 active:scale-95">
                                 Listen Audio
                             </button>
                         </div>
@@ -639,30 +655,30 @@
                     <div data-rank="casual" class="rank-item flex items-center justify-between p-3.5 bg-manor-950/80 rounded-lg border border-gold-500/25 shadow-sm">
                         <span class="text-xs text-amber-100 font-medium font-editorial text-sm">"Give me a hand with this, will you?"</span>
                         <div class="space-x-1">
-                            <button onclick="moveRank(this, -1)" class="btn-rank-up px-2.5 py-1 bg-manor-900 hover:bg-manor-800 text-gold-400 text-xs rounded border border-gold-500/30 cursor-pointer">Up</button>
-                            <button onclick="moveRank(this, 1)" class="btn-rank-down px-2.5 py-1 bg-manor-900 hover:bg-manor-800 text-gold-400 text-xs rounded border border-gold-500/30 cursor-pointer">Down</button>
+                            <button onclick="moveRank(this, -1)" class="btn-rank-up px-2.5 py-1 bg-manor-900 hover:bg-manor-800 text-gold-400 text-xs rounded border border-gold-500/30 active:scale-95 cursor-pointer">Up</button>
+                            <button onclick="moveRank(this, 1)" class="btn-rank-down px-2.5 py-1 bg-manor-900 hover:bg-manor-800 text-gold-400 text-xs rounded border border-gold-500/30 active:scale-95 cursor-pointer">Down</button>
                         </div>
                     </div>
 
                     <div data-rank="formal" class="rank-item flex items-center justify-between p-3.5 bg-manor-950/80 rounded-lg border border-gold-500/25 shadow-sm">
                         <span class="text-xs text-amber-100 font-medium font-editorial text-sm">"I would be immensely grateful if you could assist me."</span>
                         <div class="space-x-1">
-                            <button onclick="moveRank(this, -1)" class="btn-rank-up px-2.5 py-1 bg-manor-900 hover:bg-manor-800 text-gold-400 text-xs rounded border border-gold-500/30 cursor-pointer">Up</button>
-                            <button onclick="moveRank(this, 1)" class="btn-rank-down px-2.5 py-1 bg-manor-900 hover:bg-manor-800 text-gold-400 text-xs rounded border border-gold-500/30 cursor-pointer">Down</button>
+                            <button onclick="moveRank(this, -1)" class="btn-rank-up px-2.5 py-1 bg-manor-900 hover:bg-manor-800 text-gold-400 text-xs rounded border border-gold-500/30 active:scale-95 cursor-pointer">Up</button>
+                            <button onclick="moveRank(this, 1)" class="btn-rank-down px-2.5 py-1 bg-manor-900 hover:bg-manor-800 text-gold-400 text-xs rounded border border-gold-500/30 active:scale-95 cursor-pointer">Down</button>
                         </div>
                     </div>
 
                     <div data-rank="neutral" class="rank-item flex items-center justify-between p-3.5 bg-manor-950/80 rounded-lg border border-gold-500/25 shadow-sm">
                         <span class="text-xs text-amber-100 font-medium font-editorial text-sm">"Could you please help me with this?"</span>
                         <div class="space-x-1">
-                            <button onclick="moveRank(this, -1)" class="btn-rank-up px-2.5 py-1 bg-manor-900 hover:bg-manor-800 text-gold-400 text-xs rounded border border-gold-500/30 cursor-pointer">Up</button>
-                            <button onclick="moveRank(this, 1)" class="btn-rank-down px-2.5 py-1 bg-manor-900 hover:bg-manor-800 text-gold-400 text-xs rounded border border-gold-500/30 cursor-pointer">Down</button>
+                            <button onclick="moveRank(this, -1)" class="btn-rank-up px-2.5 py-1 bg-manor-900 hover:bg-manor-800 text-gold-400 text-xs rounded border border-gold-500/30 active:scale-95 cursor-pointer">Up</button>
+                            <button onclick="moveRank(this, 1)" class="btn-rank-down px-2.5 py-1 bg-manor-900 hover:bg-manor-800 text-gold-400 text-xs rounded border border-gold-500/30 active:scale-95 cursor-pointer">Down</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex justify-between items-center pt-2">
-                    <button onclick="checkRankingOrder()" class="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-manor-950 font-serif font-bold px-5 py-2 rounded text-xs transition cursor-pointer shadow-md" id="btn-rank-submit">
+                    <button onclick="checkRankingOrder()" class="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-manor-950 font-serif font-bold px-5 py-2 rounded text-xs transition cursor-pointer shadow-md active:scale-95" id="btn-rank-submit">
                         Submit Answer
                     </button>
                     <span id="ranking-feedback" class="text-xs font-bold text-gold-400"></span>
@@ -707,7 +723,7 @@
                         Tap highlighted words below to test the dictionary popup:
                     </p>
                     <p class="bg-manor-50/70 p-3.5 rounded-lg border-l-4 border-gold-500 italic text-stone-800 text-sm font-editorial">
-                        Guests enjoy warm <span onclick="showLookup('Scones', '/skɒnz/', 'Noun', 'Small British baked bread made of flour and butter.', 'Highland Gazette')" class="underline decoration-gold-500 font-bold text-burgundy-700 cursor-pointer bg-gold-500/15 px-1.5 py-0.5 rounded transition hover:bg-gold-500/25">Scones</span> served alongside rich <span onclick="showLookup('Clotted Cream', '/ˈklɒt.ɪd kriːm/', 'Noun', 'Thick cream made by heating full-cream milk.', 'Highland Gazette')" class="underline decoration-gold-500 font-bold text-burgundy-700 cursor-pointer bg-gold-500/15 px-1.5 py-0.5 rounded transition hover:bg-gold-500/25">Clotted Cream</span> and jam.
+                        Guests enjoy warm <span onclick="showLookup('Scones', '/skɒnz/', 'Noun', 'Small British baked bread made of flour and butter.', 'Highland Gazette')" class="underline decoration-gold-500 font-bold text-burgundy-700 cursor-pointer bg-gold-500/15 px-1.5 py-0.5 rounded transition hover:bg-gold-500/30">Scones</span> served alongside rich <span onclick="showLookup('Clotted Cream', '/ˈklɒt.ɪd kriːm/', 'Noun', 'Thick cream made by heating full-cream milk.', 'Highland Gazette')" class="underline decoration-gold-500 font-bold text-burgundy-700 cursor-pointer bg-gold-500/15 px-1.5 py-0.5 rounded transition hover:bg-gold-500/30">Clotted Cream</span> and jam.
                     </p>
                 </div>
 
@@ -723,7 +739,7 @@
                     <p id="pop-def" class="text-xs text-stone-200 leading-relaxed">Definition...</p>
                     <div class="pt-2 flex justify-between items-center border-t border-gold-500/25">
                         <span class="text-[10px] text-stone-400 font-mono" id="pop-result-label">Dictionary Result</span>
-                        <button onclick="savePopToGlossary()" class="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-manor-950 font-serif font-bold px-3 py-1 rounded text-[11px] transition cursor-pointer shadow" id="btn-pop-add">
+                        <button onclick="savePopToGlossary()" class="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-manor-950 font-serif font-bold px-3 py-1 rounded text-[11px] transition cursor-pointer shadow active:scale-95" id="btn-pop-add">
                             + Add to Glossary
                         </button>
                     </div>
@@ -792,6 +808,7 @@
 
         const i18n = {
             EN: {
+                langBtn: "Language: EN",
                 navSubtitle: "Highland Companion - User Guide",
                 badge: "User guide",
                 heroTitle: "British Hills Highland Companion",
@@ -919,6 +936,7 @@
                 footerText2: "Highland Life Immersion Programme"
             },
             JP: {
+                langBtn: "言語: 日本語",
                 navSubtitle: "ハイランド・コンパニオン ユーザーガイド",
                 badge: "ユーザーガイド",
                 heroTitle: "ブリティッシュヒルズ ハイランド・コンパニオン",
@@ -970,7 +988,7 @@
                 s2P1List: "<li><strong>スクラップブック：</strong>施設内で撮影した写真と一緒に振り返り文を書き残せます。</li><li><strong>クラシックフォトフレーム：</strong>ポラロイド風、ヴィクトリア調、羊皮紙風のフレームを選択して写真を演出できます。</li>",
                 s2P2Title: "イギリス英語スペル変換機能",
                 s2P2Desc: "アメリカ英語（color, center, traveler等）を自動的にイギリス英語（colour, centre, traveller等）へ変換します。",
-                s2P3Title: "SNS用縦型記念動画",
+                s2P3Title: "Souvenir Video",
                 s2P3List: "<li><strong>アニメーション記念動画：</strong>ジャーナルに記録した写真とテキストから、BGM付きの縦型動画を自動生成します。</li><li><strong>直接保存：</strong>生成した動画は端末のカメラロールに保存し、SNSで簡単に共有できます。</li>",
                 s2Sim1Title: "フレームスタイル選択",
                 btnFramePol: "ポラロイド風", btnFrameVic: "ヴィクトリア調", btnFramePar: "羊皮紙風",
@@ -1048,7 +1066,9 @@
         };
 
         function switchTab(tabIndex) {
-            document.querySelectorAll('.tab-pane').forEach((pane, idx) => {
+            // Toggle Panes
+            const panes = document.querySelectorAll('.tab-pane');
+            panes.forEach((pane, idx) => {
                 if (idx === tabIndex) {
                     pane.classList.remove('hidden');
                 } else {
@@ -1056,19 +1076,25 @@
                 }
             });
 
-            document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+            // Toggle Button Styling
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach((btn, idx) => {
                 if (idx === tabIndex) {
-                    btn.className = 'tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-bold transition-all duration-300 shadow-md bg-gradient-to-b from-manor-800 to-manor-900 text-gold-400 border border-gold-500/60 ring-1 ring-gold-400/30 cursor-pointer whitespace-nowrap flex items-center gap-1.5';
+                    btn.className = 'tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-bold transition shadow-md bg-gradient-to-b from-manor-800 to-manor-900 text-gold-400 border border-gold-500/60 ring-1 ring-gold-400/30 cursor-pointer whitespace-nowrap active:scale-95';
                 } else {
-                    btn.className = 'tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-semibold transition-all duration-300 bg-white/80 hover:bg-manor-100 text-stone-700 hover:text-manor-900 border border-amber-900/10 hover:border-gold-500/40 cursor-pointer whitespace-nowrap flex items-center gap-1.5';
+                    btn.className = 'tab-btn px-5 py-2.5 rounded-lg font-serif text-xs font-semibold transition bg-white/90 hover:bg-manor-100 text-stone-700 hover:text-manor-900 border border-amber-900/10 hover:border-gold-500/40 cursor-pointer whitespace-nowrap active:scale-95';
                 }
             });
 
+            // Scroll alignment without tucking under sticky nav
             const nav = document.getElementById('tabs-navigation');
             if (nav) {
                 const rect = nav.getBoundingClientRect();
-                if (rect.top < 0 || rect.top > 200) {
-                    nav.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (rect.top < 70) {
+                    window.scrollTo({
+                        top: window.pageYOffset + rect.top - 85,
+                        behavior: 'smooth'
+                    });
                 }
             }
         }
@@ -1081,19 +1107,20 @@
         function applyLanguage() {
             const data = i18n[currentLang];
 
-            // Subtitle & Header
+            // Header Controls
+            document.getElementById('lang-btn-text').textContent = data.langBtn;
             document.getElementById('nav-subtitle').textContent = data.navSubtitle;
             document.getElementById('hero-badge').textContent = data.badge;
             document.getElementById('hero-title').textContent = data.heroTitle;
             document.getElementById('hero-desc').textContent = data.heroDesc;
 
-            // Tabs
+            // Tabs Bar Buttons
             for (let i = 0; i <= 7; i++) {
                 const el = document.getElementById(`tab-btn-${i}`);
                 if (el) el.textContent = data[`tab${i}`];
             }
 
-            // Tab 0
+            // Tab 0 (Overview)
             document.getElementById('overview-title').textContent = data.overviewTitle;
             document.getElementById('overview-sub').textContent = data.overviewSub;
             document.getElementById('th-module').textContent = data.thModule;
@@ -1130,7 +1157,7 @@
             document.getElementById('row7-func').textContent = data.r7Func;
             document.getElementById('row7-goal').textContent = data.r7Goal;
 
-            // Tab 1
+            // Tab 1 (The Archives)
             document.getElementById('s1-title').textContent = data.s1Title;
             document.getElementById('s1-intro').textContent = data.s1Intro;
             document.getElementById('s1-qr-title').textContent = data.s1QrTitle;
@@ -1142,12 +1169,12 @@
             document.getElementById('s1-sim-prompt').textContent = data.s1SimPrompt;
             document.getElementById('btn-anagram-verify').textContent = data.btnAnagramVerify;
 
-            // Tab 2
+            // Tab 2 (The Journal) - Accurate mapping to s2P3Title
             document.getElementById('s2-title').textContent = data.s2Title;
             document.getElementById('s2-intro').textContent = data.s2Intro;
             document.getElementById('s2-p1-title').textContent = data.s2P1Title;
             document.getElementById('s2-p1-list').innerHTML = data.s2P1List;
-            document.getElementById('s2-p2-title').textContent = data.s2P2Title;
+            document.getElementById('s2-p2-title').textContent = data.s2P2Desc;
             document.getElementById('s2-p2-desc').textContent = data.s2P2Desc;
             document.getElementById('s2-p3-title').textContent = data.s2P3Title;
             document.getElementById('s2-p3-list').innerHTML = data.s2P3List;
@@ -1160,7 +1187,7 @@
             document.getElementById('s2-sim2-prompt').textContent = data.s2Sim2Prompt;
             document.getElementById('s2-sim2-outlabel').textContent = data.s2Sim2Outlabel;
 
-            // Tab 3
+            // Tab 3 (Lessons Diary)
             document.getElementById('s3-title').textContent = data.s3Title;
             document.getElementById('s3-intro').textContent = data.s3Intro;
             document.getElementById('s3-r-title').textContent = data.s3RTitle;
@@ -1172,7 +1199,7 @@
             document.getElementById('s3-sim-tag').textContent = data.s3SimTag;
             document.getElementById('btn-sync-demo').textContent = data.btnSyncDemo;
 
-            // Tab 4
+            // Tab 4 (The Glossary)
             document.getElementById('s4-title').textContent = data.s4Title;
             document.getElementById('s4-intro').textContent = data.s4Intro;
             document.getElementById('s4-rec-title').textContent = data.s4RecTitle;
@@ -1181,7 +1208,7 @@
             document.getElementById('glossary-search').placeholder = data.glossarySearchPlaceholder;
             document.querySelectorAll('.btn-audio-text').forEach(btn => btn.textContent = data.btnAudioText);
 
-            // Tab 5
+            // Tab 5 (Weekly Challenges)
             document.getElementById('s5-title').textContent = data.s5Title;
             document.getElementById('s5-intro').textContent = data.s5Intro;
             document.getElementById('s5-wotd-title').textContent = data.s5WotdTitle;
@@ -1197,7 +1224,7 @@
             document.querySelectorAll('.btn-rank-down').forEach(b => b.textContent = data.btnRankDown);
             document.getElementById('btn-rank-submit').textContent = data.btnRankSubmit;
 
-            // Tab 6
+            // Tab 6 (The Highland Gazette)
             document.getElementById('s6-title').textContent = data.s6Title;
             document.getElementById('s6-intro').textContent = data.s6Intro;
             document.getElementById('s6-art-title').textContent = data.s6ArtTitle;
@@ -1209,7 +1236,7 @@
             document.getElementById('pop-result-label').textContent = data.popResultLabel;
             document.getElementById('btn-pop-add').textContent = data.btnPopAdd;
 
-            // Tab 7
+            // Tab 7 (Settings & Profile)
             document.getElementById('s7-title').textContent = data.s7Title;
             document.getElementById('s7-intro').textContent = data.s7Intro;
             document.getElementById('s7-lang-title').textContent = data.s7LangTitle;
@@ -1217,7 +1244,7 @@
             document.getElementById('s7-prof-title').textContent = data.s7ProfTitle;
             document.getElementById('s7-prof-desc').textContent = data.s7ProfDesc;
 
-            // Navigation buttons
+            // Section Pagination Links
             document.querySelectorAll('.nav-back-overview').forEach(b => b.textContent = data.navBackOverview);
             document.querySelectorAll('.nav-prev-s1').forEach(b => b.textContent = data.navPrevS1);
             document.querySelectorAll('.nav-next-s2').forEach(b => b.textContent = data.navNextS2);
@@ -1232,12 +1259,12 @@
             document.querySelectorAll('.nav-prev-s6').forEach(b => b.textContent = data.navPrevS6);
             document.querySelectorAll('.nav-next-s7').forEach(b => b.textContent = data.navNextS7);
 
-            // Footer
+            // Footer Text
             document.getElementById('footer-text1').textContent = data.footerText1;
             document.getElementById('footer-text2').textContent = data.footerText2;
         }
 
-        // Anagram Checker
+        // Anagram Game Checker
         function checkAnagram() {
             const val = document.getElementById('anagram-input').value.trim().toUpperCase();
             const feedback = document.getElementById('anagram-feedback');
@@ -1250,16 +1277,16 @@
             }
         }
 
-        // Frame Styling
+        // Frame Selector
         function setFrameStyle(style) {
             const box = document.getElementById('frame-preview-box');
-            box.className = 'transition-all duration-300 max-w-xs w-full text-center ';
+            box.className = 'max-w-xs w-full text-center ';
             if(style === 'polaroid') box.classList.add('frame-polaroid');
             if(style === 'victorian') box.classList.add('frame-victorian');
             if(style === 'parchment') box.classList.add('frame-parchment');
         }
 
-        // Spelling Converter
+        // UK Spelling Converter
         function convertSpelling() {
             const text = document.getElementById('spelling-input').value;
             let ukText = text
@@ -1273,7 +1300,7 @@
             document.getElementById('spelling-output').textContent = ukText || (currentLang === 'EN' ? 'Type above to test...' : '上記に入力してテストしてください...');
         }
 
-        // Audio Mock
+        // Audio Speech Stub
         function speakWord(word) {
             const msg = currentLang === 'EN' 
                 ? `In the App, British English audio is available for "${word}".` 
@@ -1281,7 +1308,7 @@
             alert(msg);
         }
 
-        // Sync to Glossary Simulator
+        // Glossary Sync
         function syncToGlossary(word) {
             addWordToGlossaryUI(word, '/uk.ph/', currentLang === 'EN' ? 'Saved Entry.' : '保存されたエントリー');
             const msg = currentLang === 'EN' ? `"${word}" saved directly to your Glossary!` : `「${word}」が直接ザ・グロッサリーに保存されました！`;
@@ -1298,7 +1325,7 @@
                         <span class="font-serif font-bold text-base text-manor-900 word-head">${word}</span>
                         <span class="text-xs text-burgundy-700 font-mono ml-2 font-semibold">${phonetic}</span>
                     </div>
-                    <button onclick="speakWord('${word}')" class="bg-manor-100 hover:bg-manor-200 text-manor-900 px-2.5 py-1 rounded text-[10px] font-serif font-bold transition cursor-pointer btn-audio-text border border-amber-900/10">
+                    <button onclick="speakWord('${word}')" class="bg-manor-100 hover:bg-manor-200 text-manor-900 px-2.5 py-1 rounded text-[10px] font-serif font-bold transition cursor-pointer btn-audio-text border border-amber-900/10 active:scale-95">
                         ${i18n[currentLang].btnAudioText}
                     </button>
                 </div>
@@ -1315,14 +1342,14 @@
             });
         }
 
-        // Ranking Game
+        // Politeness Ranking Game
         function moveRank(btn, direction) {
             const item = btn.closest('.rank-item');
             const list = document.getElementById('politeness-list');
             if (direction === -1 && item.previousElementSibling) {
                 list.insertBefore(item, item.previousElementSibling);
             } else if (direction === 1 && item.nextElementSibling) {
-                list.insertBefore(item, item.nextElementSibling);
+                list.insertBefore(item, item.nextElementSibling.nextElementSibling);
             }
         }
 
